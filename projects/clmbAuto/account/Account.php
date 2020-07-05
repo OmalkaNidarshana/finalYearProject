@@ -76,7 +76,7 @@ class Account{
     }
 
     function getUserInformation(){
-        $userData = geUserInformationByCmpId($this->link,$this->cmpId);
+        $userData = geUserInformationByCmpId($this->link,$this->cmpId);//get User Data By companyId;
         
         $html ='';
         $html .= '<div class="box-body table-responsive no-padding">';
