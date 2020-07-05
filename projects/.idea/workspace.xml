@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="634ab863-c7b5-4292-a9a9-0e010e19de53" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/AdminLTE-2.4.18/composer.json</pharConfigPath>
+    <execution>
+      <executable />
+    </execution>
+  </component>
+  <component name="ProjectId" id="1W0nY1P9r2CG6x9e6KdZr0h9KbR" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../projects/BIT_FinalProject/header.php" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\BIT_FinalProject\UIBilder" />
+      <recent name="C:\xampp\htdocs\BIT_FinalProject\resources\CSS\plugins\jvectormap" />
+      <recent name="C:\xampp\htdocs\BIT_FinalProject\resources\CSS\dist\css\skins" />
+      <recent name="C:\xampp\htdocs\BIT_FinalProject\resources\CSS\dist\css" />
+      <recent name="C:\xampp\htdocs\BIT_FinalProject\resources\CSS\bootstrap\css" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\BIT_FinalProject\UIBilder\resources\CSS" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="header.php" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost/projects/BIT_FinalProject/header.php">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.header.php" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="634ab863-c7b5-4292-a9a9-0e010e19de53" name="Default Changelist" comment="" />
+      <created>1578295435721</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1578295435721</updated>
+      <workItem from="1578295527025" duration="1499000" />
+      <workItem from="1578333731350" duration="2105000" />
+      <workItem from="1578369515973" duration="2956000" />
+      <workItem from="1578372750056" duration="1140000" />
+      <workItem from="1578419898459" duration="3481000" />
+      <workItem from="1578456794779" duration="3824000" />
+      <workItem from="1578474482962" duration="13054000" />
+      <workItem from="1578498359729" duration="2196000" />
+      <workItem from="1578595233693" duration="2361000" />
+      <workItem from="1578634455606" duration="5656000" />
+      <workItem from="1578678711771" duration="4823000" />
+      <workItem from="1578715625374" duration="2498000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="170" y="1" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578717100110">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="170" y="1" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1578717100110" />
+    <state x="441" y="233" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1578372206301">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="441" y="233" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1366.728@0.0.1366.728" timestamp="1578372206301" />
+    <state x="496" y="100" key="FileChooserDialogImpl" timestamp="1578716972655">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="496" y="100" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1578716972655" />
+    <state width="1062" height="194" key="GridCell.Tab.0.bottom" timestamp="1578297446881">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1062" height="194" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1578297446881" />
+    <state width="1062" height="194" key="GridCell.Tab.0.center" timestamp="1578297446881">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1062" height="194" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1578297446881" />
+    <state width="1062" height="194" key="GridCell.Tab.0.left" timestamp="1578297446881">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1062" height="194" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1578297446881" />
+    <state width="1062" height="194" key="GridCell.Tab.0.right" timestamp="1578297446881">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1062" height="194" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1578297446881" />
+    <state width="1062" height="194" key="GridCell.Tab.1.bottom" timestamp="1578297446881">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1062" height="194" key="GridCell.Tab.1.bottom/0.0.1366.728@0.0.1366.728" timestamp="1578297446881" />
+    <state width="1062" height="194" key="GridCell.Tab.1.center" timestamp="1578297446881">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1062" height="194" key="GridCell.Tab.1.center/0.0.1366.728@0.0.1366.728" timestamp="1578297446881" />
+    <state width="1062" height="194" key="GridCell.Tab.1.left" timestamp="1578297446881">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1062" height="194" key="GridCell.Tab.1.left/0.0.1366.728@0.0.1366.728" timestamp="1578297446881" />
+    <state width="1062" height="194" key="GridCell.Tab.1.right" timestamp="1578297446881">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1062" height="194" key="GridCell.Tab.1.right/0.0.1366.728@0.0.1366.728" timestamp="1578297446881" />
+    <state x="551" y="269" key="NewPhpFileDialog" timestamp="1578681134485">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="551" y="269" key="NewPhpFileDialog/0.0.1366.728@0.0.1366.728" timestamp="1578681134485" />
+    <state x="217" y="0" key="SettingsEditor" timestamp="1578372331589">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="217" y="0" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1578372331589" />
+    <state x="411" y="169" key="com.intellij.ide.util.TipDialog" timestamp="1578716199381">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="411" y="169" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1578716199381" />
+    <state x="136" y="0" width="736" height="728" key="find.popup" timestamp="1578372607472">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="136" y="0" width="736" height="728" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1578372607472" />
+    <state x="339" y="157" key="run.anything.popup" timestamp="1578499961967">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="339" y="157" key="run.anything.popup/0.0.1366.728@0.0.1366.728" timestamp="1578499961967" />
+  </component>
+</project>
