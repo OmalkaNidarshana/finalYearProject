@@ -18,6 +18,7 @@ include_once $projPath."/dbControler/shared.php";
 $jsFiles[] = JS_ROOT."sortable_table.js";
 $jsFiles[] = JS_ROOT."main.js";
 $csFiles[] = STYLE_ROOT."main.css";
+$csFiles[] = STYLE_ROOT."side_modal.css";
 
 $isRegSrch = isset($_REQUEST['reguler_search']) ? true : false;
 $regulerSrch = isset($_REQUEST['reguler']) ? $_REQUEST['reguler'] : array();

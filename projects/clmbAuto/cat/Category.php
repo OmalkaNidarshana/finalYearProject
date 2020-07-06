@@ -100,7 +100,7 @@ class Category{
         $html .= HTML::lblFeild('Title : ').HTML::textFeild('title','',$attr=array());
         $btn = HTML::submitButtonFeild('reguler_search','Submit',$attr=array());
         $html .= HTML::formEnd();
-        $popUp = modalPopupBox('Category','REGULER_SEARCH',$html,$btn);
+        $popUp = sideModalPopupBox('Category','REGULER_SEARCH',$html,$btn);
         return $popUp;
     }
 

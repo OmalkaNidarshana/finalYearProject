@@ -167,4 +167,17 @@ input[type=text], input[type=tel], select {
     opacity: 1; /* Firefox */
  }
 
- 
+ .side-modal{
+    width:380px;
+    height:calc(100vh - 52px);
+    max-height:100vh;
+    border-radius:0;
+    background-color:#f3f6f8;
+    position:absolute;
+    top:0;
+    right:0;
+    /*overflow:hidden;*/
+    transform:translateX(100%);
+    will-change:transform;
+    transition:transform .3s cubic-bezier(0,0,.3,1)
+ }

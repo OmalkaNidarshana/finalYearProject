@@ -175,4 +175,26 @@ function modalPopupBox($title,$id,$data,$btn){
     $html .='</div>';
     return $html;
 }
+
+function sideModalPopupBox($title,$id,$data,$btn){
+    $html ='<div class="modal right fade" id="'.$id.'" style="display: none; padding-right: 17px;">';
+        $html .='<div class="modal-dialog">';
+            $html .='<div class="modal-content">';
+                $html .='<div class="modal-header">';
+                    $html .='<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
+                    $html .='<span aria-hidden="true">×</span></button>';
+                    $html .='<h4 class="modal-title">'.$title.'</h4>';
+                $html .='</div>';
+                $html .='<div class="modal-body">';
+                    $html .= $data;
+                $html .='</div>';
+                $html .='<div class="modal-footer">';
+                    $html .= $btn;
+                    $html .='<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>';
+                $html .='</div>';
+            $html .='</div>';
+        $html .='</div>';
+    $html .='</div>';
+    return $html;
+}
 ?>
