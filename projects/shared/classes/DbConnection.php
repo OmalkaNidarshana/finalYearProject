@@ -82,6 +82,10 @@
 			}
 			return $dataArr;
 		}
+
+		function insertUpdate($sql){
+			$this->link->query($sql);
+		}
 	}
 
 

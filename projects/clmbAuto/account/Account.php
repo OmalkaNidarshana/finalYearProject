@@ -157,6 +157,11 @@ class Account{
         $html .= HTML::openCloseTr(false);
         $html .= HTML::openCloseTr(true);
             $html .= HTML::openCloseTd(true,array("align"=>"right","width"=>"400px"));
+                $html .= HTML::lblFeild('City : ',array("style"=>"padding:5px;") ).HTML::textFeild('CITY','',array('style'=>'width:300px;'));
+            $html .= HTML::openCloseTd(false);
+        $html .= HTML::openCloseTr(false);
+        $html .= HTML::openCloseTr(true);
+            $html .= HTML::openCloseTd(true,array("align"=>"right","width"=>"400px"));
                 $html .= HTML::lblFeild('Country : ',array("style"=>"padding:5px;") ).HTML::selectFeild('CNTRY','CNTRY',array(""=>"")+$countryName,'',array('style'=>'width:300px;'));
             $html .= HTML::openCloseTd(false);
         $html .= HTML::openCloseTr(false);

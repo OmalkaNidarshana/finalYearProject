@@ -106,15 +106,13 @@ class Authentication{
     function isUserNameExist(){
        $userId =  getRecIdByUserName($this->link,$this->userName);
        if ( !empty($userId) ){
-            $this->errMsg = 'User Name Alredy Exist';
+            $this->errMsg = 'User name alredy exist';
        }
-
-
+       return $this->errMsg;
     }
 
     function validationUserName(){
         $errMsg = $this->verifingEmail();
-        print_rr($errMsg);
     }
 
 }

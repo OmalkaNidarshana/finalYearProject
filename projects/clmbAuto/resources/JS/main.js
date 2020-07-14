@@ -47,7 +47,14 @@ function addUser(){
          url: url,
          data: formData,
          success: function(data){
-         
+            data = $.parseJSON(data);
+            var keys = Object.keys(data);
+            if( keys == 'userName'){
+               $('#USER_NAME').val("");
+               $("#USER_NAME").attr('placeholder',data.userName);
+               $("#USER_NAME").addClass('red');
+               $("#USER_NAME").css("border", "1px solid red");
+            }
          }
       });
    }

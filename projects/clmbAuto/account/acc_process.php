@@ -22,10 +22,47 @@ $title = isset($_REQUEST['TITLE'])?$_REQUEST['TITLE']:'';
 $userType = isset($_REQUEST['USER_TYPE'])?$_REQUEST['USER_TYPE']:'';
 $add1 = isset($_REQUEST['ADD_1'])?$_REQUEST['ADD_1']:'';
 $add2 = isset($_REQUEST['ADD_2'])?$_REQUEST['ADD_2']:'';
+$city = isset($_REQUEST['CITY'])?$_REQUEST['CITY']:'';
 $cntry = isset($_REQUEST['CNTRY'])?$_REQUEST['CNTRY']:'';
 $phoneCode = isset($_REQUEST['PHONE_CODE'])?$_REQUEST['PHONE_CODE']:'';
 $phoneNum = isset($_REQUEST['PHONE_NUM'])?$_REQUEST['PHONE_NUM']:'';
+$phone = '';
+if( !empty($phoneCode) && !empty($phoneNum) ){
+    $phone = $phoneCode.$phoneNum;
+}
 
+global $userInfo;
+$userNameErrMsg = '';
 $auth = new Authentication($link,$userName,'');
-$auth->validationUserName();
+$userNameErrMsg = $auth->isUserNameExist();
+
+if(!empty($userNameErrMsg)){
+    $errorMsg['userName'] = $userNameErrMsg;
+    echo json_encode($errorMsg);
+    exit;
+}
+
+if( $action == 'addUser'){
+
+    $insertData['USER_NAME'] = getTextValue($userName);
+    $insertData['FIRST_NAME'] = getTextValue($frstName);
+    $insertData['LAST_NAME'] = getTextValue($lstName);
+    $insertData['TITLE '] = getTextValue($title);
+    $insertData['USER_TYPE '] = getTextValue($userType);
+    $insertData['ADDRESS_1'] = getTextValue($add1);
+    $insertData['ADDRESS_2'] = getTextValue($add2);
+    $insertData['CITY '] = getTextValue($city);
+    $insertData['COUNTRY'] = getTextValue($cntry);
+    $insertData['PHONE '] = getTextValue($phone);
+    $insertData['COMPANY_ID'] = $userInfo->cmpId;
+    $insertData['CREATED_DATE'] = getTextValue(getCurrentDateTime());
+    $insertData['CREATED_BY'] = $userInfo->intId;
+    $insertData['MODIFY_DATE'] = getTextValue(getCurrentDateTime());
+    $insertData['MODIFY_BY'] = $userInfo->intId;
+    print_rr($insertData);
+
+    $sql = "insert into user_info (".implode(",",array_keys($insertData)).") values (".implode(",",array_values($insertData)).")";
+    print_rr($sql);
+    $link->insertUpdate($sql);
+}
 ?>

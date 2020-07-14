@@ -94,6 +94,10 @@ function htmlPanelBox($table){
     return $str;
  }
 
+ function getCurrentDateTime(){
+    return date("Y-m-d H:i:s");
+ }
+
  function buildFldsLablel($fld){
     $lbl = str_replace("_"," ",$fld);
     $fldLbl = ucfirst(strtolower($lbl));
