@@ -98,6 +98,10 @@ function htmlPanelBox($table){
     return date("Y-m-d H:i:s");
  }
 
+ function formatCurrency($val){
+    $currencyVal = 'Rs.'.$val;
+    return $currencyVal;
+ }
  function buildFldsLablel($fld){
     $lbl = str_replace("_"," ",$fld);
     $fldLbl = ucfirst(strtolower($lbl));
@@ -119,8 +123,13 @@ function htmlPanelBox($table){
     return $html;
 }
 
-function getRawActionsIcon($type,$titile){
-    
+function getRawActionsIcon($type,$titile,$isanimated=true){
+    if($isanimated){
+        $animated = 'animated-hover';
+    }else{
+        $animated = '';
+    }
+
     switch($type){
         case "delete":
             $icon = 'fa-trash-o';
@@ -147,7 +156,7 @@ function getRawActionsIcon($type,$titile){
             $class = 'addUser';
         break;
     }
-    $action = '<i class="fa '.$icon.' faa-shake animated-hover '.$class.' fa-lg" title="'.$titile.'"></i>';
+    $action = '<i class="fa '.$icon.' faa-shake '.$animated.' '.$class.' fa-lg" title="'.$titile.'"></i>';
     //print_rr($action )
     return $action;
 }

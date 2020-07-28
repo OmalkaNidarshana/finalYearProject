@@ -8,13 +8,23 @@
 
         }
         
-        function formatters($id,$data){
-            switch($id){
+        function formatters($id,$value,$data){
+             switch($id){
                 case 'BRAND':
-                    $formatter = '<span align="right">'.$data.'</span>';
+                    $formatter = '<span align="right">'.$value.'</span>';
                 break;
+                case 'PRICE':
+                case 'SPECIAL_PRICE':
+                case 'SELL_PRICE':
+                case 'DIS':
+                    $formatter = formatCurrency($value);
+                break;
+                case 'ACTION':
+                    $formatter = '<span onclick="addToCart(\''.$data['RECORD_ID'].'\');">'.getRawActionsIcon('cart','Add To Cart').'</span>';
+                break;
+                
                 default:
-                 $formatter = $data;
+                 $formatter = $value;
             }
             return $formatter;
         }

@@ -1,5 +1,17 @@
 <?php
-
+/*ini_set( 'display_errors', 1 );
+ini_set( 'SMTP', 'smtp.gmail.com' );
+ini_set( 'smtp_port', '587' );
+ini_set( 'smtp_ssl', 'tls' );
+error_reporting( E_ALL );
+$from = "omalkanidarshana@gmail.com";
+$to = "omalka@internationalcomputing.com";
+$subject = "PHP Mail Test script";
+$message = "This is a test to check the PHP Mail functionality";
+$headers = "From:" . $from;
+mail($to,$subject,$message, $headers);
+echo "Test email sent";
+exit;*/
 include_once "../path.php";
 include_once $sysPath."/auth/check_auth.php";
 include_once $sysPath."/library/utill.php";
@@ -17,6 +29,8 @@ include_once $projPath."/dbControler/shared.php";
 
 $jsFiles[] = JS_ROOT."sortable_table.js";
 $jsFiles[] = JS_ROOT."main.js";
+$jsFiles[] = JS_ROOT."category.js";
+
 $csFiles[] = STYLE_ROOT."main.css";
 $csFiles[] = STYLE_ROOT."side_modal.css";
 

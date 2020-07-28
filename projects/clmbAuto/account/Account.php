@@ -19,7 +19,7 @@ class Account{
         $this->cmpData = getCompanyDataByCmpId($this->link,$this->cmpId);
     }
 
-    function getUperAdminCompanyInfo(){
+    function getCompanyInfo(){
         $html = '';
         $html .= '<div class="box-body table-responsive no-padding">';
               $html .= '<table class="table table-hover summarytable">';
@@ -75,7 +75,7 @@ class Account{
         return contentBorder($html,$head);
     }
 
-    function getUserInformation(){
+    function getUserList(){
         $userData = geUserInformationByCmpId($this->link,$this->cmpId);
         
         $html ='';
@@ -88,7 +88,7 @@ class Account{
                 $html .= '<tr>';
                     $html .= '<td>'.$data['FIRST_NAME'].'</td>';
                     $html .= '<td>'.$data['LAST_NAME'].'</td>';
-                    $html .= '<td>'.$data['USER_NAME'].'</td>';
+                    $html .= '<td><a href="'.makeLocalUrl('account/profile_script.php','sec=PROFILE&act=userInfo&userId='.$data['USER_INTID']).'">'.$data['USER_NAME'].'</a></td>';
                     $html .= '<td>'.$data['TITLE'].'</td>';
                     $html .= '<td>'.$data['USER_TYPE'].'</td>';
                     
@@ -112,7 +112,7 @@ class Account{
         global $countryArray;
         foreach( $countryArray as $country){
             $countryName[$country['name']] = $country['name'];
-            $countryCode[$country['code']] = '(+'.$country['code'].')';
+            $countryCode[$country['code']] = $country['code'];
         }
         $html = '';
         $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
@@ -176,6 +176,52 @@ class Account{
         $html .= HTML::openCloseTable(false,false);
         $popUp = modalPopupBox('Add User','ADD_USER',$html,$btn);
         return $popUp;
+    }
+
+    function getUserInfo($userId){
+        $userdata = getUserInfoByUserId($this->link,$userId);
+        $html = '';
+        $html .= '<div class="box-body table-responsive no-padding">';
+              $html .= '<table class="table table-hover summarytable">';
+                $html .= '<tr>';
+                    $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">User Name : &nbsp</span></td>';
+                    $html .= '<td>'.$userdata['USER_NAME'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Title : &nbsp</span></td>';
+                    $html .= '<td>'.$userdata['TITLE'].'</td><td style="height:40px;" width="150px;" align="right">';
+                $html .= '</tr>';
+                $html .= '<tr>';    
+                    $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">First Name : &nbsp</span></td>';
+                    $html .= '<td>'.$userdata['FIRST_NAME'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Last Name : &nbsp</span></td>';
+                    $html .= '<td>'.$userdata['LAST_NAME'].'</td><td style="height:40px;" width="150px;" align="right">';
+                $html .= '</tr>';
+                $html .= '<tr>';    
+                    $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Adress 1 : &nbsp</span></td>';
+                    $html .= '<td>'.$userdata['ADDRESS_1'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Adress 2 : &nbsp</span></td>';
+                    $html .= '<td>'.$userdata['ADDRESS_2'].'</td><td style="height:40px;" width="150px;" align="right">';
+                $html .= '</tr>';
+                $html .= '<tr>';    
+                    $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">City : &nbsp</span></td>';
+                    $html .= '<td>'.$userdata['CITY'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Country : &nbsp</span></td>';
+                    $html .= '<td>'.$userdata['COUNTRY'].'</td><td style="height:40px;" width="150px;" align="right">';
+                $html .= '</tr>';
+                $html .= '<tr>';    
+                    $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Phone : &nbsp</span></td>';
+                    $html .= '<td>'.$userdata['PHONE'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Phone : &nbsp</span></td>';
+                    $html .= '<td>'.$userdata['COMPANY_TYPE'].'</td><td style="height:40px;" width="150px;" align="right">';
+                $html .= '</tr>';
+            $html .= '</table>';
+        $html .= '</div>';
+
+        $head = 'User Informations';
+        if( $this->cmpType =='dist' || $this->userInfo->cmpType == 'DISTRIBUTOR'){
+            $head .= ' &nbsp&nbsp|&nbsp&nbsp<span>'.getRawActionsIcon('edit','Edit Company').'</span>&nbsp';
+        }
+        return contentBorder($html,$head);
+
     }
 }
 

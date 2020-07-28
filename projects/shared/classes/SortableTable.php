@@ -20,7 +20,7 @@ class SortableTable{
 	var $pageNumbers;
 	var $isRawAction = false;
 	var $rawActions = array();
-
+	var $headerLevelData;
 	function SortableTable($link){
 		 $this->link = $link;
 	}
@@ -38,7 +38,7 @@ class SortableTable{
 	function setPageNum($pageNum){$this->pageNum = $pageNum; }
 	function setFilters($fltr){$this->fltr = $fltr; }
 	function setOrdBy($ordBy){$this->ordBy = $ordBy; }
-
+	function setHeaderLevelData($headerLevelData){$this->headerLevelData = $headerLevelData; }
 	function getTableTotalRec(){
 		$this->totalFound = getPageRecordNum($this->link,$this->table,$this->priKey,$this->fltr,$this->ordBy);
 
@@ -73,7 +73,7 @@ class SortableTable{
 
 	function paging(){
 		$i =1;
-		$html ='<div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
+		$html ='<div class="dataTables_paginate paging_simple_numbers col-sm-8" id="example1_paginate">
 			<ul class="pagination">';
 			$html .='<li class="paginate_button previous disabled" id="example1_previous"><a href="#" aria-controls="example1" data-dt-idx="0" tabindex="0">Previous</a></li>';
 			for($i; $i<=$this->pageNumbers; $i++){	
@@ -85,6 +85,12 @@ class SortableTable{
 			$html .='<li class="paginate_button next" id="example1_next"><a href="#" aria-controls="example1" data-dt-idx="4" tabindex="0">Next</a></li>
 			</ul>';
 		$html .='</div>';
+		if( !empty($this->headerLevelData) ){
+			$html .='<div class="pagination col-sm-4 headerLvl" >';
+				$html .=$this->headerLevelData;
+			$html .='</div>';
+		}
+
 		return $html; 
 	}
 	
@@ -119,9 +125,11 @@ class SortableTable{
 					$table .= '<td class="summarytable">';
 					if( isset($data[$id]) ){
 						if( !empty($this->formatter) )
-							$table .= $this->formatter->formatters($id,$data[$id]);
+							$table .= $this->formatter->formatters($id,$data[$id],$data);
 						else
 							$table .=$data[$id];
+					}else{
+						$table .= $this->formatter->formatters($id,'',$data);
 					}
 					$table .= '</td>';
 				}

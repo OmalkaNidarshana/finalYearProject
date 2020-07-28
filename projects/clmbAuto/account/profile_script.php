@@ -17,6 +17,8 @@ include_once $projPath."/dbControler/shared.php";
 
 $cmpId = isset($_REQUEST['cmpId'])?$_REQUEST['cmpId']:$userInfo->cmpId;
 $cmpType = isset($_REQUEST['cmpType'])?$_REQUEST['cmpType']:'';
+$userId = isset($_REQUEST['userId'])?$_REQUEST['userId']:'';
+$act = isset($_REQUEST['act'])?$_REQUEST['act']:'';
 
 $jsFiles[] = JS_ROOT."sortable_table.js";
 $jsFiles[] = JS_ROOT."main.js";
@@ -28,14 +30,19 @@ $lngth = strlen('omalka@com');
 $hash = bin2hex(random_bytes($lngth));
 //echo $hash;
 $acc = new Account($link,$userInfo,$cmpId,$cmpType);
-$page[] = $acc->getUperAdminCompanyInfo();
 
-if( empty($cmpType) && $userInfo->cmpType == 'SYS_OWNER' ){
-    $page[] = $acc->getDistributorCompanyName();
+
+if($act == 'userInfo'){
+    $page[] = $acc->getUserInfo($userId);
+}else{
+    $page[] = $acc->getCompanyInfo();
+    if( empty($cmpType) && $userInfo->cmpType == 'SYS_OWNER' ){
+        $page[] = $acc->getDistributorCompanyName();
+    }
+    $page[] = $acc->getUserList();
+    $page[] = $acc->getAddUserForm();
 }
 
-$page[] = $acc->getUserInformation();
-$page[] = $acc->getAddUserForm();
 
 include_once $sysPath."/library/header.php";
     getPageContentArea($page);

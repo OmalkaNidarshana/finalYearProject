@@ -39,30 +39,32 @@ $userNameErrMsg = $auth->isUserNameExist();
 if(!empty($userNameErrMsg)){
     $errorMsg['userName'] = $userNameErrMsg;
     echo json_encode($errorMsg);
-    exit;
-}
+    //exit;
+}else{
+    if( $action == 'addUser'){
 
-if( $action == 'addUser'){
+        $hashVal = $auth->makeRandomPassword();
+        $password = md5($hashVal); 
+    
+        $insertData['USER_NAME'] = getTextValue($userName);
+        $insertData['FIRST_NAME'] = getTextValue($frstName);
+        $insertData['LAST_NAME'] = getTextValue($lstName);
+        $insertData['TITLE '] = getTextValue($title);
+        $insertData['USER_TYPE '] = getTextValue($userType);
+        $insertData['ADDRESS_1'] = getTextValue($add1);
+        $insertData['ADDRESS_2'] = getTextValue($add2);
+        $insertData['CITY '] = getTextValue($city);
+        $insertData['COUNTRY'] = getTextValue($cntry);
+        $insertData['TEMP_PASSWORD'] = getTextValue($password);
+        $insertData['PHONE '] = getTextValue($phone);
+        $insertData['COMPANY_ID'] = $userInfo->cmpId;
+        $insertData['CREATED_DATE'] = getTextValue(getCurrentDateTime());
+        $insertData['CREATED_BY'] = $userInfo->intId;
+        $insertData['MODIFY_DATE'] = getTextValue(getCurrentDateTime());
+        $insertData['MODIFY_BY'] = $userInfo->intId;
 
-    $insertData['USER_NAME'] = getTextValue($userName);
-    $insertData['FIRST_NAME'] = getTextValue($frstName);
-    $insertData['LAST_NAME'] = getTextValue($lstName);
-    $insertData['TITLE '] = getTextValue($title);
-    $insertData['USER_TYPE '] = getTextValue($userType);
-    $insertData['ADDRESS_1'] = getTextValue($add1);
-    $insertData['ADDRESS_2'] = getTextValue($add2);
-    $insertData['CITY '] = getTextValue($city);
-    $insertData['COUNTRY'] = getTextValue($cntry);
-    $insertData['PHONE '] = getTextValue($phone);
-    $insertData['COMPANY_ID'] = $userInfo->cmpId;
-    $insertData['CREATED_DATE'] = getTextValue(getCurrentDateTime());
-    $insertData['CREATED_BY'] = $userInfo->intId;
-    $insertData['MODIFY_DATE'] = getTextValue(getCurrentDateTime());
-    $insertData['MODIFY_BY'] = $userInfo->intId;
-    print_rr($insertData);
-
-    $sql = "insert into user_info (".implode(",",array_keys($insertData)).") values (".implode(",",array_values($insertData)).")";
-    print_rr($sql);
-    $link->insertUpdate($sql);
+        $sql = "insert into user_info (".implode(",",array_keys($insertData)).") values (".implode(",",array_values($insertData)).")";
+        $link->insertUpdate($sql);
+    }
 }
 ?>

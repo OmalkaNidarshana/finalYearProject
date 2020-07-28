@@ -16,7 +16,7 @@ class Category{
     var $fldDefinition = array();
 
     var $summaryFlds = array('BRAND','MODEL','VEHICAL_CODE','ENGINE','CC','BRISK','BRISK_CODE','DENSO','IRIDIUM',
-                            'STOCK_NO','PRICE','DIS','SPECIAL_PRICE','SELL_PRICE');
+                            'STOCK_NO','PRICE','DIS','SPECIAL_PRICE','SELL_PRICE','ACTION');
 
     var $searchFlds = array('BRAND','MODEL','VEHICAL_CODE','ENGINE','CC','BRISK','BRISK_CODE','DENSO');
 
@@ -56,9 +56,15 @@ class Category{
         $dataTable->setColumList($this->colList);
         $dataTable->setFilters($this->fltr);
         $dataTable->loadPageData();
+        $data = $this->getHeaderLevelData();
+        $dataTable->setHeaderLevelData($data);
         foreach( $this->summaryFlds as $flds){
-            $fldsDef = $this->fldDefinition[$flds];
-            $dataTable->addColumn($flds,$fldsDef->lbl);
+            if( $flds == 'ACTION'){
+                $dataTable->addColumn($flds,'Actions');
+            }else{
+                $fldsDef = $this->fldDefinition[$flds];
+                $dataTable->addColumn($flds,$fldsDef->lbl);
+            }
         }
 
         $html = $dataTable->htmlTable();
@@ -102,6 +108,23 @@ class Category{
         $html .= HTML::formEnd();
         $popUp = sideModalPopupBox('Category','REGULER_SEARCH',$html,$btn);
         return $popUp;
+    }
+
+    function getHeaderLevelData(){
+        $count =100;
+        if( !empty($count) ){
+            if($count == 1){
+                $items = 'item';
+            }else{
+                $items = 'items';
+            }
+            $html ='<b>'.$count.'&nbsp'.$items.' in your cart</b>&nbsp;';
+            $html .= getRawActionsIcon('cart','',false).'<b> &nbsp;|&nbsp;&nbsp;</b> ';
+            $html .= HTML::submitButtonFeild('reguler_search','Create Your Order',array('height'=>'50px','width'=>'150px'));
+        }else{
+            $html = '<b>No Item Selected.</b>';
+        }
+        return $html;
     }
 
 }

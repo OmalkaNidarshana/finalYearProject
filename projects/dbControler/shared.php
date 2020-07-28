@@ -24,4 +24,10 @@ function geUserInformationByCmpId($link,$cmpId){
     $data =  $link->getRecordSetFromQuery($sql);
     return $data;
 }
+
+function getUserInfoByUserId($link,$userId){
+    $sql = 'select * from user_info where USER_INTID = '.$userId;
+    $data =  $link->getRowDataFromQuery($sql);
+    return $data;
+}
 ?>
