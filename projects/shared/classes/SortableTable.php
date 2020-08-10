@@ -85,12 +85,6 @@ class SortableTable{
 			$html .='<li class="paginate_button next" id="example1_next"><a href="#" aria-controls="example1" data-dt-idx="4" tabindex="0">Next</a></li>
 			</ul>';
 		$html .='</div>';
-		if( !empty($this->headerLevelData) ){
-			$html .='<div class="pagination col-sm-4 headerLvl" >';
-				$html .=$this->headerLevelData;
-			$html .='</div>';
-		}
-
 		return $html; 
 	}
 	
@@ -112,7 +106,12 @@ class SortableTable{
 		if( $this->isPaging){
 			$table .= $this->paging();
 	  	}else{
-			$table .='<div class="dataTables_paginate paging_simple_numbers" id="example1_paginate"></div>';
+			$table .='<div class="dataTables_paginate paging_simple_numbers col-sm-8" id="example1_paginate"></div>';
+		}
+		if( !empty($this->headerLevelData) ){
+			$table .='<div class="pagination col-sm-4 headerLvl" id="headerLvlData">';
+				$table .=$this->headerLevelData;
+			$table .='</div>';
 		}
 		$table .= '<table class="table table-hover" table cellspacing="1" cellpadding="2" id="sortableTable">';
 		$table .= $this->htmlHeader();

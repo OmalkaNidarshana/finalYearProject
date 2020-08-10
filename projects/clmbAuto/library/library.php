@@ -163,7 +163,11 @@ function getRawActionsIcon($type,$titile,$isanimated=true){
 
 function print_rr($data){
     echo '<pre>';
-    print_r($data);
+    if( empty($data)){
+        echo 'False/Empty';
+    }else{
+        print_r($data);
+    }
     echo '<pre>';
 }
 

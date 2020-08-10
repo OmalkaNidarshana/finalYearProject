@@ -12,6 +12,7 @@ class Category{
     var $formatter;
     var $dataTable;
     var $structure;
+    var $userInfo;
     var $tblColumns = array();
     var $fldDefinition = array();
 
@@ -20,10 +21,11 @@ class Category{
 
     var $searchFlds = array('BRAND','MODEL','VEHICAL_CODE','ENGINE','CC','BRISK','BRISK_CODE','DENSO');
 
-    function Category($link){
+    function Category($link,$userInfo){
         $this->link = $link;
+        $this->userInfo = $userInfo;
         $this->dataTable = new SortableTable($this->link);
-        $this->formatter = new CategoryTableFomatter($this->link);
+        $this->formatter = new CategoryTableFomatter($this->link,$this->userInfo);
         $this->structure = getTableSchemaInformation($this->link,$this->table);
         $this->initiate();
     }
@@ -111,6 +113,7 @@ class Category{
     }
 
     function getHeaderLevelData(){
+        $html ='';
         $count =100;
         if( !empty($count) ){
             if($count == 1){
@@ -118,9 +121,12 @@ class Category{
             }else{
                 $items = 'items';
             }
-            $html ='<b>'.$count.'&nbsp'.$items.' in your cart</b>&nbsp;';
+            $html .= HTML::formStart('','POST','ADD_CART');
+            $html .= HTML::hiddenFeild('processPath',makeLocalUrl('cat/category_process.php','action=addCart'),array('id'=>'processPath'));
+            $html .='<b>'.$count.'&nbsp'.$items.' in your cart</b>&nbsp;';
             $html .= getRawActionsIcon('cart','',false).'<b> &nbsp;|&nbsp;&nbsp;</b> ';
             $html .= HTML::submitButtonFeild('reguler_search','Create Your Order',array('height'=>'50px','width'=>'150px'));
+            $html .= HTML::formEnd();
         }else{
             $html = '<b>No Item Selected.</b>';
         }

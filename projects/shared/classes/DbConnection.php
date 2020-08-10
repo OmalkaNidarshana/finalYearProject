@@ -27,8 +27,11 @@
 			if($this->showQuery){
 				echo $sql.'<br>';
 			}
-
-			$result = $this->link->query($sql);
+			if(!$this->link->query($sql)){
+				echo 'MySql Error : '.$this->link->error;
+			}else{
+				$result = $this->link->query($sql);
+			}
 			
 			if ( isset($result->num_rows) && $result->num_rows > 0) {
 				while($row = $result->fetch_assoc()) {
@@ -38,7 +41,7 @@
 			} else {
 				$data = array();
 			}
-			return$data;
+			return $data;
 		}
 
 		function getRecordSetFromQuery($sql){
@@ -73,14 +76,17 @@
 		function getObjectDataFromQuery($sql){
 			$dataArr = '';
 			$data = $this->fetchingData($sql);
-			if(is_array($data)){
-				foreach($data as $key=>$val){
-					foreach($val as $k=>$v){
-						$dataArr = $v;
+			if(!empty($data)){
+				if(is_array($data)){
+					foreach($data as $key=>$val){
+						foreach($val as $k=>$v){
+							$dataArr = $v;
+						}
 					}
 				}
 			}
 			return $dataArr;
+		
 		}
 
 		function insertUpdate($sql){

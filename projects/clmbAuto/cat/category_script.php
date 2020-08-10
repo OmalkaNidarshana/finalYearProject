@@ -40,7 +40,7 @@ $regulerSrch = isset($_REQUEST['reguler']) ? $_REQUEST['reguler'] : array();
 $isCustomSrch = isset($_REQUEST['custom_search']) ? true : false;
 $custSrchVal = isset($_REQUEST['random_search']) ? $_REQUEST['random_search'] : '';
 
-$category = new Category($link);
+$category = new Category($link,$userInfo);
 $script = new Script($link,$category->tblColumns,$category->fldDefinition);
 
 $whereClause = array();
