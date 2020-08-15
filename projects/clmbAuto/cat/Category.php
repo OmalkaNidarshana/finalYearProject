@@ -15,6 +15,7 @@ class Category{
     var $userInfo;
     var $tblColumns = array();
     var $fldDefinition = array();
+    var $categoryIdsArr = array();
 
     var $summaryFlds = array('BRAND','MODEL','VEHICAL_CODE','ENGINE','CC','BRISK','BRISK_CODE','DENSO','IRIDIUM',
                             'STOCK_NO','PRICE','DIS','SPECIAL_PRICE','SELL_PRICE','ACTION');
@@ -27,6 +28,14 @@ class Category{
         $this->dataTable = new SortableTable($this->link);
         $this->formatter = new CategoryTableFomatter($this->link,$this->userInfo);
         $this->structure = getTableSchemaInformation($this->link,$this->table);
+
+        $cartData = getPendingCartDataByUserId($this->link,$this->userInfo->userName);
+        if( !empty($cartData) ){
+            $categoryIds = $cartData['CATEGORY_ID'];
+            $this->categoryIdsArr = explode(',',$categoryIds);
+            $this->formatter->setCategoryIds($this->categoryIdsArr);
+        }
+
         $this->initiate();
     }
 
@@ -114,22 +123,26 @@ class Category{
 
     function getHeaderLevelData(){
         $html ='';
-        $count =100;
+        $count = count($this->categoryIdsArr);
+        $action = makeLocalUrl('orders/order_creation.php','sec=ORD_CREATION');
+        $html .= HTML::formStart($action,'POST','ADD_CART');
+        foreach($this->categoryIdsArr as $id){
+            $html .= HTML::hiddenFeild('catIds[]',$id);
+        }
+        $html .= HTML::hiddenFeild('processPath',makeLocalUrl('cat/category_process.php','action=addCart'),array('id'=>'processPath'));
         if( !empty($count) ){
             if($count == 1){
                 $items = 'item';
             }else{
                 $items = 'items';
             }
-            $html .= HTML::formStart('','POST','ADD_CART');
-            $html .= HTML::hiddenFeild('processPath',makeLocalUrl('cat/category_process.php','action=addCart'),array('id'=>'processPath'));
-            $html .='<b>'.$count.'&nbsp'.$items.' in your cart</b>&nbsp;';
-            $html .= getRawActionsIcon('cart','',false).'<b> &nbsp;|&nbsp;&nbsp;</b> ';
-            $html .= HTML::submitButtonFeild('reguler_search','Create Your Order',array('height'=>'50px','width'=>'150px'));
-            $html .= HTML::formEnd();
+            $html .='<b>'.$count.'&nbsp'.$items.' in your Order</b>&nbsp;';
+            $html .= '<span class="cartIcon">'.getRawActionsIcon('cart','',false).'<b> &nbsp;|&nbsp;&nbsp;</span></b> ';
+            $html .= HTML::submitButtonFeild('order_create','Create Your Order',array('height'=>'50px','width'=>'150px'));
         }else{
-            $html = '<b>No Item Selected.</b>';
+            $html .= '<b>No Item Selected.</b>';
         }
+        $html .= HTML::formEnd();
         return $html;
     }
 

@@ -5,27 +5,23 @@ include_once $sysPath."/auth/check_auth.php";
 include_once $sysPath."/library/utill.php";
 include_once $sysPath."/library/library.php";
 include_once $sysPath."/account/Account.php";
+include_once $sysPath."/orders/Order.php";
+
 include_once $projPath."/shared/classes/Authentication.php";
 include_once $projPath."/shared/classes/DbConnection.php";
 include_once $projPath."/shared/classes/Email.php";
-
+include_once $projPath."/shared/classes/HTML.php";
 include_once $projPath."/dbControler/category.php";
 
+$csFiles[] = STYLE_ROOT."main.css";
 
+$categoryIds = isset($_REQUEST['catIds'])?$_REQUEST['catIds']:array();
 
+$ord = new Order($link,$userInfo);
+$ord->setCategoryIds($categoryIds);
+$page[] = $ord->getOrderCreationSubmit();
 
-$action = isset($_REQUEST['action'])?$_REQUEST['action']:'';
-$catId = isset($_REQUEST['catId'])?$_REQUEST['catId']:'';
-$cmpId = isset($_REQUEST['cmpId'])?$_REQUEST['cmpId']:'';
-
-if( $action=='addCart' ){
-    $data = array();
-    $data['SESSION_ID'] = $userInfo->userName;
-    $data['CATEGORY_ID'] = $catId;
-    $data['COMPANY_ID '] = $cmpId;
-        
-    insertUpdateCategoryIdIntoCart($link,$data);
-}
-
-
+include_once $sysPath."/library/header.php";
+    getPageContentArea($page);
+include_once $sysPath."/library/footer.php";
 ?>

@@ -33,17 +33,15 @@ function htmlTableBox($table,$head,$isSearch=false){
     return $html;
 }
 
-function htmlPanelBox($table){
+function contentBox($table){
 
     $html = '<div class="col-xs-12">
-     <div class="box">
-       <div class="box-header">
-         </div>
-             <div class="box-body table-responsive ">
-                 '.$table.'
-             </div>
+        <div class="box">
+        <div class="box-body table-responsive ">
+             '.$table.'
+        </div>
        
-         </div>
+        </div>
      </div>';
      return $html;
  }
@@ -123,13 +121,8 @@ function htmlPanelBox($table){
     return $html;
 }
 
-function getRawActionsIcon($type,$titile,$isanimated=true){
-    if($isanimated){
-        $animated = 'animated-hover';
-    }else{
-        $animated = '';
-    }
-
+function getRawActionsIcon($type,$titile,$isanimated=true,$isDisable=false){
+    
     switch($type){
         case "delete":
             $icon = 'fa-trash-o';
@@ -156,6 +149,18 @@ function getRawActionsIcon($type,$titile,$isanimated=true){
             $class = 'addUser';
         break;
     }
+
+    if($isanimated){
+        $animated = 'animated-hover';
+    }else{
+        $animated = '';
+       
+    }
+
+    if($isDisable){
+        $class = 'disable';
+    }
+
     $action = '<i class="fa '.$icon.' faa-shake '.$animated.' '.$class.' fa-lg" title="'.$titile.'"></i>';
     //print_rr($action )
     return $action;
