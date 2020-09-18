@@ -78,9 +78,11 @@ function  getPageRecordIds($link,$table,$priKey,$fltr,$ordBy){
 }
 
 function getPageDataSet($link,$table,$priKey,$colList,$idList){
-    $sql = "select ".$colList." from ".$table." where ".$priKey." in (".implode(',',$idList).")";
-    $data = $link->getRecordSetFromQuery($sql);
-    return $data;
+    if( !empty($idList) ){
+        $sql = "select ".$colList." from ".$table." where ".$priKey." in (".implode(',',$idList).")";
+        $data = $link->getRecordSetFromQuery($sql);
+        return $data;
+    }
  
 }
 

@@ -135,7 +135,7 @@
 .modal-header{
     padding: 15px;
     border-bottom: 1px solid #e5e5e5;
-        border-bottom-color: rgb(229, 229, 229);
+    border-bottom-color: rgb(229, 229, 229);
     background-color: grey;
     color: white;
 }
@@ -197,4 +197,37 @@ input[type=text], input[type=tel], input[type=date], select {
     border-color: olivedrab;
     box-shadow: 2px 2px olivedrab;
     border-radius: 10px;
+ }
+
+ .statusStyle{
+    display: inline;
+    padding: 5px 5px 5px 5px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 300 !important;
+    color: white;
+ }
+
+ .blueIcon{
+    background-color: #00c0ef;
+ }
+
+ .greyIcon{
+    background-color: gray;
+ }
+
+ .redIcon{
+    background-color: red;
+ }
+
+ .greenIcon{
+    background-color: #228B22;
+ }
+
+ .yellowIcon{
+    background-color: yellowgreen;
+ }
+
+ .orangeIcon{
+    background-color: orangered;
  }

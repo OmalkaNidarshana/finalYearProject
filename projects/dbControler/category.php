@@ -10,12 +10,11 @@ function insertUpdateCategoryIdIntoCart($link,$data){
         $insertData['CATEGORY_ID'] = getTextValue($data['CATEGORY_ID']);
         $insertData['COMPANY_ID'] = $data['COMPANY_ID '];
         $insertData['STATUS'] =  getTextValue('PENDING');
-        $insertData['CREATED_DATE'] = getTextValue(getCurrentDateTime());
+        $insertData['CREATED_DATE'] = getCurrentDateTime();
         $insertData['CREATED_BY'] = $userInfo->intId;
-        $insertData['MODIFY_DATE'] = getTextValue(getCurrentDateTime());
+        $insertData['MODIFY_DATE'] = getCurrentDateTime();
         $insertData['MODIFY_BY'] = $userInfo->intId;
         $sql = 'insert into cart ('.implode(',',array_keys($insertData)).') values('.implode(',',array_values($insertData)).')';
-        echo $sql;
         $link->insertUpdate($sql);
     }else{
         $updateData = array();
@@ -25,13 +24,12 @@ function insertUpdateCategoryIdIntoCart($link,$data){
         $newCatIds = $existCatIds.','.$data['CATEGORY_ID'];
         $updateData['CATEGORY_ID'] = getTextValue($newCatIds);
         $updateData['MODIFY_BY'] = $userInfo->intId;
-        $updateData['MODIFY_DATE'] = getTextValue(getCurrentDateTime());
+        $updateData['MODIFY_DATE'] = getCurrentDateTime();
         
         foreach( $updateData as $fld=>$value){
             $dataArr[] = $fld.' = '.$value;
         }
         $sql = 'update cart set '.implode(',',$dataArr).' where CART_ID ='.$id;
-        print_rr($sql);
         $link->insertUpdate($sql);
 
     }

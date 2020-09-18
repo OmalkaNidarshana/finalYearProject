@@ -5,7 +5,7 @@ function htmlTableBox($table,$head,$isSearch=false){
    $html = '<div class="col-xs-12">
     <div class="box">
       <div class="box-header">
-        <h3 class="box-title">'.$head.'</h3>';
+        <h3 class="box-title" style="font-size:13px;">'.$head.'</h3>';
         if($isSearch){
             $html .='
             <div class="box-tools">
@@ -92,14 +92,22 @@ function contentBox($table){
     return $str;
  }
 
+ function dateTimeValue($date){
+    //$date = strtotime($date);
+    //$mysqltime = date ('Y-m-d H:i:s', $date);
+    $mysqltime = "'".date('Y-m-d H:i:s',strtotime($date))."'";
+    return $mysqltime;
+ }
+
  function getCurrentDateTime(){
-    return date("Y-m-d H:i:s");
+    return "'".date("Y-m-d H:i:s")."'";
  }
 
  function formatCurrency($val){
     $currencyVal = 'Rs.'.$val;
     return $currencyVal;
  }
+
  function buildFldsLablel($fld){
     $lbl = str_replace("_"," ",$fld);
     $fldLbl = ucfirst(strtolower($lbl));
@@ -110,7 +118,7 @@ function contentBox($table){
     $html ='<div class="col-xs-12">';
         $html .='<div class="box">';
             $html .='<div class="box-header">';
-                $html .='<h3 class="box-title">'.$title.'</h3>';
+                $html .='<h3 class="box-title" style="font-size:13px;">'.$title.'</h3>';
                 //$html .='<hr style="height:2px;border-width:0;background-color:LightGray">';
             $html .='</div>';
             $html .='<div class="box-body">';
@@ -218,5 +226,21 @@ function sideModalPopupBox($title,$id,$data,$btn){
         $html .='</div>';
     $html .='</div>';
     return $html;
+}
+
+function OrdersStatusColorBox($status){
+    $status = strtolower($status);
+    switch($status){
+        case 'new':
+            $icon = 'blueIcon';
+        break;
+        case 'submitted':
+            $icon = 'orangeIcon';
+        break;
+        default:
+            $icon = 'greyIcon';
+    }
+    $colorBox = '<div class="statusStyle '.$icon.'">'.$status.'</div>';
+    return $colorBox;
 }
 ?>
