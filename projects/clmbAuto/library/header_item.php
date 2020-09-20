@@ -6,6 +6,7 @@ function getMainMenueArray(){
     $mainMenueArr['CATEGORY'] = 'Category';
     $mainMenueArr['ORDERS'] = 'Orders';
     $mainMenueArr['PERIOD'] = 'Credit Period';
+    $mainMenueArr['INVOICE'] = 'Invoice';
     return $mainMenueArr;
 }
 
@@ -21,6 +22,7 @@ function getSubMenueArray(){
     $subMenueArr['ORDERS']['Rejected Orders'] = 'www.google.com';
     $subMenueArr['CATEGORY'] =  makeLocalUrl('cat/category_script.php','sec=CAT') ;
     $subMenueArr['PERIOD'] = '';
+    $subMenueArr['INVOICE'] = makeLocalUrl('invoice/invoice_script.php','sec=INV') ;
 
     
 
@@ -34,6 +36,7 @@ function getHeaderMenueIcons(){
     $MenueIcons['CATEGORY'] = 'fa fa-sign-in fa-lg';
     $MenueIcons['ORDERS'] = 'fa fa-arrows-v fa-lg';
     $MenueIcons['PERIOD'] = 'fa fa-clock-o fa-lg';
+    $MenueIcons['INVOICE'] = 'fa fa-money fa-lg';
     return $MenueIcons;
 }
 

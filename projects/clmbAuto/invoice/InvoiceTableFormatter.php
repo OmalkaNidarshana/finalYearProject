@@ -1,11 +1,11 @@
 <?php
-    class OrderTableFormatter{
+    class InvoiceTableFormatter{
         
         var $link;
         var $userInfo;
         var $categoryIds = array();
 
-        function OrderTableFormatter($link,$userInfo){
+        function InvoiceTableFormatter($link,$userInfo){
             $this->link = $link;
             $this->userInfo = $userInfo;
         }
@@ -17,8 +17,8 @@
         function formatters($id,$value,$data){
                     
              switch($id){
-                case 'ORDER_NUM':
-                    $formatter = '<a href="'.makeLocalUrl('orders/order_details.php','sec=ORDER&id='.$data['ORDER_ID']).'">'.$value.'</a>';
+                case 'INV_NUM':
+                    $formatter = '<a href="'.makeLocalUrl('invoice/invoice_details.php','sec=INVOICE&id='.$data['INV_ID']).'">'.$value.'</a>';
                 break;
                 case 'STATUS':
                     $formatter = OrdersStatusColorBox($value);
@@ -26,8 +26,8 @@
                 case 'PRICE':
                 case 'SPECIAL_PRICE':
                 case 'SELL_PRICE':
-                case 'TOTAL':
                 case 'DIS':
+                case 'TOTAL':
                     $formatter = formatCurrency($value);
                 break;
                 case 'ACTION':

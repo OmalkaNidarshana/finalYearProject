@@ -188,8 +188,9 @@ class Order{
         $html .= HTML::formEnd();
 
         $head = 'Order Details : '.$this->details['ORDER_NUM'];
-        $head .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.HTML::submitButtonFeild('order_submit','Submit',array('style'=>"width: 50px;height: 20px; padding-left: 5px;",'onclick'=>'submitOrder('.$this->id.');'));
-        
+        if( $this->details['STATUS'] != 'SUBMITTED'){
+            $head .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.HTML::submitButtonFeild('order_submit','Submit',array('style'=>"width: 50px;height: 20px; padding-left: 5px;",'onclick'=>'submitOrder('.$this->id.');'));
+        }
         return contentBorder($html,$head);
 
     }
@@ -201,7 +202,7 @@ class Order{
         $html .= '<div class="box-body table-responsive no-padding">';
             $html .= '<table class="table table-hover summarytable" >';
             $html .= '<tbody><tr>';
-                $html .= '<th>Line#</th><th>Category</th><th>Quantity</th><th>Order Date</th><th>Expected Delivery Date</th>
+                $html .= '<th>Line#</th><th>Category</th><th>Quantity</th><th>Unit Price</th><th>Total</th><th>Order Date</th><th>Expected Delivery Date</th>
                             <th>Status</th><th>Action</th>';
             $html .= '</tr>';
             foreach( $orderLIne as $data){
@@ -209,11 +210,13 @@ class Order{
                     $html .= '<td>'.$data['LINE_NUM'].'</td>';
                     $html .= '<td>'.$data['CATEGORY'].'</td>';
                     $html .= '<td>'.$data['QUANTITY'].'</td>';
+                    $html .= '<td>'.$this->formatter->formatters('SELL_PRICE',$data['SELL_PRICE'],'').'</td>';
+                    $html .= '<td>'.$this->formatter->formatters('TOTAL',$data['TOTAL'],'').'</td>';
                     $html .= '<td>'.$data['ORDER_DATE'].'</td>';
                     $html .= '<td>'.$data['EXPECTED_DELIVERY_DATE'].'</td>';
                     $html .= '<td>'.$this->formatter->formatters('STATUS',$data['STATUS'],'').'</td>';
                     $html .= '<td><span onclick="loadEditPopUp(\''.$this->id.'\',\''.$data['LINE_NUM'].'\')">'.getRawActionsIcon('edit','Edit Line').'</span>&nbsp;&nbsp;&nbsp;
-                                <span>'.getRawActionsIcon('delete','Delete Line').'</span></td>';
+                                <span onclick="deleteOrderLine(\''.$this->id.'\',\''.$data['LINE_NUM'].'\');">'.getRawActionsIcon('delete','Delete Line').'</span></td>';
                     
                 $html .= '</tr>';
             }
@@ -234,12 +237,13 @@ class Order{
         $html .= '<td>'.HTML::lblFeild('Line# : ').'</td><td>'.$lineId.'</td>';
         $html .= '<tr>';
         
-            $html .= HTML::hiddenFeild('orderProcessUrl',makeLocalUrl('orders/order_process.php',''),array('id'=>'orderProcessUrl'));
+        $html .= HTML::hiddenFeild('orderProcessUrl',makeLocalUrl('orders/order_process.php',''),array('id'=>'orderProcessUrl'));
+        $html .= HTML::hiddenFeild('lineId',$lineId,array('id'=>'lineId'));
         $html .= '<tr>';
-            $html .= '<td>'.HTML::lblFeild('Quantity : ').'</td><td align="right">'.HTML::textFeild('QUANTITY',$lineData['QUANTITY']).'</td>';
+            $html .= '<td>'.HTML::lblFeild('Quantity : ').'</td><td align="right">'.HTML::numberFeild('QUANTITY',$lineData['QUANTITY']).'</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td>'.HTML::lblFeild('Expected Delivery Date : ').'</td><td align="right">'.HTML::dateFeild('EXPECTED_DELIVERY_DATE',$lineData['EXPECTED_DELIVERY_DATE'],array('style'=>'width:200px')).'</td>';
+        $html .= '<td>'.HTML::lblFeild('Expected Delivery Date : ').'</td><td align="right">'.HTML::dateFeild('EXPECTED_DELIVERY_DATE',$lineData['EXPECTED_DELIVERY_DATE']).'</td>';
         $html .= '<tr>';
         $html .= '</table>';
         $html .= HTML::formEnd();
@@ -248,7 +252,7 @@ class Order{
 
     function loadEditLinePopup(){
         $html = '<div id="editLinePopUp"></div>';
-        $btn = HTML::submitButtonFeild('edit_line','Submit',$attr=array());
+        $btn = HTML::submitButtonFeild('edit_line','Save',$attr=array('onclick'=>'saveEditLine('.$this->id.');'));
         $popUp = modalPopupBox('Edit Line','EDIT_LINE_POPUP',$html,$btn);
         return $popUp;
 

@@ -94,8 +94,8 @@ function contentBox($table){
 
  function dateTimeValue($date){
     //$date = strtotime($date);
-    //$mysqltime = date ('Y-m-d H:i:s', $date);
-    $mysqltime = "'".date('Y-m-d H:i:s',strtotime($date))."'";
+    $mysqltime = "'".date ($date)."'";
+    //$mysqltime = "'".date('Y-m-d H:i:s',strtotime($date))."'";
     return $mysqltime;
  }
 
@@ -106,6 +106,21 @@ function contentBox($table){
  function formatCurrency($val){
     $currencyVal = 'Rs.'.$val;
     return $currencyVal;
+ }
+
+ function formatDate($date){
+    $dateVal = date('Y-m-d H:i:s',strtotime($date));
+    return $dateVal;
+ }
+
+ function strToTimeConverter($date){
+    $dateVal = strtotime($date);
+    return $dateVal;
+ }
+
+ function dateIncrementer($incrementBy,$time){
+    $incrementalDate = date("m-d-Y H:i:s", strtotime($incrementBy, $time));
+    return $incrementalDate;
  }
 
  function buildFldsLablel($fld){
@@ -154,6 +169,10 @@ function getRawActionsIcon($type,$titile,$isanimated=true,$isDisable=false){
         break;
         case "addUser":
             $icon = 'fa fa-user-plus';
+            $class = 'addUser';
+        break; 
+        case "add":
+            $icon = 'fa fa-plus-circle';
             $class = 'addUser';
         break;
     }

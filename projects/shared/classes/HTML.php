@@ -91,7 +91,7 @@ class HTML{
 		return $html;
 	}
 
-	function selectFeild($id,$name,$optionArray,$isMulti=false,$attr=array()){
+	function selectFeild($id,$name,$optionArray,$selectedVal='',$isMulti=false,$attr=array()){
 		$attr = HTML::makeInputAttribute($attr);
 		if($isMulti){
 			$multi = 'multiple';
@@ -100,7 +100,11 @@ class HTML{
 		}
 		$html ='<select id="'.$id.'" name="'.$name.'"'.$attr.'"'.$multi.'"'.$attr.'">';
 			foreach($optionArray as $value=>$lbl){
-				$html .='<option value="'.$value.'">'.$lbl.'</option>';
+				if($selectedVal == $lbl){
+					$html .='<option value="'.$value.'" selected>'.$lbl.'</option>';
+				}else{
+					$html .='<option value="'.$value.'">'.$lbl.'</option>';
+				}
 			}
 		$html .='</select>';
 		return $html;

@@ -78,42 +78,42 @@
 .addCmpIcon{
     cursor: pointer;
     font-size: 17px;
-    padding: 5px;
+    padding: 10px;
     color: brown;
 }
 
 .stockIcon{
     cursor: pointer;
     font-size: 17px;
-    padding: 5px;
+    padding: 10px;
     color: yellow;
 }
 
 .cartIcon{
     cursor: pointer;
     font-size: 17px;
-    padding: 5px;
+    padding: 10px;
     color: green;
 }
 
 .editIcon{
     cursor: pointer;
     font-size: 17px;
-    padding: 5px;
+    padding: 10px;
     color: blue;
 }
 
 .deleteIcon{
     cursor: pointer;
     font-size: 17px;
-    padding: 5px;
+    padding: 10px;
     color: red;
 }
 
 .addUser{
     cursor: pointer;
     font-size: 17px;
-    padding: 5px;
+    padding: 10px;
     color: green;
 }
 
@@ -146,7 +146,7 @@
     margin-top: 150px;
 }
 
-input[type=text], input[type=tel], input[type=date], select {
+input[type=text], input[type=tel], input[type=date], input[type=number],select {
     /*padding: 12px 20px;*/
     margin: 8px 0;
     display: inline-block;
@@ -231,3 +231,41 @@ input[type=text], input[type=tel], input[type=date], select {
  .orangeIcon{
     background-color: orangered;
  }
+
+ .btn {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    padding: 0px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+ }
+
+ .btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.pull-left {
+    float: left !important;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
