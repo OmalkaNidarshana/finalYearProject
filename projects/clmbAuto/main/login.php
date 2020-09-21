@@ -15,6 +15,12 @@ $csFiles[] = STYLE_ROOT."util.css";
 $jsFiles[] = JS_ROOT."loginMain.js";
 $jsFiles[] = JS_ROOT."map-custom.js";
 
+if( isset($_SESSION['loggedin']) ){
+    header("Location: http://".ROOT."main/home_script.php");
+    exit; 
+}
+
+
 $html ='';
 if( isset($_REQUEST['login'])){
     $userName = $_REQUEST['userName'];
