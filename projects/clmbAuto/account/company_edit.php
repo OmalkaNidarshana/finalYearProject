@@ -24,9 +24,9 @@ $page[] = '';
 
 $acc = new Account($link,$userInfo,$userInfo->cmpId);
 
-$page[] = $acc->getCompanyInfo();
-$page[] = $acc->getUserList();
-$page[] = $acc->getAddUserForm();
+$page[] = $acc->getCompanyEditForm();
+$page[] = $acc->getCompanyPrivileges();
+
 
 include_once $sysPath."/library/header.php";
     getPageContentArea($page);

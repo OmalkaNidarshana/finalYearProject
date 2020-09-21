@@ -105,4 +105,11 @@ function getSystemRoles($link){
     $data = $link->getRecordSetFromQuery($sql);
     return $data;
 }
+
+function getSystemPrivileges($link){
+    $sql = "select * from sys_privilege";
+    $data = $link->getRecordSetFromQuery($sql);
+    return $data;
+}
+
 ?>
