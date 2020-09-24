@@ -15,10 +15,19 @@
         }
 
         function formatters($id,$value,$data){
+            
                     
              switch($id){
                 case 'ORDER_NUM':
                     $formatter = '<a href="'.makeLocalUrl('orders/order_details.php','sec=ORDER&id='.$data['ORDER_ID']).'">'.$value.'</a>';
+                break;
+                case 'CUSTOMER_ID':
+                    $customerData = getCompanyDataByCmpId($this->link,$data['CUSTOMER_ID']);
+                    if( !empty($customerData) ){
+                        $formatter = $customerData['COMPANY_NAME'];
+                    }else{
+                        $formatter = '';
+                    }
                 break;
                 case 'STATUS':
                     $formatter = OrdersStatusColorBox($value);

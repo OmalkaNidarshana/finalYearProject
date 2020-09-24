@@ -125,7 +125,7 @@ function contentBox($table){
 
  function buildFldsLablel($fld){
     $lbl = str_replace("_"," ",$fld);
-    $fldLbl = ucfirst(strtolower($lbl));
+    $fldLbl = ucwords(strtolower($lbl));
     return $fldLbl;
  }
 
@@ -252,6 +252,9 @@ function OrdersStatusColorBox($status){
     switch($status){
         case 'new':
             $icon = 'blueIcon';
+        break;
+        case 'pending':
+            $icon = 'greenIcon';
         break;
         case 'submitted':
             $icon = 'orangeIcon';

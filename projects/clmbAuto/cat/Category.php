@@ -138,7 +138,7 @@ class Category{
             }
             $html .='<b>'.$count.'&nbsp'.$items.' in your Order</b>&nbsp;';
             $html .= '<span class="cartIcon">'.getRawActionsIcon('cart','',false).'<b> &nbsp;|&nbsp;&nbsp;</span></b> ';
-            $html .= HTML::submitButtonFeild('order_create','Create Your Order',array('height'=>'50px','width'=>'150px'));
+            $html .= HTML::submitButtonFeild('order_create','Create Your Order',array('style'=>'width:130px; height:30px;'));
         }else{
             $html .= '<b>No Item Selected.</b>';
         }

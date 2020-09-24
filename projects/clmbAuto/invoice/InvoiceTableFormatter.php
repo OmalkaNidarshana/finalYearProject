@@ -20,6 +20,14 @@
                 case 'INV_NUM':
                     $formatter = '<a href="'.makeLocalUrl('invoice/invoice_details.php','sec=INVOICE&id='.$data['INV_ID']).'">'.$value.'</a>';
                 break;
+                case 'CUSTOMER_ID':
+                    $customerData = getCompanyDataByCmpId($this->link,$data['CUSTOMER_ID']);
+                    if( !empty($customerData) ){
+                        $formatter = $customerData['COMPANY_NAME'];
+                    }else{
+                        $formatter = '';
+                    }
+                break;
                 case 'STATUS':
                     $formatter = OrdersStatusColorBox($value);
                 break;

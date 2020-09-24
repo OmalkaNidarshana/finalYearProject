@@ -20,10 +20,11 @@ class Invoice{
     var $fldDefinition = array();
     var $details;
     var $orderLineData;
+    var $customerData;
     var $total;
-    var $summaryFlds = array('INV_NUM','ORDER_NUM','AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','ISSUED_BY','DESCRIPTION','COMAPNY_ID');
+    var $summaryFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','ISSUED_BY','DESCRIPTION');
 
-    var $searchFlds = array('INV_NUM','ORDER_NUM','AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','ISSUED_BY','DESCRIPTION','COMAPNY_ID');
+    var $searchFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','ISSUED_BY','DESCRIPTION','CUSTOMER_ID');
 
     function Invoice($link,$userInfo,$id=''){
         $this->link = $link;
@@ -35,6 +36,7 @@ class Invoice{
         $this->cmpDetails = getCompanyDataByCmpId($this->link,$userInfo->cmpId);
         if( !empty($this->id) ){
             $this->details = getInvoiceDetailsById($this->link,$this->id);
+            $this->customerData = getCompanyDataByCmpId($this->link,$this->details['CUSTOMER_ID']);
             $orderId = getOrderIdByOrderNum($link,$this->details['ORDER_NUM']);
             $this->orderLineData = geOrderLineByOrderHeaderId($this->link,$orderId);
             $this->total = getTotalFromOrderByorderHeaderId($this->link,$orderId);
@@ -238,7 +240,7 @@ class Invoice{
             $html .='<div class="col-sm-4 invoice-col">';
                 $html .='From';
                 $html .='<address>';
-                $html .='<strong>'.$this->cmpDetails['COMAPNY_NAME'].'</strong><br>';
+                $html .='<strong>'.$this->cmpDetails['COMPANY_NAME'].'</strong><br>';
                 $html .= $this->cmpDetails['ADRESS'].'<br>';
                 $html .= $this->cmpDetails['POSATL_CODE'].','.$this->cmpDetails['POSATL_CODE'].','.$this->cmpDetails['CITY'].'<br>';
                 $html .='Phone: '.$this->cmpDetails['EMAIL'].'<br>';
@@ -248,11 +250,11 @@ class Invoice{
             $html .='<div class="col-sm-4 invoice-col">';
                 $html .='To';
                 $html .='<address>';
-                $html .='<strong>Cmp To Name</strong><br>';
-                $html .= 'Cmp to add1<br>';
-                $html .= 'Cmp to add2<br>';
-                $html .='Phone: Phone<br>';
-                $html .='Email: Email';;
+                $html .='<strong>'.$this->customerData['COMPANY_NAME'].'</strong><br>';
+                $html .= $this->customerData['ADRESS'].'<br>';
+                $html .= $this->customerData['POSATL_CODE'].','.$this->customerData['POSATL_CODE'].','.$this->customerData['CITY'].'<br>';
+                $html .='Phone: '.$this->customerData['EMAIL'].'<br>';
+                $html .='Email: '.$this->customerData['PHONE'].'';
                 $html .='</address>';
             $html .='</div>';
                 $html .='<div class="col-sm-4 invoice-col">';

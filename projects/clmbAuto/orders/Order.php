@@ -19,7 +19,9 @@ class Order{
     var $tblColumns = array();
     var $fldDefinition = array();
     var $details;
-    var $summaryFlds = array('ORDER_NUM','LINE_ITEM','ORDER_DATE','STATUS','EXPECTED_DELIVERY_DATE');
+    var $customerList;
+    var $customerData;
+    var $summaryFlds = array('ORDER_NUM','LINE_ITEM','ORDER_DATE','STATUS','CUSTOMER_ID','EXPECTED_DELIVERY_DATE');
 
     var $searchFlds = array('ORDER_NUM','LINE_ITEM','ORDER_DATE','STATUS','ACTUAL_DELIVERY_DATE','STATUS');
 
@@ -30,6 +32,11 @@ class Order{
         $this->dataTable = new SortableTable($this->link);
         $this->formatter = new OrderTableFormatter($this->link,$this->userInfo);
         $this->structure = getTableSchemaInformation($this->link,$this->table);
+        $this->customerData = getCustomerListByDistId($this->link,$this->userInfo->cmpId);
+        foreach( $this->customerData as $customerList){
+            $this->customerList[$customerList['COMPANY_ID']] = $customerList['COMPANY_NAME'];
+        }
+        
         if(!empty($this->id))
             $this->details = getOrderDetailsByOrderId($this->link,$this->id);
         $this->initiate();
@@ -106,7 +113,8 @@ class Order{
         $submitHtml .= '<table class="summarytable" width="100%">';
             $submitHtml .= '<tr>';
                 $submitHtml .= '<td style="color: blue;"><span><b>Order Number : </b>ORD-NUM-'.$newOrdId.'</span>&nbsp;&nbsp;|&nbsp;&nbsp;';
-                $submitHtml .= HTML::submitButtonFeild('order_initiate','Create Order',array('height'=>'60px','width'=>'150px')).'<td>';
+                $submitHtml .= HTML::submitButtonFeild('order_initiate','Create Order',array('style'=>'width:100px; height:20px;')).'<td>';
+                $submitHtml .='<td style="text-align: right;"><b>Customer : </b>&nbsp;</td><td>'.HTML::selectFeild('CUSTOMER','CUSTOMER',array(""=>"")+$this->customerList,'',array('style'=>'width:70px;')).'</td>';
                 $submitHtml .= '<td style="text-align: right;">';
                     if(!empty($this->errMsg) )
                         $submitHtml .= '<span style="color:red;"><b>'.$this->errMsg.'&nbsp;&nbsp=></b></span>&nbsp;&nbsp';

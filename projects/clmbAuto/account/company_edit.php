@@ -25,9 +25,15 @@ $page[] = '';
 
 $acc = new Account($link,$userInfo,$cmpId);
 
+if( $act=='custDetail'){
+    $page[] = $acc->getCompanyEditForm();
+}else{
+    $page[] = $acc->getCompanyEditForm();
+    $page[] = $acc->getCompanyPrivileges();
 
-$page[] = $acc->getCompanyEditForm();
-$page[] = $acc->getCompanyPrivileges();
+}
+
+
 
 
 include_once $sysPath."/library/header.php";

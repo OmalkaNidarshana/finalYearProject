@@ -6,15 +6,15 @@ function getMaxOrderId($link){
     return $data;
 }
 
-function insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$ordrData){
+function insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$custId,$ordrData){
    
     $insertData = array();
     $sql = 'select max(ORDER_ID) from orders where ORDER_NUM ='.getTextValue($ordNum);
     $id = $link->getObjectDataFromQuery($sql);
-    
     if(empty($id)){
         $lineNum =1;
-        $insertData['COMAPNY_ID'] = $userInfo->cmpId;
+        $insertData['COMPANY_ID'] = $userInfo->cmpId;
+        $insertData['CUSTOMER_ID'] = $custId;
         $insertData ['ORDER_NUM'] = getTextValue($ordNum);
         $insertData['LINE_ITEM'] = count($ordrData);
         $insertData['ORDER_DATE'] = getCurrentDateTime();
@@ -34,6 +34,7 @@ function insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$ordrData){
             $lineNum++;
         }
     }
+    return $headerId;
 }
 
 function insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$data,$exptDlvDate,$quantity){
@@ -87,6 +88,12 @@ function getSubmittedOrders($link){
 function getOrderIdByOrderNum($link,$ordrNum){
     $sql ='select ORDER_ID from orders where ORDER_NUM ='.getTextValue($ordrNum);
     $data = $link->getObjectDataFromQuery($sql);
+    return $data;
+}
+
+function getOrderDataByOrderNum($link,$ordrNum){
+    $sql ='select * from orders where ORDER_NUM ='.getTextValue($ordrNum);
+    $data = $link->getRowDataFromQuery($sql);
     return $data;
 }
 

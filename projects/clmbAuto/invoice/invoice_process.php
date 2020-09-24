@@ -22,13 +22,17 @@ include_once $projPath."/dbControler/order.php";
 $action = isset($_REQUEST['action'])?$_REQUEST['action']:'';
 
 if( $action =='addInvoice' ){
+    $orderData = getOrderDataByOrderNum($link,$_REQUEST['ORDER_NUM']);
+
     $insertData = array();
     $paymentMethod = $_REQUEST['PAYMENT_METHOD'];
     $invoiceDate = strToTimeConverter($_REQUEST['INVOICE_DATE']);
     $inrementedDate = dateIncrementer("+1 MONTH",$invoiceDate);
     
+    
     $insertData['INV_NUM'] = getTextValue($_REQUEST['INV_NUM']);
     $insertData['ORDER_NUM'] = getTextValue($_REQUEST['ORDER_NUM']);
+    $insertData['CUSTOMER_ID'] = $orderData['CUSTOMER_ID'];
     $insertData['PAYMENT_METHOD'] = getTextValue($paymentMethod);
     $insertData['INVOICE_DATE'] = dateTimeValue($invoiceDate);
 

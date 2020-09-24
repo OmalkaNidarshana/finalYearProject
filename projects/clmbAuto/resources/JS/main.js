@@ -66,13 +66,13 @@ function addUser(){
 }
 
 function addCompany(){
-   var cmpName = $("#COMAPNY_NAME").val();
+   var cmpName = $("#COMPANY_NAME").val();
    var submit = true;
    if (cmpName == null || cmpName == "") {
       nameError = "Company Name Cannot be empty.";
-      $("#COMAPNY_NAME").attr('placeholder',nameError);
-      $("#COMAPNY_NAME").addClass('red');
-      $("#COMAPNY_NAME").css("border", "1px solid red");
+      $("#COMPANY_NAME").attr('placeholder',nameError);
+      $("#COMPANY_NAME").addClass('red');
+      $("#COMPANY_NAME").css("border", "1px solid red");
       var submit = false;
   }
 
@@ -89,10 +89,10 @@ function addCompany(){
             data = $.parseJSON(data);
             var keys = Object.keys(data);
             if( keys == 'custName'){
-               $('#COMAPNY_NAME').val("");
-               $("#COMAPNY_NAME").attr('placeholder',data.custName);
-               $("#COMAPNY_NAME").addClass('red');
-               $("#COMAPNY_NAME").css("border", "1px solid red");
+               $('#COMPANY_NAME').val("");
+               $("#COMPANY_NAME").attr('placeholder',data.custName);
+               $("#COMPANY_NAME").addClass('red');
+               $("#COMPANY_NAME").css("border", "1px solid red");
             } 
                       
          }

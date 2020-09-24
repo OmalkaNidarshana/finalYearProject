@@ -14,7 +14,7 @@ function getCompanyDataByCmpId($link,$cmpId){
 }
 
 function getDistributorName($link){
-    $sql = 'select COMPANY_ID,COMAPNY_NAME from company where COMAPNY_TYPE = '.getTextValue('DISTRIBUTOR');
+    $sql = 'select COMPANY_ID,COMAPNY_NAME from company where COMPANY_TYPE = '.getTextValue('DISTRIBUTOR');
     $data =  $link->getRecordSetFromQuery($sql);
     return $data;
 }
@@ -80,7 +80,7 @@ function getUserPrivilegesByCmpId($link,$userId){
 }
 
 function getCustomerListByDistId($link,$cmpId){
-    $sql = "select * from company where DIST_ID =".$cmpId." and COMAPNY_TYPE =".getTextValue('CUSTOMER');
+    $sql = "select * from company where DIST_ID =".$cmpId." and COMPANY_TYPE =".getTextValue('CUSTOMER');
     $data = $link->getRecordSetFromQuery($sql);
     return $data;
 }

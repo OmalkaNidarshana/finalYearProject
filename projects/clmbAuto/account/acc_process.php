@@ -31,7 +31,7 @@ $phoneNum = isset($_REQUEST['PHONE_NUM'])?$_REQUEST['PHONE_NUM']:'';
 
 //-----------------------Customer Adding------------------------------------//
 
-$custName = isset($_REQUEST['COMAPNY_NAME'])?$_REQUEST['COMAPNY_NAME']:'';
+$custName = isset($_REQUEST['COMPANY_NAME'])?$_REQUEST['COMPANY_NAME']:'';
 $address = isset($_REQUEST['ADRESS'])?$_REQUEST['ADRESS']:'';
 $postalCode = isset($_REQUEST['POSATL_CODE'])?$_REQUEST['POSATL_CODE']:'';
 $cuntory = isset($_REQUEST['COUNTRY'])?$_REQUEST['COUNTRY']:'';
@@ -107,7 +107,7 @@ if( $action == 'addCustomer' ){
         echo json_encode($errorMsg);
         exit;
     }else{
-        $insertData['COMAPNY_NAME'] = getTextValue($custName);
+        $insertData['COMPANY_NAME'] = getTextValue($custName);
         $insertData['DIST_ID'] = $userInfo->cmpId;
         if( !empty($address) )
             $insertData['ADRESS'] = getTextValue($address);
@@ -127,7 +127,7 @@ if( $action == 'addCustomer' ){
         if( !empty($phone) )
             $insertData['PHONE'] = getTextValue($phone);
 
-        $insertData['COMAPNY_TYPE'] = getTextValue('CUSTOMER');
+        $insertData['COMPANY_TYPE'] = getTextValue('CUSTOMER');
         $insertData['CREATED_DATE'] = getCurrentDateTime();
         $insertData['CREATED_BY'] = $userInfo->intId;
         $insertData['MODIFY_DATE'] = getCurrentDateTime();
@@ -140,20 +140,5 @@ if( $action == 'addCustomer' ){
 }
 
 
-
-
-
-/*[action] => addCustomer
-[cmpId] => 2
-[cmpType] => 
-[customerAddProcessPath] => http://localhost/gsdd/projects/clmbAuto/account/acc_process.php?action=addCustomer
-[COMAPNY_NAME] => dasdasdasda
-[ADRESS] => 
-[POSATL_CODE] => 
-[CITY_] => 
-[USER_TYPE] => 
-[EMAIL__] => 
-[PHONE_CODE] => 
-[PHONE_NUM] =>*/
 
 ?>

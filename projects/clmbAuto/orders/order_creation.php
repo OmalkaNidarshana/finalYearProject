@@ -31,13 +31,16 @@ if( isset($_REQUEST['order_initiate']) ){
         $ord->setErrMsg('Expected date cannot be empty');
     }else{
         $exptDlvDate = $_REQUEST['EXPTD_DLV_DATE'];
+        $customerId = $_REQUEST['CUSTOMER'];
         $ordrData = $_REQUEST['qty'];
         $ordNum = $_REQUEST['ORD_NUM'];
-        insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$ordrData);
+        $headerId = insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$customerId,$ordrData);
         $cartData = getPendingCartDataByUserId($link,$userInfo->userName);
         $cartId = $cartData['CART_ID'];
         $sql = "update cart SET STATUS = 'COMPLETED'  where CART_ID=".$cartId;
         $link->insertUpdate($sql);
+        header('Location: '.makeLocalUrl('orders/order_details.php','sec=ORDER&id='.$headerId));
+        exit;
     }
 }
 
