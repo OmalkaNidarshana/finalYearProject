@@ -16,7 +16,6 @@ include_once $projPath."/dbControler/shared.php";
 
 $act = isset($_REQUEST['act'])?$_REQUEST['act']:'';
 $userName = isset($_REQUEST['userId'])?$_REQUEST['userId']:'';
-$cmpId = isset($_REQUEST['cmpId'])?$_REQUEST['cmpId']:$userInfo->cmpId;
 
 $jsFiles[] = JS_ROOT."sortable_table.js";
 $jsFiles[] = JS_ROOT."main.js";
@@ -24,20 +23,11 @@ $csFiles[] = STYLE_ROOT."main.css";
 
 $page[] = '';
 
-$acc = new Account($link,$userInfo,$cmpId);
+$acc = new Account($link,$userInfo,$userInfo->cmpId);
 
-if( $act == 'userInfo' ){
-    $page[] = $acc->getUserInfo($userName);
-    $page[] = $acc->getUserPrivileges($userName);
-}elseif( $act == 'custDetail' ){
-    $page[] = $acc->getCompanyInfo();
-}else{
-    $page[] = $acc->getCompanyInfo();
-    $page[] = $acc->getCustomerList();
-    $page[] = $acc->getUserList();
-    $page[] = $acc->getAddUserForm();
-    $page[] = $acc->getCompanyAddForm();
-}
+$page[] = $acc->getUserEditForm($userName);
+$page[] = $acc->getEditUserPrivileges($userName);
+
 
 include_once $sysPath."/library/header.php";
     getPageContentArea($page);

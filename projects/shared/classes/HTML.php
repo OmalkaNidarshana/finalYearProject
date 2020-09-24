@@ -22,9 +22,13 @@ class HTML{
 		return $html;
 	}
 
-	function checkboxFeild($name,$value,$attr=array()){
+	function checkboxFeild($name,$value,$isChecked=false,$attr=array()){
 		$attr = HTML::makeInputAttribute($attr);
-		$html = "<input type ='checkbox' name ='".$name."' value='".$value."'".$attr.">";
+		if($isChecked){
+			$html = "<input type ='checkbox' name ='".$name."' value='".$value."'".$attr." checked>";
+		}else{
+			$html = "<input type ='checkbox' name ='".$name."' value='".$value."'".$attr.">";
+		}
 		return $html;
 	}
 

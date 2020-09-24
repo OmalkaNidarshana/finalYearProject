@@ -8,9 +8,11 @@ class Authentication{
     var $isUserAdmin = false;
     var $isUserEndUser = false;
     var $isUserNameExist = false;
+    var $isCustomerNameExist = false;
     var $isUserNameEmail = false;
     var $userData;
     var $errMsg;
+    var $custName;
 
     function Authentication($link='',$userName='',$password=''){
         $this->link = $link;
@@ -30,6 +32,10 @@ class Authentication{
 
     function setErrorMasg($errMsg){
         $this->errMsg = $errMsg;
+    }
+
+    function setCustomerName($custName){
+        $this->custName = $custName;
     }
 
     function checkLoginValidation(){
@@ -110,6 +116,15 @@ class Authentication{
        }
        return $this->errMsg;
     }
+
+    function isCustomerNameExist(){
+        
+        $custId =  getCustIdByCustomerName($this->link,$this->custName);
+        if ( !empty($custId) ){
+             $this->errMsg = 'Customer name alredy exist';
+        }
+        return $this->errMsg;
+     }
 
     function validationUserName(){
         $errMsg = $this->verifingEmail();

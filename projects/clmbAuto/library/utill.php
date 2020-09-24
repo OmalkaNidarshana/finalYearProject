@@ -100,16 +100,4 @@ function getChunckDataByPageSize($pageFullDataSet,$pageNum){
     return array($reletedPageIds,$pageNumbers);
 }
 
-function getSystemRoles($link){
-    $sql = "select * from sys_role";
-    $data = $link->getRecordSetFromQuery($sql);
-    return $data;
-}
-
-function getSystemPrivileges($link){
-    $sql = "select * from sys_privilege";
-    $data = $link->getRecordSetFromQuery($sql);
-    return $data;
-}
-
 ?>

@@ -40,28 +40,64 @@ function addUser(){
   
    var url = $("#processPath").val();
    var formData = $("#ADD_USER_FORM").serialize();
-
+   
    if(submit == true){
       $.ajax({
          type: "POST",
          url: url,
          data: formData,
-         dataType: 'json', 
+         //dataType: 'json', 
          success: function(data){
-            //data = $.parseJSON(data);
+            data = $.parseJSON(data);
             var keys = Object.keys(data);
             if( keys == 'userName'){
                $('#USER_NAME').val("");
                $("#USER_NAME").attr('placeholder',data.userName);
                $("#USER_NAME").addClass('red');
                $("#USER_NAME").css("border", "1px solid red");
-            }//else{
-               location.reload(true);
-           // }
-            
+            }               
+                  
+                         
          }
          
       });
    }
 
 }
+
+function addCompany(){
+   var cmpName = $("#COMAPNY_NAME").val();
+   var submit = true;
+   if (cmpName == null || cmpName == "") {
+      nameError = "Company Name Cannot be empty.";
+      $("#COMAPNY_NAME").attr('placeholder',nameError);
+      $("#COMAPNY_NAME").addClass('red');
+      $("#COMAPNY_NAME").css("border", "1px solid red");
+      var submit = false;
+  }
+
+  var url = $("#customerAddProcessPath").val();
+  var formData = $("#ADD_CUSTOMER_FORM").serialize();
+  
+   if(submit == true){
+      $.ajax({
+         type: "POST",
+         url: url,
+         data: formData,
+         //dataType: 'json', 
+         success: function(data){
+            data = $.parseJSON(data);
+            var keys = Object.keys(data);
+            if( keys == 'custName'){
+               $('#COMAPNY_NAME').val("");
+               $("#COMAPNY_NAME").attr('placeholder',data.custName);
+               $("#COMAPNY_NAME").addClass('red');
+               $("#COMAPNY_NAME").css("border", "1px solid red");
+            } 
+                      
+         }
+         
+      });
+   }
+}
+

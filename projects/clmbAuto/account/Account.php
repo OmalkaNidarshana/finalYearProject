@@ -9,18 +9,26 @@ class Account{
     var $sysRoles = array();
     var $role = array();
     var $sysPrivileges = array();
+    var $companyPrivileges = array();
+    var $customerCompanyList = array();
    
     function Account($link,$userInfo,$cmpId){
         $this->link = $link;
         $this->userInfo = $userInfo;
         $this->cmpId = $cmpId;
+        
         $this->cmpData = getCompanyDataByCmpId($this->link,$this->cmpId);
 
         $this->sysRoles = getSystemRoles($this->link);
+
         foreach($this->sysRoles as $role){
-            $this->role[$role['ROLE_ID']] = $role['ROLE_NAME'];
+            $this->role[$role['ROLE_NAME']] = $role['ROLE_NAME'];
         }
+
         $this->sysPrivileges = getSystemPrivileges($this->link);
+        $this->companyPrivileges = getCompanyPrivilegesByCmpId($this->link,$this->cmpId);
+        $this->customerCompanyList = getCustomerListByDistId($this->link,$this->cmpId);
+        
     }
 
     function getCompanyInfo(){
@@ -91,7 +99,7 @@ class Account{
                 $html .= '<tr>';
                     $html .= '<td>'.$data['FIRST_NAME'].'</td>';
                     $html .= '<td>'.$data['LAST_NAME'].'</td>';
-                    $html .= '<td><a href="'.makeLocalUrl('account/profile_script.php','sec=PROFILE&act=userInfo&userId='.$data['USER_INTID']).'">'.$data['USER_NAME'].'</a></td>';
+                    $html .= '<td><a href="'.makeLocalUrl('account/profile_script.php','sec=PROFILE&act=userInfo&userId='.$data['USER_NAME']).'">'.$data['USER_NAME'].'</a></td>';
                     $html .= '<td>'.$data['TITLE'].'</td>';
                     $html .= '<td>'.$data['USER_TYPE'].'</td>';
                     
@@ -99,7 +107,7 @@ class Account{
             }
             $html .= '</tbody>';
             $html .= '</table>';
-        $html .= '<div>';
+        $html .= '</div>';
         $head =  'Users';
             $head .= ' &nbsp&nbsp|&nbsp&nbsp<span data-toggle="modal" data-target="#ADD_USER">'.getRawActionsIcon('addUser','Add User').'</span>&nbsp';
       
@@ -113,6 +121,7 @@ class Account{
             $countryCode[$country['code']] = $country['code'];
         }
         $html = '';
+        $html .= HTML::formStart('','POST','ADD_USER_FORM');
         $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
         $html .=HTML::hiddenFeild('cmpId',$this->userInfo->cmpId,array('id'=>'cmpId'));
         $html .=HTML::hiddenFeild('cmpType',$this->userInfo->cmpType,array('id'=>'cmpType'));
@@ -164,12 +173,13 @@ class Account{
             $html .='</tr>';
             $btn = HTML::submitButtonFeild('save','Save',array('onclick'=>'addUser();'));
         $html .= HTML::openCloseTable(false,false);
+        $html .= HTML::formEnd();
         $popUp = modalPopupBox('Add User','ADD_USER',$html,$btn);
         return $popUp;
     }
 
-    function getUserInfo($userId){
-        $userdata = getUserInfoByUserId($this->link,$userId);
+    function getUserInfo($userName){
+        $userdata = getUserInfoByUserId($this->link,$userName);
         $html = '';
         $html .= '<div class="box-body table-responsive no-padding">';
               $html .= '<table class="table table-hover summarytable">';
@@ -207,9 +217,8 @@ class Account{
         $html .= '</div>';
 
         $head = 'User Informations';
-        if( $this->cmpType =='dist' || $this->userInfo->cmpType == 'DISTRIBUTOR'){
-            $head .= ' &nbsp&nbsp|&nbsp&nbsp<span>'.getRawActionsIcon('edit','Edit Company').'</span>&nbsp';
-        }
+        if( $userName == $this->userInfo->userName || $this->userInfo->role == 'ADMINISTRATOR')
+            $head .= ' &nbsp&nbsp|&nbsp&nbsp<span><a href="'.makeLocalUrl('account/user_edit.php','sec=PROFILE&act=useredit&userId='.$userdata['USER_NAME']).'">'.getRawActionsIcon('edit','Edit User').'</a></span>&nbsp';
         return contentBorder($html,$head);
     }
 
@@ -254,6 +263,10 @@ class Account{
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td></td>';
+            $html .='<td></td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td></td>';
             $html .='<td>'.HTML::submitButtonFeild('save','Save',array('onclick'=>'addUser();','style'=>'float: right;')).'</td>';
         $html .='</tr>';
         $html .= HTML::openCloseTable(false,false);
@@ -262,20 +275,196 @@ class Account{
 
     function getCompanyPrivileges(){
         $html = '';
-        $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
+        $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;","class"=>"table table-hover summarytable"));
         $html .=HTML::hiddenFeild('cmpId',$this->userInfo->cmpId,array('id'=>'cmpId'));
         $html .=HTML::hiddenFeild('cmpType',$this->userInfo->cmpType,array('id'=>'cmpType'));
         $html .=HTML::hiddenFeild('processPath',makeLocalUrl('account/acc_process.php','action=addUser'),array('id'=>'processPath'));
         foreach( $this->sysPrivileges as $privData){
             $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild($privData['PRIVE_NAME'],array("style"=>"padding:5px;") ).'</td>';
+                if( in_array($privData['PRIVE_NAME'],$this->companyPrivileges) ){
+                    $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','',true).'</td>';
+                }else{
+                    $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','').'</td>';
+                }
                 $html .='<td style="color:blue;">'.$privData['DETAILS'].'</td>';
-                $html .='<td style="text-align:right;">'.HTML::lblFeild($privData['PRIVE_NAME'],array("style"=>"padding:5px;") ).'</td>';
-                $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','').'</td>';
             $html .='</tr>';
         }
         $html .= HTML::openCloseTable(false,false);
         return contentBorder($html,'Company Privileges');
 
+    }
+
+    function getUserPrivileges(){
+        $html = '';
+        $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
+        foreach( $this->sysPrivileges as $privData){
+            $html .='<tr>';
+                $html .='<td>'.HTML::lblFeild($privData['PRIVE_NAME'],array("style"=>"padding:5px;") ).'</td>';
+                $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','').'</td>';
+                $html .='<td></td>';
+            $html .='</tr>';
+        }
+        $html .= HTML::openCloseTable(false,false);
+        return contentBorder($html,'User Privileges');
+
+    }
+
+    function getEditUserPrivileges($userName){
+        
+        $userdata = getUserInfoByUserId($this->link,$userName);
+        $userPrive = getUserPrivilegesByCmpId($this->link,$userdata['USER_INTID']);
+               
+        $html = '';
+        $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
+        foreach( $this->sysPrivileges as $privData){
+            $html .='<tr>';
+                $html .='<td>'.HTML::lblFeild($privData['PRIVE_NAME'],array("style"=>"padding:5px;") ).'</td>';
+                if( in_array($privData['PRIVE_NAME'],$userPrive) ){
+                    $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','',true).'</td>';
+                }else{
+                    $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','').'</td>';
+                }
+                $html .='<td style="color:blue;"></td>';
+            $html .='</tr>';
+        }
+   
+        $html .='<td>'.HTML::submitButtonFeild('save','Save',array('onclick'=>'addUser();','style'=>'float: right;')).'</td>';
+        
+        $html .= HTML::openCloseTable(false,false);
+        return contentBorder($html,'Edit User Privileges');
+    }
+
+    function getUserEditForm($userName){
+        $userdata = getUserInfoByUserId($this->link,$userName);
+        $html = '';
+        global $countryArray;
+        foreach( $countryArray as $country){
+            $countryName[$country['name']] = $country['name'];
+            $countryCode[$country['code']] = $country['code'];
+        }
+        $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
+        $html .=HTML::hiddenFeild('cmpId',$this->userInfo->cmpId,array('id'=>'cmpId'));
+        $html .=HTML::hiddenFeild('cmpType',$this->userInfo->cmpType,array('id'=>'cmpType'));
+        $html .=HTML::hiddenFeild('processPath',makeLocalUrl('account/acc_process.php','action=addUser'),array('id'=>'processPath'));
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('First Name : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('FIRST_NAME',$userdata['FIRST_NAME'],array('style'=>'width:300px;','id'=>'FIRST_NAME')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Last Name :  ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('LAST_NAME',$userdata['LAST_NAME'],array('style'=>'width:300px;','id'=>'LAST_NAME')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('User Name :   ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('USER_NAME',$userdata['USER_NAME'],array('style'=>'width:300px;','id'=>'USER_NAME')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Title : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('TITLE',$userdata['TITLE'],array('style'=>'width:300px;')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Address 1 : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('ADDRESS_1',$userdata['ADDRESS_1'],array('style'=>'width:300px;')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Address 2 : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('ADDRESS_2',$userdata['ADDRESS_2'],array('style'=>'width:300px;')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('City : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('CITY',$userdata['CITY'],array('style'=>'width:300px;')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Country : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::selectFeild('COUNTRY','USER_TYPE',array(""=>"")+$countryName,$userdata['COUNTRY'],array('style'=>'width:300px;')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Phone : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('PHONE  ',$userdata['PHONE'],array('style'=>'width:300px;')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td></td>';
+            $html .='<td></td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td></td>';
+            $html .='<td>'.HTML::submitButtonFeild('save','Save',array('onclick'=>'addUser();','style'=>'float: right;')).'</td>';
+        $html .='</tr>';
+        $html .= HTML::openCloseTable(false,false);
+        return contentBorder($html,'Edit User');
+
+    }
+
+    function getCustomerList(){
+              
+        $html ='';
+        //$html .= '<div class="box-body table-responsive no-padding">';
+            $html .= '<table class="table table-hover summarytable" >';
+            foreach( $this->customerCompanyList as $customerData){
+                $html .= '<tr>';
+                    $html .= '<td><a href="'.makeLocalUrl('account/profile_script.php','sec=PROFILE&act=custDetail&cmpId='.$customerData['COMPANY_ID']).'">'.$customerData['COMAPNY_NAME'].'</a></td>';
+                $html .= '</tr>';
+            }
+            $html .= '</table>';
+        //$html .= '</div>';
+        $head =  'Customer';
+            $head .= ' &nbsp&nbsp|&nbsp&nbsp<span data-toggle="modal" data-target="#ADD_CUSTOMER">'.getRawActionsIcon('addCmp','Add Customer').'</span>&nbsp';
+      
+        return contentBorder($html,$head);
+    }
+
+    function getCompanyAddForm(){
+        $html = '';
+        global $countryArray;
+        foreach( $countryArray as $country){
+            $countryName[$country['name']] = $country['name'];
+            $countryCode[$country['code']] = $country['code'];
+        }
+        $html .= HTML::formStart('','POST','ADD_CUSTOMER_FORM');
+        $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
+        $html .=HTML::hiddenFeild('cmpId',$this->userInfo->cmpId,array('id'=>'cmpId'));
+        $html .=HTML::hiddenFeild('cmpType',$this->userInfo->cmpType,array('id'=>'cmpType'));
+        $html .=HTML::hiddenFeild('customerAddProcessPath',makeLocalUrl('account/acc_process.php','action=addCustomer'),array('id'=>'customerAddProcessPath'));
+
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Company Name : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('COMAPNY_NAME','',array('style'=>'width:300px;','id'=>'COMAPNY_NAME')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Address :  ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('ADRESS','',array('style'=>'width:300px;','id'=>'ADRESS')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Postal Code :   ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('POSATL_CODE','',array('style'=>'width:300px;','id'=>'POSATL_CODE')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('City : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('CITY ','',array('style'=>'width:300px;')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Country : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::selectFeild('COUNTRY','COUNTRY',array(""=>"")+$countryName,'',array('style'=>'width:300px;')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Email : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('EMAIL  ','',array('style'=>'width:300px;')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Phone : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::selectFeild('PHONE_CODE','PHONE_CODE',array(""=>"")+$countryCode,'',array('style'=>'width:70px;')).'&nbsp'.HTML::phoneFeild('PHONE_NUM','',array('style'=>'width:230px;','pattern'=>'[0-9]{2}-[0-9]{4}-[0-9]{3}','placeholder'=>'12-3456-789')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td></td>';
+            $html .='<td></td>';
+        $html .='</tr>';
+        $html .= HTML::formEnd();
+        $btn = HTML::submitButtonFeild('save','Save',array('onclick'=>'addCompany();','style'=>'float: right;'));
+       
+        $html .= HTML::openCloseTable(false,false);
+        $popUp = modalPopupBox('Add Customer','ADD_CUSTOMER',$html,$btn);
+        return $popUp;
     }
 }
 

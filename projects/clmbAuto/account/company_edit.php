@@ -15,6 +15,7 @@ include_once $projPath."/shared/classes/TableFormatter.php";
 include_once $projPath."/dbControler/shared.php";
 
 $act = isset($_REQUEST['act'])?$_REQUEST['act']:'';
+$cmpId = isset($_REQUEST['cmpId'])?$_REQUEST['cmpId']:$userInfo->cmpId;
 
 $jsFiles[] = JS_ROOT."sortable_table.js";
 $jsFiles[] = JS_ROOT."main.js";
@@ -22,7 +23,8 @@ $csFiles[] = STYLE_ROOT."main.css";
 
 $page[] = '';
 
-$acc = new Account($link,$userInfo,$userInfo->cmpId);
+$acc = new Account($link,$userInfo,$cmpId);
+
 
 $page[] = $acc->getCompanyEditForm();
 $page[] = $acc->getCompanyPrivileges();
