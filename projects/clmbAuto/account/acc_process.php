@@ -94,6 +94,8 @@ if( $action == 'addUser'){
         insertUserRoleIntoRoleTable($link,$userData['USER_INTID'],$userData['USER_TYPE']);
         $defaultPrivArray = array('CATEGORY','CREDIT_PERIOD','INVOICE');
         insertDefaultPrivilegesIntoUser($link,$userData['USER_INTID'],$defaultPrivArray);
+        $errorMsg['noneError'] = '';
+        echo json_encode($errorMsg);
         exit;
     }
 }
@@ -134,6 +136,9 @@ if( $action == 'addCustomer' ){
         $insertData['MODIFY_BY'] = $userInfo->intId;
         $sql = "insert into company (".implode(",",array_keys($insertData)).") values (".implode(",",array_values($insertData)).")";
         $link->insertUpdate($sql);
+        
+        $errorMsg['noneErrorCustomer'] = '';
+        echo json_encode($errorMsg);
         exit;
     }
 

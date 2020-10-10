@@ -60,7 +60,12 @@ class HTML{
 		$html = "<input type ='radio' name ='".$name."' value='".$value."'".$attr.">";
 		return $html;
 	}
-
+	function fileUplodeFeild($name,$id,$attr=array()){
+		$attr = HTML::makeInputAttribute($attr);
+		$html = "<input type ='file' name ='".$name."' id='".$id."'".$attr.">";
+		return $html;
+	}
+	
 	function submitButtonFeild($name,$value,$attr=array()){
 		$attr = HTML::makeInputAttribute($attr);
 		$html = "<input type ='submit' name ='".$name."' value='".$value."'".$attr.">";
@@ -73,8 +78,9 @@ class HTML{
 		return $html;
 	}
 
-	function formStart($action,$method,$id){
-		$html = '<form action="'.$action.'" method="'.$method.'" id="'.$id.'">';
+	function formStart($action,$method,$id,$attr=array()){
+		$attr = HTML::makeInputAttribute($attr);
+		$html = '<form action="'.$action.'" method="'.$method.'" id="'.$id.'"'.$attr.'>';
 		return $html;
 	}
 
@@ -89,13 +95,13 @@ class HTML{
 		return $html;
 	}
 
-	function textArea($id,$name,$maxRow,$maxCol,$attr=array()){
+	function textArea($name,$id,$maxRow,$maxCol,$attr=array()){
 		$attr = HTML::makeInputAttribute($attr);
 		$html ='<textarea id="'.$id.'" name="'.$name.'" rows="'.$maxRow.'" cols="'.$maxCol.'"'.$attr.'">';
 		return $html;
 	}
 
-	function selectFeild($id,$name,$optionArray,$selectedVal='',$isMulti=false,$attr=array()){
+	function selectFeild($name,$id,$optionArray,$selectedVal='',$isMulti=false,$attr=array()){
 		$attr = HTML::makeInputAttribute($attr);
 		if($isMulti){
 			$multi = 'multiple';

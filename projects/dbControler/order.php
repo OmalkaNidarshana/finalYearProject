@@ -30,14 +30,14 @@ function insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$custId,$ordrDa
         $headerId = getMaxOrderId($link);
         foreach( $ordrData as $categoryId=>$quantity ){
             $categoryData = getCategoryDataBycategoryId($link,$categoryId);
-            insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$categoryData,$exptDlvDate,$quantity);
+            insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$categoryData,$exptDlvDate,$quantity,$ordNum);
             $lineNum++;
         }
     }
     return $headerId;
 }
 
-function insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$data,$exptDlvDate,$quantity){
+function insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$data,$exptDlvDate,$quantity,$ordNum){
     $sql = 'select LINE_ID from order_lines where ORDER_HEADER_ID ='.$headerId.' and LINE_NUM='.$lineNum;
     $lineId = $link->getObjectDataFromQuery($sql);
     if( empty($lineId) ){
@@ -54,9 +54,10 @@ function insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$data,$exptDl
         $insertData['MODIFIED_BY'] = $userInfo->intId;
         $insertData['CREATED_DATE'] = getCurrentDateTime();
         $insertData['MODIFIED_DATE'] = getCurrentDateTime();
+  
         $sql = 'insert into order_lines ('.implode(",",array_keys($insertData) ).') values ('.implode(",",array_values($insertData) ).')';
-        
         $link->insertUpdate($sql);
+        insertCommission($link,$data['VEHICAL_CODE'],$insertData['TOTAL'],$data['SELL_PRICE'],$data['COMMISION'],$ordNum);
     }
 
 }
@@ -101,5 +102,19 @@ function getTotalFromOrderByorderHeaderId($link,$ordrId){
     $sql ='select TOTAL from order_lines where ORDER_HEADER_ID ='.getTextValue($ordrId);
     $data = $link->getcolumnDataFromQuery($sql);
     return $data;
+}
+
+function insertCommission($link,$category,$total,$salesPrice,$rate,$ordNum){
+    global $userInfo;
+    $insert['SALES_REP_ID'] = $userInfo->intId;
+    $insert['CATEGORY'] = getTextValue($category);
+    $insert['ORDER_NUM'] = getTextValue($ordNum);
+    $insert['TOTAL '] = $total;
+    $insert['SALES_PRICE'] = $salesPrice;
+    $insert['COMMISION_RATE'] = $rate;
+    $insert['COMMISION'] = getCommisions($total,$rate);
+    $insert['CREATED_DATE'] = getCurrentDateTime();
+    $sql = 'insert into commisions ('.implode(",",array_keys($insert) ).') values ('.implode(",",array_values($insert) ).')';
+    $link->insertUpdate($sql);
 }
 ?>

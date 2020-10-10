@@ -22,7 +22,7 @@ class Invoice{
     var $orderLineData;
     var $customerData;
     var $total;
-    var $summaryFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','ISSUED_BY','DESCRIPTION');
+    var $summaryFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','INVOICE_CLOSE_DATE','ISSUED_BY','DESCRIPTION');
 
     var $searchFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','ISSUED_BY','DESCRIPTION','CUSTOMER_ID');
 

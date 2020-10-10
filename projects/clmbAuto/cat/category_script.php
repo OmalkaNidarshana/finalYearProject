@@ -48,6 +48,8 @@ $category->setFltrs($whereClause);
 
 $page[] = $category->getCategorySummaryTable();
 $page[] = $category->getRegulerSearchHtml();
+$page[] = $category->getCategoryAddForm();
+$page[] = $category->loadEdiCatPopup();
 
 include_once $sysPath."/library/header.php";
     getPageContentArea($page);

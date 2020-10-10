@@ -4,7 +4,7 @@ include_once "../path.php";
 include_once $sysPath."/auth/check_auth.php";
 include_once $sysPath."/library/utill.php";
 include_once $sysPath."/library/library.php";
-include_once $sysPath."/account/Account.php";
+include_once $sysPath."/cat/Category.php";
 include_once $projPath."/shared/classes/Authentication.php";
 include_once $projPath."/shared/classes/DbConnection.php";
 include_once $projPath."/shared/classes/Email.php";
@@ -25,7 +25,11 @@ if( $action=='addCart' ){
     $data['COMPANY_ID '] = $cmpId;
         
     insertUpdateCategoryIdIntoCart($link,$data);
-}
+}/*elseif( $action=='editCategory' ){
+    $ord = new Category($link,$userInfo);
+    $editLinePopup = $ord->getCategoryEditForm($catId);
+    echo json_encode($editLinePopup);
+}*/
 
 
 ?>

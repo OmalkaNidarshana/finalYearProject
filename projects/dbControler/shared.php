@@ -14,7 +14,7 @@ function getCompanyDataByCmpId($link,$cmpId){
 }
 
 function getDistributorName($link){
-    $sql = 'select COMPANY_ID,COMAPNY_NAME from company where COMPANY_TYPE = '.getTextValue('DISTRIBUTOR');
+    $sql = 'select COMPANY_ID,COMPANY_NAME from company where COMPANY_TYPE = '.getTextValue('DISTRIBUTOR');
     $data =  $link->getRecordSetFromQuery($sql);
     return $data;
 }
@@ -86,9 +86,49 @@ function getCustomerListByDistId($link,$cmpId){
 }
 
 function getCustIdByCustomerName($link,$customerName){
-    $sql = "select COMPANY_ID  from company where COMAPNY_NAME =".getTextValue($customerName);
+    $sql = "select COMPANY_ID  from company where COMPANY_NAME =".getTextValue($customerName);
     $data = $link->getObjectDataFromQuery($sql);
     return $data;
 }
 
+function updateCompanyData($link,$cmpId,$cmpData){
+    $updateArr = array();
+    $data = array();
+
+    $updateArr['COMPANY_NAME'] = getTextValue($cmpData['COMPANY_NAME']);
+    $updateArr['ADRESS'] = getTextValue($cmpData['ADRESS']);
+    $updateArr['POSATL_CODE'] = $cmpData['POSATL_CODE'];
+    $updateArr['CITY'] = getTextValue($cmpData['CITY']);
+    $updateArr['COUNTRY'] = getTextValue($cmpData['COUNTRY']);
+    $updateArr['EMAIL'] = getTextValue($cmpData['EMAIL']);
+    $updateArr['PHONE'] = getTextValue($cmpData['PHONE']);
+
+    foreach( $updateArr as $k=>$v){
+        $data[] = $k.'='.$v;
+    }
+    $sql = "update company set ".implode(",",$data)." where COMPANY_ID=".$cmpId;
+    $link->insertUpdate($sql);
+}
+
+function updateUserData($link,$userName,$userDataArr){
+    $updateArr = array();
+    $data = array();
+
+    $updateArr['FIRST_NAME'] = getTextValue($userDataArr['FIRST_NAME']);
+    $updateArr['LAST_NAME'] = getTextValue($userDataArr['LAST_NAME']);
+    $updateArr['USER_NAME'] = getTextValue($userDataArr['USER_NAME']);
+    $updateArr['TITLE'] = getTextValue($userDataArr['TITLE']);
+    $updateArr['ADDRESS_1'] = getTextValue($userDataArr['ADDRESS_1']);
+    $updateArr['ADDRESS_2'] = getTextValue($userDataArr['ADDRESS_2']);
+    $updateArr['CITY'] = getTextValue($userDataArr['CITY']);
+    $updateArr['USER_IMAGE'] = getTextValue($userDataArr['USER_IMAGE']);
+    $updateArr['COUNTRY'] = getTextValue($userDataArr['COUNTRY']);
+    $updateArr['PHONE'] = getTextValue($userDataArr['PHONE']);
+
+    foreach( $updateArr as $k=>$v){
+        $data[] = $k.'='.$v;
+    }
+    $sql = "update user_info set ".implode(",",$data)." where USER_NAME=".getTextValue($userName);
+    $link->insertUpdate($sql);
+}
 ?>

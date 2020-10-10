@@ -119,7 +119,7 @@ function contentBox($table){
  }
 
  function dateIncrementer($incrementBy,$time){
-    $incrementalDate = date("m-d-Y H:i:s", strtotime($incrementBy, $time));
+    $incrementalDate = date("Y-m-d", strtotime($incrementBy, $time));
     return $incrementalDate;
  }
 
@@ -264,5 +264,10 @@ function OrdersStatusColorBox($status){
     }
     $colorBox = '<div class="statusStyle '.$icon.'">'.$status.'</div>';
     return $colorBox;
+}
+
+function getCommisions($total,$rate){
+    $commission = $total*($rate/100);
+    return $commission;
 }
 ?>

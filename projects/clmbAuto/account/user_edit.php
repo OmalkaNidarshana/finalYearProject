@@ -25,6 +25,24 @@ $page[] = '';
 
 $acc = new Account($link,$userInfo,$userInfo->cmpId);
 
+if( isset($_REQUEST['editUserData']) ){
+    $userData = $_REQUEST['editUser'];
+    foreach( $userData as $key=>$val){
+        if( empty($val) ){
+            $userDataArr[$key] = '';
+        }else{
+            $userDataArr[$key] = $val;
+        }
+    }
+    $userDataArr['USER_IMAGE'] = $_FILES['USER_IMAGE']['name'];
+    
+    $target_dir = $sysPath.'/resources/image/userImg/';
+    $target_file = $target_dir . basename($_FILES["USER_IMAGE"]["name"]);
+    move_uploaded_file($_FILES["USER_IMAGE"]["tmp_name"], $target_file);
+
+    updateUserData($link,$userName,$userDataArr);
+}
+
 $page[] = $acc->getUserEditForm($userName);
 $page[] = $acc->getEditUserPrivileges($userName);
 

@@ -26,6 +26,7 @@ $lineId = isset($_REQUEST['lineId'])?$_REQUEST['lineId']:'';
 if( $action =='orderSubmit' ){
     $sql = 'update orders set STATUS = '.getTextValue('SUBMITTED').'where ORDER_ID='.$ordId;
     $link->insertUpdate($sql);
+    
 }elseif( $action =='loadEditLineForm' ){
     $ord = new Order($link,$userInfo);
     $editLinePopup = $ord->getOrderLineEditForm($ordId,$lineId);
@@ -46,8 +47,6 @@ if( $action =='orderSubmit' ){
     print_rr($_REQUEST);
     $sql = 'delete from order_lines where ORDER_HEADER_ID ='.$ordId.' and LINE_NUM ='.$lineId;
     $link->insertUpdate($sql);
-
-    
 }
 
 ?>

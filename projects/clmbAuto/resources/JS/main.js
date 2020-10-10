@@ -55,7 +55,9 @@ function addUser(){
                $("#USER_NAME").attr('placeholder',data.userName);
                $("#USER_NAME").addClass('red');
                $("#USER_NAME").css("border", "1px solid red");
-            }               
+            }else{
+               location.reload(true);
+            }       
                   
                          
          }
@@ -93,7 +95,9 @@ function addCompany(){
                $("#COMPANY_NAME").attr('placeholder',data.custName);
                $("#COMPANY_NAME").addClass('red');
                $("#COMPANY_NAME").css("border", "1px solid red");
-            } 
+            } else{
+               location.reload(true);
+            }
                       
          }
          

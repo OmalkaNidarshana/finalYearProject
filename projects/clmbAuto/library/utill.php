@@ -5,7 +5,7 @@ function getLeftMainMenue($mainMenueArr,$subMenueArr,$menueIcon){
    foreach ($subMenueArr as $subMenueKey=>$link) {
        if( is_array($link) ) {
            $html .= '<li class="treeview">';
-           $html .= '<a href="#"><i class="'.$menueIcon[$subMenueKey].'"></i><span>'.$mainMenueArr[$subMenueKey].'</span>';
+           $html .= '<a href="#"><i class="'.$menueIcon[$subMenueKey].'"></i><span>&nbsp;&nbsp;'.$mainMenueArr[$subMenueKey].'</span>';
            $html .= '<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
            $html .= '</a>';
            $html .= '<ul class="treeview-menu">';
@@ -15,7 +15,7 @@ function getLeftMainMenue($mainMenueArr,$subMenueArr,$menueIcon){
            $html .= '</li>';
        }else{
            $html .= '<li>';
-           $html .= '<a href="'.$link.'"><i class="'.$menueIcon[$subMenueKey].'"></i><span>'. $mainMenueArr[$subMenueKey] .'</span>';
+           $html .= '<a href="'.$link.'"><i class="'.$menueIcon[$subMenueKey].'"></i><span>&nbsp;&nbsp;'. $mainMenueArr[$subMenueKey] .'</span>';
            $html .= '</a></li>';
        }
    }
@@ -26,23 +26,25 @@ function getLeftMainMenue($mainMenueArr,$subMenueArr,$menueIcon){
 }
 
 function getHeaderProfileSect($userInfo){
-   
-   $html = '<li class="dropdown user user-menu">';
+    $html = '<li class="dropdown user user-menu">';
        $html .='<a href="#" class="dropdown-toggle" data-toggle="dropdown">';
-           $html .='<img src="'.ADMIN_STYLE_ROOT.'dist/img/user2-160x160.jpg" class="user-image" alt="User Image">';
+           $html .='<img src="http://'.IMG_ROOT.'userImg/user_omalka.jpg" class="user-image" alt="User Image">';
            $html .='<span class="hidden-xs">'.$userInfo->firstName.' '.$userInfo->LastName.'</span>';
        $html .='</a>';
        $html .='<ul class="dropdown-menu">';
            $html .='<li class="user-header">';
-               $html .='<img src="'.ADMIN_STYLE_ROOT.'dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">';
-               $html .='<p>Alexander Pierce - Web Developer<small>Member since Nov. 2012</small></p>';
+               $html .='<img src="http://'.IMG_ROOT.'userImg/user_omalka.jpg" class="img-circle" alt="User Image">';
+               $html .='<p>'.$userInfo->firstName.' '.$userInfo->LastName.' - '.$userInfo->role.'<small>'.$userInfo->userName.'</small></p>';
            $html .='</li>';
            $html .='<li class="user-footer">';
-               $html .='<div class="pull-left">';
-                 $html .='<a href="#" class="btn btn-default btn-flat">Profile</a>';
-               $html .='</div>';
-               $html .='<div class="pull-right">';
-                 $html .='<a href="#" class="btn btn-default btn-flat">Sign out</a>';
+                $html .='<div class="pull-left">';
+                    $html .='<a href="#" class="btn btn-default btn-flat">Profile</a>';
+                $html .='</div>';
+                $html .='<div class="pull-right">';
+                $html .= HTML::formStart(makeLocalUrl('main/login.php',''),'POST','');
+                    $html .= HTML::submitButtonFeild('logOut','Sign Out',array('style'=>'height: 35px;width: 80px;border-radius: 0px;'));
+                $html .= HTML::formEnd();
+                 //$html .='<a href="#" class="btn btn-default btn-flat">Sign out</a>';
                $html .='</div>';
            $html .='</li>';
        $html .='</ul>';

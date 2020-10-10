@@ -28,18 +28,20 @@ if( $action =='addInvoice' ){
     $paymentMethod = $_REQUEST['PAYMENT_METHOD'];
     $invoiceDate = strToTimeConverter($_REQUEST['INVOICE_DATE']);
     $inrementedDate = dateIncrementer("+1 MONTH",$invoiceDate);
-    
-    
+
     $insertData['INV_NUM'] = getTextValue($_REQUEST['INV_NUM']);
     $insertData['ORDER_NUM'] = getTextValue($_REQUEST['ORDER_NUM']);
     $insertData['CUSTOMER_ID'] = $orderData['CUSTOMER_ID'];
     $insertData['PAYMENT_METHOD'] = getTextValue($paymentMethod);
-    $insertData['INVOICE_DATE'] = dateTimeValue($invoiceDate);
+    $insertData['INVOICE_DATE'] = dateTimeValue($_REQUEST['INVOICE_DATE']);
 
     if( $paymentMethod == 'CASH'){
         $insertData['INVOICE_CLOSE_DATE'] = dateTimeValue($inrementedDate);
+    }else{
+        $insertData['INVOICE_CLOSE_DATE'] = dateTimeValue($_REQUEST['INVOICE_DATE']);
     }
-
+    print_rr($insertData['INVOICE_DATE']);
+    print_rr($insertData['INVOICE_CLOSE_DATE']);
     $firstName = $userInfo->firstName;
     $lstName = $userInfo->LastName;
     $insertData['ISSUED_BY'] = getTextValue($firstName.' '.$lstName);
@@ -53,7 +55,7 @@ if( $action =='addInvoice' ){
     $insertData['MODIFIED_BY'] = $userInfo->intId;
     $insertData['CREATED_DATE'] = getCurrentDateTime();
     $insertData['MODIFIED_DATE'] = getCurrentDateTime();
-    print_rr($insertData);
+    
     $sql = "insert into invoice (".implode(',',array_keys($insertData)).") values(".implode(',',array_values($insertData)).")";
     $link->insertUpdate($sql);
 }

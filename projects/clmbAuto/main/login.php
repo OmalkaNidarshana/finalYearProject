@@ -15,6 +15,11 @@ $csFiles[] = STYLE_ROOT."util.css";
 $jsFiles[] = JS_ROOT."loginMain.js";
 $jsFiles[] = JS_ROOT."map-custom.js";
 
+if(isset($_REQUEST['logOut'])) {
+    unset($_SESSION['loggedin']);
+    session_destroy();
+}
+
 if( isset($_SESSION['loggedin']) ){
     header("Location: http://".ROOT."main/home_script.php");
     exit; 
@@ -55,38 +60,7 @@ if(!empty($jsFiles)){
     }
 }
 
-/*
-$html .='<div class="sidenav ">
-            <div class="login-main-text ">
-                <h2> Welcome To Colombo<br>Auto Supplier</h2>
-            </div>
-            <img src="http://'.IMG_ROOT.'login.jpg" height="42" width="100px" class="loginImage">
-            <div class="login-main-text ">
-                <h2>Thanks For Beign a<br> Our Partner</h2>
-            </div>
-      </div>
-      <div class="main">
-         <div class="col-md-6 col-sm-12">
-            <div class="login-form">';
-         
-            $html .='<form action="login.php" method="POST">
-                  <div class="form-group">
-                     <label>User Name</label>
-                     <input type="text" class="form-control" placeholder="User Name" name="userName">
-                  </div>
-                  <div class="form-group">
-                     <label>Password</label>
-                     <input type="password" class="form-control" placeholder="Password" name="pwd">
-                  </div>
-                  <button type="submit" class="btn btn-black" name="login">Login</button>
-                  <button type="submit" class="btn btn-black" name="forgot">Forgot Password</button>
-                </form>
-            </div>
-         </div>
-      </div>';
-    echo $html;*/
-
-    $html .='<div class="limiter" >
+$html .='<div class="limiter" >
     <div class="container-login100" style="background-color: currentColor;">
         <div class="wrap-login100">
             <div class="login100-form-title" style="background-image: url(http://'.IMG_ROOT.'loginImage.WEBP);">

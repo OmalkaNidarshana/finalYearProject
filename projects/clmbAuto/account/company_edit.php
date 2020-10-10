@@ -23,6 +23,19 @@ $csFiles[] = STYLE_ROOT."main.css";
 
 $page[] = '';
 
+if( isset($_REQUEST['editCustomer'])){
+    $cmpData = $_REQUEST['cmpdata'];
+
+    foreach($cmpData as $key=>$value){
+        if( empty($value) ){
+            $cmpDataArr[$key] = '';
+        }else{
+            $cmpDataArr[$key] = $value;
+        }
+    }
+    updateCompanyData($link,$cmpId,$cmpData);
+}
+
 $acc = new Account($link,$userInfo,$cmpId);
 
 if( $act=='custDetail'){

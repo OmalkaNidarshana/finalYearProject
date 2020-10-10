@@ -10,3 +10,19 @@ function addToCart(catId,cmpId){
         
      });
 }
+
+function loadCatEditPopUp(id){
+    var url = $("#editCategoryProcess").val()+'?catId='+id+'&action=editCategory';
+    alert(url);
+     $.ajax({
+         type: "POST",
+         url: url,
+         dataType: "JSON",
+         success: function(data){
+             //alert(data);
+             $('#EDIT_CATEGORY_POPUP').modal('show');
+             $('#editCatPopUp').html(data);
+         }
+         
+      });
+ }

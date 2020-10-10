@@ -24,6 +24,10 @@ $csFiles[] = STYLE_ROOT."main.css";
 
 $page[] = '';
 
+if( isset($_REQUEST['addUser']) ){
+    print_rr($_FILES);
+    exit;
+}
 $acc = new Account($link,$userInfo,$cmpId);
 
 if( $act == 'userInfo' ){
