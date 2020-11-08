@@ -5,11 +5,10 @@ include_once $sysPath."/auth/check_auth.php";
 include_once $sysPath."/library/utill.php";
 include_once $sysPath."/library/library.php";
 include_once $sysPath."/account/Account.php";
-;
 
 include_once $projPath."/shared/classes/Authentication.php";
 include_once $projPath."/shared/classes/DbConnection.php";
-include_once $projPath."/shared/classes/Email.php";
+include_once $projPath."/shared/classes/PHPMailer.php";
 include_once $projPath."/dbControler/shared.php";
 //-------------------------User Adding----------------------------------------//
 $action = isset($_REQUEST['action'])?$_REQUEST['action']:'';
@@ -30,6 +29,7 @@ $phoneNum = isset($_REQUEST['PHONE_NUM'])?$_REQUEST['PHONE_NUM']:'';
 //---------------------End - User Adding-----------------------------------//
 
 //-----------------------Customer Adding------------------------------------//
+
 
 $custName = isset($_REQUEST['COMPANY_NAME'])?$_REQUEST['COMPANY_NAME']:'';
 $address = isset($_REQUEST['ADRESS'])?$_REQUEST['ADRESS']:'';
@@ -80,7 +80,8 @@ if( $action == 'addUser'){
             $insertData['TEMP_PASSWORD'] = getTextValue($password);
         if( !empty($phone) )
             $insertData['PHONE '] = getTextValue($phone);
-
+            
+        $insertData['VERIFING'] = getTextValue('PENDING');
         $insertData['COMPANY_ID'] = $userInfo->cmpId;
         $insertData['CREATED_DATE'] = getCurrentDateTime();
         $insertData['CREATED_BY'] = $userInfo->intId;
@@ -96,12 +97,13 @@ if( $action == 'addUser'){
         insertDefaultPrivilegesIntoUser($link,$userData['USER_INTID'],$defaultPrivArray);
         $errorMsg['noneError'] = '';
         echo json_encode($errorMsg);
+        $auth->sendUserCreationEmailContent($userName,$frstName,$userInfo);
         exit;
     }
 }
 
 
-if( $action == 'addCustomer' ){
+if( $action == 'addCustomer'){
     $auth->setCustomerName($custName);
     $customerNameErrMsg = $auth->isCustomerNameExist();
     if( !empty($customerNameErrMsg) ){
@@ -144,6 +146,15 @@ if( $action == 'addCustomer' ){
 
 }
 
+if($action == 'customerAssign'){
+    
+    $userName = $_REQUEST['userId'];
+    $custIds = implode(",",$_REQUEST['ASSIGN_CMP']);
+    $sql = "update user_info set ASSIGN_COMPANY =".getTextValue($custIds)." where USER_NAME =".getTextValue($userName);
+    $link->insertUpdate($sql);
+
+
+}
 
 
 ?>

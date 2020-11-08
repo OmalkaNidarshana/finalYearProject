@@ -29,6 +29,7 @@ class Account{
         $this->companyPrivileges = getCompanyPrivilegesByCmpId($this->link,$this->cmpId);
         $this->customerCompanyList = getCustomerListByDistId($this->link,$this->cmpId);
         
+        
     }
 
     function getCompanyInfo(){
@@ -165,10 +166,6 @@ class Account{
             $html .='<tr>';
                 $html .='<td>'.HTML::lblFeild('Country : ',array("style"=>"padding:5px;") ).'</td>';
                 $html .='<td>'.HTML::selectFeild('CNTRY','CNTRY',array(""=>"")+$countryName,'',array('style'=>'width:300px;')).'</td>';
-            $html .='</tr>';
-            $html .='<tr>';
-                $html .='<td>'.HTML::lblFeild('City : ',array("style"=>"padding:5px;") ).'</td>';
-                $html .='<td>'.HTML::textFeild('CITY','',array('style'=>'width:300px;')).'</td>';
             $html .='</tr>';
             $html .='<tr>';
                 $html .='<td>'.HTML::lblFeild('Phone : ',array("style"=>"padding:5px;") ).'</td>';
@@ -339,6 +336,34 @@ class Account{
         return contentBorder($html,'Edit User Privileges');
     }
 
+    function getAssignCustomer($userId){
+        $customerList = getCustomerList($this->link);
+        $userData = getUserInfoByUserName($this->link,$userId);
+        $assignCompany = explode(",",$userData['ASSIGN_COMPANY']);
+        $html = '';
+        //$html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
+        //$html .='<div class ="container">';
+        $html .= HTML::formStart('','POST','ASIGN_CUSTOMER');
+        $html .=HTML::hiddenFeild('customerAssign',makeLocalUrl('account/acc_process.php','action=customerAssign'),array('id'=>'customerAssign'));
+        $html .=HTML::hiddenFeild('userId',$userId);
+        $html .='<div class ="row">';
+        //print_rr($customerList);
+        foreach( $customerList as $customerData){
+                if( in_array($customerData['COMPANY_ID'],$assignCompany) ){
+                    $html .='<div ><div class="col-sm-2">'.$customerData['COMPANY_NAME'].'</div><div class="col-sm-2">'.HTML::checkboxFeild('ASSIGN_CMP['.$customerData['COMPANY_ID'].']',$customerData['COMPANY_ID'],true).'</div></div>';
+                }else{
+                    $html .='<div ><div class="col-sm-2">'.$customerData['COMPANY_NAME'].'</div><div class="col-sm-2">'.HTML::checkboxFeild('ASSIGN_CMP['.$customerData['COMPANY_ID'].']',$customerData['COMPANY_ID']).'</div></div>';
+                }
+            
+        }
+        $html .='</div>';
+        $html .= HTML::formEnd();
+        $btn = '<span>'.HTML::submitButtonFeild('asignCustomer','Save',array('style'=>'margin-left: 10px;',"onclick"=>"assignCustomer();")).'</span>';
+        //$html .='</div>';
+        //$html .= HTML::openCloseTable(false,false);
+        return contentBorder($html,'Assign Customer'.$btn);
+    }
+
     function getUserEditForm($userName){
         $userdata = getUserInfoByUserId($this->link,$userName);
         $html = '';
@@ -401,22 +426,37 @@ class Account{
 
     }
 
-    function getCustomerList(){
-              
-        $html ='';
-        //$html .= '<div class="box-body table-responsive no-padding">';
-            $html .= '<table class="table table-hover summarytable" >';
+    function getCompanyCustomerList(){
+        $html = '<table class="table table-hover summarytable" >';
             foreach( $this->customerCompanyList as $customerData){
                 $html .= '<tr>';
                     $html .= '<td><a href="'.makeLocalUrl('account/profile_script.php','sec=PROFILE&act=custDetail&cmpId='.$customerData['COMPANY_ID']).'">'.$customerData['COMPANY_NAME'].'</a></td>';
                 $html .= '</tr>';
             }
+            $html .= '</tbody>';
+            $html .= '</table>';
+        $head =  'Customers';
+            $head .= ' &nbsp&nbsp|&nbsp&nbsp<span data-toggle="modal" data-target="#ADD_CUSTOMER">'.getRawActionsIcon('addCmp','Add Customer').'</span>&nbsp';
+        return contentBorder($html,$head);
+    }
+    
+    function getCustomerList($customerList){
+              
+        $html ='';
+        //$html .= '<div class="box-body table-responsive no-padding">';
+            $html .= '<table class="table table-striped projects">';
+            foreach( $customerList as $customerData){
+                $totalOrders = getTotalOrderByCustomerId($this->link,$customerData['COMPANY_ID']);
+                $html .= '<tr>';
+                    $html .= '<td><a href="'.makeLocalUrl('account/profile_script.php','sec=PROFILE&act=custDetail&cmpId='.$customerData['COMPANY_ID']).'">'.$customerData['COMPANY_NAME'].'</a></td>';
+                    $html .= '<td align="right">';
+                        $html .= '<span><a href="'.makeLocalUrl('orders/order_script.php','sec=ORDER&custId='.$customerData['COMPANY_ID']).'"'.getIconButton('fa fa-folder','View Orders','Style="background-color: #0069d9;color:white;border-color: #0062cc;"',$totalOrders).'</a></span>';
+                        $html .= '<span><a href="'.makeLocalUrl('orders/order_creation.php','sec=ORD_CREATION&custId='.$customerData['COMPANY_ID']).'"'.getIconButton('fa fa-cart-plus"','Add Order','Style="background-color: #117a8b;color:white;border-color: #117a8b;"').'</a></span>';
+                    $html .= '</td>';
+                }
             $html .= '</table>';
         //$html .= '</div>';
-        $head =  'Customer';
-            $head .= ' &nbsp&nbsp|&nbsp&nbsp<span data-toggle="modal" data-target="#ADD_CUSTOMER">'.getRawActionsIcon('addCmp','Add Customer').'</span>&nbsp';
-      
-        return contentBorder($html,$head);
+        return contentBox($html);
     }
 
     function getCompanyAddForm(){

@@ -12,7 +12,7 @@ class UserInfo{
     var $assignCmp = array();
     var $privileges = array();
     var $link;
-    
+    var $assignCompny = array();
 
     function UserInfo($link,$userName){
         $this->link = $link;
@@ -42,6 +42,10 @@ class UserInfo{
 
     function setCmpType($cmpType){
         $this->cmpType = $cmpType;
+    }
+
+    function setAssignCompny($assignCompny){
+        $this->assignCompny = $assignCompny;
     }
 
    /* function getUserAssignCompany(){

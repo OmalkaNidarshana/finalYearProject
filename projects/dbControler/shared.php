@@ -85,6 +85,12 @@ function getCustomerListByDistId($link,$cmpId){
     return $data;
 }
 
+function getCustomerList($link){
+    $sql = "select * from company where COMPANY_TYPE =".getTextValue('CUSTOMER');
+    $data = $link->getRecordSetFromQuery($sql);
+    return $data;
+}
+
 function getCustIdByCustomerName($link,$customerName){
     $sql = "select COMPANY_ID  from company where COMPANY_NAME =".getTextValue($customerName);
     $data = $link->getObjectDataFromQuery($sql);
@@ -130,5 +136,26 @@ function updateUserData($link,$userName,$userDataArr){
     }
     $sql = "update user_info set ".implode(",",$data)." where USER_NAME=".getTextValue($userName);
     $link->insertUpdate($sql);
+}
+
+function getPendingUserByUserId($link,$userId){
+    $sql = "select USER_INTID from user_info where USER_NAME =".getTextValue($userId)." and VERIFING =".getTextValue('PENDING');
+    $data = $link->getObjectDataFromQuery($sql);
+    return $data; 
+}
+
+function updateUserPassword($link,$userId,$password){
+    $sql = "update user_info SET PASSWORD=".getTextValue($password).",VERIFING =".getTextValue('VERIFIED')." where USER_NAME =".getTextValue($userId);
+    $link->insertUpdate($sql);
+}
+
+function getCustomerListByIds($link,$ids){
+    if(!empty($ids) ){
+        $sql = "select * from company where COMPANY_ID in(".$ids.")";
+    }else{
+        $sql = "select * from company where COMPANY_TYPE =".getTextValue('CUSTOMER');
+    }
+    $data = $link->getRecordSetFromQuery($sql);
+    return $data;
 }
 ?>

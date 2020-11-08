@@ -21,15 +21,14 @@ if(isset($_REQUEST['logOut'])) {
 }
 
 if( isset($_SESSION['loggedin']) ){
-    header("Location: http://".ROOT."main/home_script.php");
+    header("Location: ".makeLocalUrl('main/home_script.php','') );
     exit; 
 }
 
-
 $html ='';
 if( isset($_REQUEST['login'])){
-    $userName = $_REQUEST['userName'];
-    $pwd = $_REQUEST['pwd'];
+    $userName = $_REQUEST['username'];
+    $pwd = $_REQUEST['pass'];
     $link = new dbConnection(HOST,DB_USER,DB_PWD,DB_NAME);
     $auth = new Authentication($link,$userName,$pwd);
     
@@ -42,6 +41,13 @@ if( isset($_REQUEST['login'])){
     }
 }
 
+$html .='<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>'.TITLE.'</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">';
 
 $html .='<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">';
 $html .= '<link rel="stylesheet" href="http://'.ADMIN_STYLE_ROOT.'bower_components/font-awesome/css/font-awesome.min.css">';
@@ -60,56 +66,38 @@ if(!empty($jsFiles)){
     }
 }
 
-$html .='<div class="limiter" >
-    <div class="container-login100" style="background-color: currentColor;">
-        <div class="wrap-login100">
-            <div class="login100-form-title" style="background-image: url(http://'.IMG_ROOT.'loginImage.WEBP);">
-                <span class="login100-form-title-1">
-                    Colombo Auto Suppliers
-                </span>
+$html .='<div class="limiter">
+            <div class="container-login100" style="background-image: url(http://'.IMG_ROOT.'mainLogin.jpg);">
+                <div class="wrap-login100 p-t-30 p-b-50">
+                    <span class="login100-form-title p-b-41">
+                        Brisk Srilanka
+                    </span>
+                    <form class="login100-form validate-form p-b-33 p-t-5" method="POST">';
+                        if( !empty($errMsgCntnt) ){
+                            $html .='<div class="wrap-input100 validate-input" style="padding-left: 100px;">
+                                <span style="font-size: 12px; color: red;">'.$errMsgCntnt.'</span>
+                            </div>';
+                        }
+                        $html .='<div class="wrap-input100 validate-input" data-validate = "Enter username">
+                            <input class="input100" type="text" name="username" placeholder="User name">
+                            
+                        </div>
+
+                        <div class="wrap-input100 validate-input" data-validate="Enter password">
+                            <input class="input100" type="password" name="pass" placeholder="Password">
+                        </div>
+
+                        <div class="container-login100-form-btn m-t-32">
+                            <button class="login100-form-btn" name="login">
+                                Login
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
             </div>
+        </div>';
 
-            <form class="login100-form validate-form">';
-                if( !empty($errMsgCntnt) ){
-                    $html .='<div class="validate-input m-b-26">
-                        <span style="font-size: 12px; color: red;;">'.$errMsgCntnt.'</span>
-                    </div>';
-                }
-                $html .='<div class="wrap-input100 validate-input m-b-26" data-validate="Username is required">
-                    <span class="label-input100">Username</span>
-                    <input class="input100" type="text" name="userName" placeholder="Enter username">
-                    <span class="focus-input100"></span>
-                </div>
-
-                <div class="wrap-input100 validate-input m-b-18" data-validate = "Password is required">
-                    <span class="label-input100">Password</span>
-                    <input class="input100" type="password" name="pwd" placeholder="Enter password">
-                    <span class="focus-input100"></span>
-                </div>
-
-                <div class="flex-sb-m w-full p-b-30">
-                    <div class="contact100-form-checkbox">
-                        <input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
-                        <label class="label-checkbox100" for="ckb1">
-                            Remember me
-                        </label>
-                    </div>
-
-                    <div>
-                        <a href="#" class="txt1">
-                            Forgot Password?
-                        </a>
-                    </div>
-                </div>
-
-                <div class="container-login100-form-btn">
-                    <button class="login100-form-btn" name="login">
-                        Login
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>';
-   echo $html;
+$html .= '</html>';
+echo $html;
 ?>

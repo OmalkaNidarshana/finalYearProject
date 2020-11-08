@@ -31,11 +31,6 @@
                 break;
                 case 'ACTION':
                     $formatter = '<span onclick="loadCatEditPopUp('.$data['RECORD_ID'].')">'.getRawActionsIcon('edit','Edit Item').'</span>';
-                    if( in_array($data['RECORD_ID'],$this->categoryIds) ){
-                        $formatter .= '&nbsp;&nbsp;&nbsp;&nbsp;<span>'.getRawActionsIcon('cart','Alredy added to Order',false,true).'</span>';
-                    }else{
-                        $formatter .= '&nbsp;&nbsp;&nbsp;&nbsp;<span onclick="addToCart(\''.$data['RECORD_ID'].'\',\''.$this->userInfo->cmpId.'\');">'.getRawActionsIcon('cart','Add To Cart').'</span>';
-                    }
                     $formatter .= '&nbsp;&nbsp;&nbsp;&nbsp;<span>'.getRawActionsIcon('delete','Delete Item').'</span>';
                 break;
                 

@@ -143,6 +143,19 @@ class Authentication{
         } 
         return $pass; 
     } 
+
+    function sendUserCreationEmailContent($to,$name,$userInfo){
+        $subject = 'Brisk Lanka : Verify User Authentication';
+        $headers = "Content-Type: text/html; charset=\"UTF-8\"; format=flowed \r\n";
+        $content = 'Hi '.$name.',<br>';
+        $content .= 'Now you have access to login www.brisksrilanka.com, Please confirm your login.<br>';
+        $content .= 'Confirmation link :'.makeLocalUrl('account/user_creation.php','userId='.urlencode($to));
+        $content .= '<br><br>';
+        $content .= 'Thanks,<br>';
+        $content .= 'Administrator,<br>';
+        $content .= $userInfo->firstName.' '.$userInfo->LastName;
+        mail($to,$subject,$content,$headers);
+    }
 }
 
 ?>

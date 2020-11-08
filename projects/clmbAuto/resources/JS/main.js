@@ -46,9 +46,9 @@ function addUser(){
          type: "POST",
          url: url,
          data: formData,
-         //dataType: 'json', 
+         dataType: 'json', 
          success: function(data){
-            data = $.parseJSON(data);
+            //data = $.parseJSON(data);
             var keys = Object.keys(data);
             if( keys == 'userName'){
                $('#USER_NAME').val("");
@@ -105,3 +105,17 @@ function addCompany(){
    }
 }
 
+function assignCustomer(){
+   var url = $("#customerAssign").val();
+   var postData = $('#ASIGN_CUSTOMER').serialize();
+   $.ajax({
+       type: "POST",
+       url: url,
+       data:postData,
+       success: function(data){
+           location.reload();
+       }
+        
+   });
+
+}

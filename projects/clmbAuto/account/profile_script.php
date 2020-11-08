@@ -28,16 +28,24 @@ if( isset($_REQUEST['addUser']) ){
     print_rr($_FILES);
     exit;
 }
+
+$userData = getUserInfoByUserName($link,$userName);
+
 $acc = new Account($link,$userInfo,$cmpId);
 
 if( $act == 'userInfo' ){
     $page[] = $acc->getUserInfo($userName);
     $page[] = $acc->getUserPrivileges($userName);
+    if($userInfo->role == 'ADMINISTRATOR'){
+        if($userData['USER_TYPE'] == 'SALES_REP')
+        $page[] = $acc->getAssignCustomer($userName);
+    }
+    
 }elseif( $act == 'custDetail' ){
     $page[] = $acc->getCompanyInfo();
 }else{
     $page[] = $acc->getCompanyInfo();
-    $page[] = $acc->getCustomerList();
+    $page[] = $acc->getCompanyCustomerList();
     $page[] = $acc->getUserList();
     $page[] = $acc->getAddUserForm();
     $page[] = $acc->getCompanyAddForm();

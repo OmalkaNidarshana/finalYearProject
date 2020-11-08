@@ -74,12 +74,12 @@ class Order{
     function getOrderCreationHtml(){
         $html ='';
         $html .= '<div class="box-body table-responsive no-padding">';
-            $html .= '<table class="table table-hover summarytable" >';
+            $html .= '<table class="table table-hover summarytable" id="ordrCreation" >';
             $html .= '<tbody><tr>';
                 $html .= '<th>Brand</th><th>Model</th><th>Vehical Code</th><th>CC</th><th>Brisk</th><th>Brisk Code</th><th>Denso
-                        </th><th>IRIDIUM</th><th>Quantity</th>';
+                        </th><th>IRIDIUM</th><th>Description</th><th>Quantity</th>';
             $html .= '</tr>';
-            foreach( $this->categoryIds as $id){
+            /*foreach( $this->categoryIds as $id){
                 $data = getCategoryDataBycategoryId($this->link,$id);
                 $html .= '<tr>';
                     $html .= '<td>'.$data['BRAND'].'</td>';
@@ -92,7 +92,7 @@ class Order{
                     $html .= '<td>'.$data['IRIDIUM'].'</td>';
                     $html .= '<td>'.HTML::numberFeild('qty['.$id.']','1',array('style'=>'width:50px;height:15px;margin:0px;border-radius:3px;')).'</td>';
                 $html .= '</tr>';
-            }
+            }*/
             $html .= '</tbody>';
             $html .= '</table>';
         $html .= '<div>';
@@ -103,27 +103,28 @@ class Order{
     function getOrderCreationSubmit(){
         $html = '';
         $ordId = getMaxOrderId($this->link);
-        $newOrdId = $ordId+1;
-        $submitHtml = HTML::formStart('','POST','ORD_CREATION');
-        $submitHtml .= HTML::hiddenFeild('ORD_NUM','ORD-NUM-'.$newOrdId);
-        
-        foreach($this->categoryIds as $id){
-            $submitHtml .= HTML::hiddenFeild('catIds[]',$id);
+        $briskList = getItemList($this->link);
+
+        foreach($briskList as $brisk){
+            $briskData[$brisk['RECORD_ID']] = $brisk['BRISK_CODE'];
         }
-        $submitHtml .= '<table class="summarytable" width="100%">';
+
+        $newOrdId = $ordId+1;
+        $html = HTML::formStart('','POST','ORD_CREATION');
+        $html .= HTML::hiddenFeild('loadItemDataUrl',makeLocalUrl('orders/order_process.php',''),array('id'=>'loadItemDataUrl'));
+        $html .= HTML::hiddenFeild('ORD_NUM','ORD-NUM-'.$newOrdId,);
+        $submitHtml = '<table class="summarytable" width="100%">';
             $submitHtml .= '<tr>';
-                $submitHtml .= '<td style="color: blue;"><span><b>Order Number : </b>ORD-NUM-'.$newOrdId.'</span>&nbsp;&nbsp;|&nbsp;&nbsp;';
-                $submitHtml .= HTML::submitButtonFeild('order_initiate','Create Order',array('style'=>'width:100px; height:20px;')).'<td>';
-                $submitHtml .='<td style="text-align: right;"><b>Customer : </b>&nbsp;</td><td>'.HTML::selectFeild('CUSTOMER','CUSTOMER',array(""=>"")+$this->customerList,'',array('style'=>'width:70px;')).'</td>';
+                //$submitHtml .= '<td>'..'<td>';
+                //$submitHtml .= HTML::submitButtonFeild('order_initiate','Create Order',array('style'=>'width:100px; height:20px;')).'<td>';
+                $submitHtml .='<td style="text-align: left;width: 100px;"><b>Brisk Code : </b>&nbsp;</td><td>'.HTML::selectFeild('BRISK','BRISK',array(""=>"")+$briskData,'',false,array("style"=>"height: 25px;width: 100px;","onChange"=>"loadItemData();")).'</td>';
                 $submitHtml .= '<td style="text-align: right;">';
-                    if(!empty($this->errMsg) )
-                        $submitHtml .= '<span style="color:red;"><b>'.$this->errMsg.'&nbsp;&nbsp=></b></span>&nbsp;&nbsp';
-                    $submitHtml .= '<b>Expected Delivery Date :</b>&nbsp;'.HTML::dateFeild('EXPTD_DLV_DATE','EXPTD_DLV_DATE',array('placeholder'=>'dsadasd'));
+                $submitHtml .= '<b>Expected Delivery Date : </b>&nbsp;'.HTML::dateFeild('EXPTD_DLV_DATE','EXPTD_DLV_DATE',array('placeholder'=>'dsadasd'));
                 $submitHtml .= '</td>';
             $submitHtml .= '</tr>';
         $submitHtml .= '</table>';
-
-        $html .= contentBox($submitHtml);
+        $headr = '<b>Add Item &nbsp;&nbsp;|&nbsp;&nbsp;'.HTML::submitButtonFeild('order_initiate','Create Order',array('style'=>'width:100px; height:20px;'));//<span data-toggle="modal" data-target="#ADD_ITEM">'.getRawActionsIcon('addItem','Add Item').'</span>';
+        $html .= htmlTableBox($submitHtml,$headr);
         $html .= $this->getOrderCreationHtml();
         $html .= HTML::formEnd();
         return $html;
@@ -210,7 +211,7 @@ class Order{
         $html .= '<div class="box-body table-responsive no-padding">';
             $html .= '<table class="table table-hover summarytable" >';
             $html .= '<tbody><tr>';
-                $html .= '<th>Line#</th><th>Category</th><th>Quantity</th><th>Unit Price</th><th>Total</th><th>Order Date</th><th>Expected Delivery Date</th>
+                $html .= '<th>Line#</th><th>Category</th><th>Quantity</th><th>Unit Price</th><th>Total</th><th>Order Date</th><th>Description</th><th>Expected Delivery Date</th>
                             <th>Status</th><th>Action</th>';
             $html .= '</tr>';
             foreach( $orderLIne as $data){
@@ -221,6 +222,7 @@ class Order{
                     $html .= '<td>'.$this->formatter->formatters('SELL_PRICE',$data['SELL_PRICE'],'').'</td>';
                     $html .= '<td>'.$this->formatter->formatters('TOTAL',$data['TOTAL'],'').'</td>';
                     $html .= '<td>'.$data['ORDER_DATE'].'</td>';
+                    $html .= '<td>'.$data['DESCRIPTION'].'</td>';
                     $html .= '<td>'.$data['EXPECTED_DELIVERY_DATE'].'</td>';
                     $html .= '<td>'.$this->formatter->formatters('STATUS',$data['STATUS'],'').'</td>';
                     $html .= '<td><span onclick="loadEditPopUp(\''.$this->id.'\',\''.$data['LINE_NUM'].'\')">'.getRawActionsIcon('edit','Edit Line').'</span>&nbsp;&nbsp;&nbsp;
@@ -263,6 +265,36 @@ class Order{
         $btn = HTML::submitButtonFeild('edit_line','Save',$attr=array('onclick'=>'saveEditLine('.$this->id.');'));
         $popUp = modalPopupBox('Edit Line','EDIT_LINE_POPUP',$html,$btn);
         return $popUp;
+
+    }
+
+    function addItemPopup(){ // The popUp of item adding form
+        global $countryArray;
+        foreach( $countryArray as $country){
+            $countryName[$country['name']] = $country['name'];
+            $countryCode[$country['code']] = $country['code'];
+        }
+        $html = '';
+        $html .= HTML::formStart('','POST','ADD_ITEM_FORM');
+        $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
+        $html .=HTML::hiddenFeild('cmpId',$this->userInfo->cmpId,array('id'=>'cmpId'));
+        $html .=HTML::hiddenFeild('cmpType',$this->userInfo->cmpType,array('id'=>'cmpType'));
+        $html .=HTML::hiddenFeild('processPath',makeLocalUrl('account/acc_process.php','action=addUser'),array('id'=>'processPath'));
+            $html .='<tr>';
+                $html .='<td>'.HTML::lblFeild('Item List : ',array("style"=>"padding:5px;") ).'</td>';
+                $html .='<td>'.HTML::textFeild('ITEM_LIST','',array('style'=>'width:300px;','id'=>'FIRST_NAME')).'</td>';
+            $html .='</tr>';
+            $html .='<tr>';
+                $html .='<td>'.HTML::lblFeild('Last Name : ',array("style"=>"padding:5px;") ).'</td>';
+                $html .='<td>'.HTML::textFeild('LST_NAME','',array('style'=>'width:300px;','id'=>'LST_NAME')).'</td>';
+            $html .='</tr>';
+            $html .='<tr>';
+            $btn = HTML::submitButtonFeild('save','Save',array('onclick'=>'addUser();'));
+        $html .= HTML::openCloseTable(false,false);
+        $html .= HTML::formEnd();
+        $popUp = modalPopupBox('Add Item','ADD_ITEM',$html,$btn);
+        return $popUp;
+
 
     }
 }

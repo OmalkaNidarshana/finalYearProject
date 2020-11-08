@@ -146,7 +146,7 @@
     margin-top: 150px;
 }
 
-input[type=text], input[type=tel], input[type=date], input[type=number],input[type=checkbox],select {
+input[type=text], input[type=tel], input[type=date], input[type=number],input[type=checkbox],textarea,select {
     /*padding: 12px 20px;*/
     margin: 8px 0;
     display: inline-block;
@@ -267,4 +267,8 @@ button, input, select, textarea {
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
+}
+
+.iconPadding{
+    padding-left: 15px;
 }

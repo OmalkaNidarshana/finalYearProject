@@ -7,6 +7,8 @@ function getMaxOrderId($link){
 }
 
 function insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$custId,$ordrData){
+    $quantityData = $ordrData['qty'];
+    $descriptionData = $ordrData['desk'];
    
     $insertData = array();
     $sql = 'select max(ORDER_ID) from orders where ORDER_NUM ='.getTextValue($ordNum);
@@ -28,16 +30,17 @@ function insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$custId,$ordrDa
         $sql = 'insert into orders ('.implode(",",array_keys($insertData) ).') values ('.implode(",",array_values($insertData) ).')';
         $link->insertUpdate($sql);
         $headerId = getMaxOrderId($link);
-        foreach( $ordrData as $categoryId=>$quantity ){
+        foreach( $quantityData as $categoryId=>$quantity ){
             $categoryData = getCategoryDataBycategoryId($link,$categoryId);
-            insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$categoryData,$exptDlvDate,$quantity,$ordNum);
+            $description = $descriptionData[$categoryId];
+            insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$categoryData,$exptDlvDate,$quantity,$ordNum,$description);
             $lineNum++;
         }
     }
     return $headerId;
 }
 
-function insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$data,$exptDlvDate,$quantity,$ordNum){
+function insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$data,$exptDlvDate,$quantity,$ordNum,$description){
     $sql = 'select LINE_ID from order_lines where ORDER_HEADER_ID ='.$headerId.' and LINE_NUM='.$lineNum;
     $lineId = $link->getObjectDataFromQuery($sql);
     if( empty($lineId) ){
@@ -50,6 +53,7 @@ function insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$data,$exptDl
         $insertData['ORDER_DATE'] = getCurrentDateTime();
         $insertData['EXPECTED_DELIVERY_DATE'] =  dateTimeValue($exptDlvDate);
         $insertData['STATUS'] = getTextValue('NEW');
+        $insertData['DESCRIPTION'] = getTextValue($description);
         $insertData['CREATED_BY'] = $userInfo->intId;
         $insertData['MODIFIED_BY'] = $userInfo->intId;
         $insertData['CREATED_DATE'] = getCurrentDateTime();
@@ -116,5 +120,23 @@ function insertCommission($link,$category,$total,$salesPrice,$rate,$ordNum){
     $insert['CREATED_DATE'] = getCurrentDateTime();
     $sql = 'insert into commisions ('.implode(",",array_keys($insert) ).') values ('.implode(",",array_values($insert) ).')';
     $link->insertUpdate($sql);
+}
+
+function getItemList($link){ //get all unique item name from table
+    $sql = "select RECORD_ID, BRISK_CODE from category";
+    $data = $link->getRecordSetFromQuery($sql);
+    return $data;
+}
+
+function getItemDataByBrisk($link,$id){ //get all item type releted to brisk number
+    $sql = "SELECT * FROM category WHERE RECORD_ID = ".$id;
+    $data = $link->getRowDataFromQuery($sql);
+    return $data;
+}
+
+function getTotalOrderByCustomerId($link,$custId){// get number of order for each customer
+    $sql ='select count(ORDER_ID) from orders where CUSTOMER_ID ='.$custId;
+    $data = $link->getObjectDataFromQuery($sql);
+    return $data;
 }
 ?>

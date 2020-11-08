@@ -9,11 +9,10 @@ include_once $projPath."/shared/classes/HTML.php";
 include_once $projPath."/shared/classes/Script.php";
 include_once $projPath."/shared/classes/SortableTable.php";
 include_once $projPath."/shared/classes/MainChart.php";
-include_once $projPath."/shared/classes/fldsAtribute.php";
+include_once $projPath."/shared/classes/FldsAtribute.php";
 include_once $projPath."/shared/classes/TableFormatter.php";
 include_once $projPath."/dbControler/shared.php";
 include_once $projPath."/dbControler/order.php";
-
 
 $jsFiles[] = JS_ROOT."sortable_table.js";
 $jsFiles[] = JS_ROOT."main.js";
@@ -28,12 +27,16 @@ $regulerSrch = isset($_REQUEST['reguler']) ? $_REQUEST['reguler'] : array();
 $isCustomSrch = isset($_REQUEST['custom_search']) ? true : false;
 $custSrchVal = isset($_REQUEST['random_search']) ? $_REQUEST['random_search'] : '';
 
+$custId = isset($_REQUEST['custId']) ? $_REQUEST['custId'] : '';
 //$link->showQuery = true;
-
+$whereClause = array();
 $order = new Order($link,$userInfo);
 $script = new Script($link,$order->tblColumns,$order->fldDefinition);
 
-$whereClause = array();
+if( !empty($custId) ){
+    $whereClause[] = 'CUSTOMER_ID ='.$custId;
+}
+
 if($isRegSrch){
     $script->setRegulerSearch($regulerSrch);
     $whereClause = $script->analysRegulerSearch();

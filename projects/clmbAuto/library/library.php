@@ -175,6 +175,10 @@ function getRawActionsIcon($type,$titile,$isanimated=true,$isDisable=false){
             $icon = 'fa fa-plus-circle';
             $class = 'addUser';
         break;
+        case "addItem":
+            $icon = 'fa fa-plug';
+            $class = 'addUser';
+        break;
     }
 
     if($isanimated){
@@ -188,7 +192,7 @@ function getRawActionsIcon($type,$titile,$isanimated=true,$isDisable=false){
         $class = 'disable';
     }
 
-    $action = '<i class="fa '.$icon.' faa-shake '.$animated.' '.$class.' fa-lg" title="'.$titile.'"></i>';
+    $action = '<i class="fa '.$icon.' faa-shake '.$animated.' '.$class.' fa-lg iconPadding" title="'.$titile.'"></i>';
     //print_rr($action )
     return $action;
 }
@@ -270,4 +274,14 @@ function getCommisions($total,$rate){
     $commission = $total*($rate/100);
     return $commission;
 }
+
+function getIconButton($faIcon,$title,$style='',$count=''){
+    $btn = '<a class="btn btn-app" '.$style.'>';
+    if( !empty($count) )
+        $btn .= '<span class="badge bg-green">'.$count.'</span>';
+    $btn .= '<i class="'.$faIcon.'"></i>'.$title.'</a>';
+    return $btn;
+}
+
+
 ?>

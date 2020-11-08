@@ -6,7 +6,7 @@ include_once $sysPath."/library/library.php";
 include_once $sysPath."/account/Account.php";
 include_once $projPath."/shared/classes/Authentication.php";
 include_once $projPath."/shared/classes/DbConnection.php";
-include_once $projPath."/shared/classes/Email.php";
+//include_once $projPath."/shared/classes/Email.php";
 
 include_once $sysPath."/orders/Order.php";
 include_once $sysPath."/orders/OrderTableFormatter.php";
@@ -47,6 +47,10 @@ if( $action =='orderSubmit' ){
     print_rr($_REQUEST);
     $sql = 'delete from order_lines where ORDER_HEADER_ID ='.$ordId.' and LINE_NUM ='.$lineId;
     $link->insertUpdate($sql);
+}elseif($action =='loadItemData'){
+    $reletedItemData = getItemDataByBrisk($link,$_REQUEST['brisk']);
+    echo json_encode($reletedItemData);
+
 }
 
 ?>

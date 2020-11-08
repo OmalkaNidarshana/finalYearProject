@@ -67,8 +67,8 @@ class Category{
         $dataTable->setColumList($this->colList);
         $dataTable->setFilters($this->fltr);
         $dataTable->loadPageData();
-        $data = $this->getHeaderLevelData();
-        $dataTable->setHeaderLevelData($data);
+        //$data = $this->getHeaderLevelData();
+        //$dataTable->setHeaderLevelData($data);
         foreach( $this->summaryFlds as $flds){
             if( $flds == 'ACTION'){
                 $dataTable->addColumn($flds,'Actions');

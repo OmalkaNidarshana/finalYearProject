@@ -257,4 +257,7 @@ $countryArray = array(
 	'ZM'=>array('name'=>'ZAMBIA','code'=>'260'),
 	'ZW'=>array('name'=>'ZIMBABWE','code'=>'263')
 );
+
+define('MAIL_FROM','gsdd.gmgroup@gmail.com');
+define('MAIL_PASS','sh1mr0ck@welcome');
 ?>
