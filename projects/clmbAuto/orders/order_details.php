@@ -13,11 +13,13 @@ include_once $projPath."/shared/classes/FldsAtribute.php";
 include_once $projPath."/shared/classes/TableFormatter.php";
 include_once $projPath."/dbControler/shared.php";
 include_once $projPath."/dbControler/order.php";
+include_once $projPath."/dbControler/invoice.php";
 
 
 $jsFiles[] = JS_ROOT."sortable_table.js";
 $jsFiles[] = JS_ROOT."main.js";
 $jsFiles[] = JS_ROOT."order.js";
+$jsFiles[] = JS_ROOT."invoice.js";
 
 
 $csFiles[] = STYLE_ROOT."main.css";
@@ -49,10 +51,12 @@ if($isCustomSrch){
 
 $order->setFltrs($whereClause);
 
-
+$page[] = $order->getActionPanel();
 $page[] = $order->getOrderHeaderDetails();
 $page[] = $order->OrderLineItems();
 $page[] = $order->loadEditLinePopup();
+$page[] = $order->getInvoiceAddingForm();
+$page[] = $order->getTotalAmoutPanel();
 //$page[] = $order->getRegulerSearchHtml();
 
 include_once $sysPath."/library/header.php";

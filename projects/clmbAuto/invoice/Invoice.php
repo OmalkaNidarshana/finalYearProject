@@ -126,7 +126,6 @@ class Invoice{
 
         $html = $dataTable->htmlTable();
         $head = 'Invoices';
-        $head .= '<span data-toggle="modal" data-target="#ADD_INV_POPUP">'.getRawActionsIcon('add','Add Invoice').'</span>';
         return htmlTableBox($html,$head);
 
     }

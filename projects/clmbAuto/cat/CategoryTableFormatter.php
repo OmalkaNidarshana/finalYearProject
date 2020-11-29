@@ -23,7 +23,6 @@
                 case 'PRICE':
                 case 'SPECIAL_PRICE':
                 case 'SELL_PRICE':
-                case 'DIS':
                     $formatter = formatCurrency($value);
                 break;
                 case 'COMMISION':
@@ -31,7 +30,7 @@
                 break;
                 case 'ACTION':
                     $formatter = '<span onclick="loadCatEditPopUp('.$data['RECORD_ID'].')">'.getRawActionsIcon('edit','Edit Item').'</span>';
-                    $formatter .= '&nbsp;&nbsp;&nbsp;&nbsp;<span>'.getRawActionsIcon('delete','Delete Item').'</span>';
+                    $formatter .= '<span>'.getRawActionsIcon('delete','Delete Item').'</span>';
                 break;
                 
                 default:

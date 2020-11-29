@@ -47,7 +47,7 @@ if( isset($_REQUEST['order_initiate']) ){
         exit;
 }
 
-
+//$page[] = $ord->getOrderCreationAction();
 $page[] = $ord->getOrderCreationSubmit();
 
 //$page[] = $ord->addItemPopup();
