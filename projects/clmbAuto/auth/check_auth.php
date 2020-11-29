@@ -2,6 +2,8 @@
 include_once $projPath."/shared/classes/DbConnection.php";
 include_once $projPath."/shared/classes/UserInfo.php";
 include_once $projPath."/dbControler/auth_lib.php";
+include_once $projPath."/dbControler/shared.php";
+include_once $sysPath."/library/library.php";
 
 session_start();
 if( !isset($_SESSION['loggedin']) ){

@@ -127,7 +127,7 @@ class Invoice{
         $html = $dataTable->htmlTable();
         $head = 'Invoices';
         $head .= '<span data-toggle="modal" data-target="#ADD_INV_POPUP">'.getRawActionsIcon('add','Add Invoice').'</span>';
-        return htmlTableBox($html,$head,'true');
+        return htmlTableBox($html,$head);
 
     }
 
@@ -227,7 +227,7 @@ class Invoice{
             $html .='<div class="row">';
             $html .='<div class="col-xs-12">';
                 $html .='<h2 class="page-header"><i class="fa fa-globe"></i> Brisk Lanka.';
-                    $html .='<small class="pull-right">Date: 2/10/2014</small>';
+                    $html .='<small class="pull-right">Date: '.formatDate($this->details['INVOICE_CLOSE_DATE']).'</small>';
                 $html .='</h2>';
             $html .='</div>';
         $html .='</div>';
@@ -242,9 +242,9 @@ class Invoice{
                 $html .='<address>';
                 $html .='<strong>'.$this->cmpDetails['COMPANY_NAME'].'</strong><br>';
                 $html .= $this->cmpDetails['ADRESS'].'<br>';
-                $html .= $this->cmpDetails['POSATL_CODE'].','.$this->cmpDetails['POSATL_CODE'].','.$this->cmpDetails['CITY'].'<br>';
-                $html .='Phone: '.$this->cmpDetails['EMAIL'].'<br>';
-                $html .='Email: '.$this->cmpDetails['PHONE'];
+                $html .= $this->cmpDetails['POSATL_CODE'].','.$this->cmpDetails['CITY'].'<br>';
+                $html .='Phone: '.$this->cmpDetails['PHONE'].'<br>';
+                $html .='Email: '.$this->cmpDetails['EMAIL'];
                 $html .='</address>';
             $html .='</div>';
             $html .='<div class="col-sm-4 invoice-col">';
@@ -252,16 +252,16 @@ class Invoice{
                 $html .='<address>';
                 $html .='<strong>'.$this->customerData['COMPANY_NAME'].'</strong><br>';
                 $html .= $this->customerData['ADRESS'].'<br>';
-                $html .= $this->customerData['POSATL_CODE'].','.$this->customerData['POSATL_CODE'].','.$this->customerData['CITY'].'<br>';
-                $html .='Phone: '.$this->customerData['EMAIL'].'<br>';
-                $html .='Email: '.$this->customerData['PHONE'].'';
+                $html .= $this->customerData['POSATL_CODE'].','.$this->customerData['CITY'].'<br>';
+                $html .='Phone: '.$this->customerData['PHONE'].'<br>';
+                $html .='Email: '.$this->customerData['EMAIL'];
                 $html .='</address>';
             $html .='</div>';
                 $html .='<div class="col-sm-4 invoice-col">';
                 $html .='<b>Invoice '.$this->details['INV_NUM'].'</b><br>';
                 $html .='<br>';
                 $html .='<b>Order ID:</b> '.$this->details['ORDER_NUM'].'<br>';
-                $html .='<b>Payment Due:</b> '.$this->details['INVOICE_CLOSE_DATE'].'<br>';
+                $html .='<b>Payment Due:</b> '.formatDate($this->details['INVOICE_DATE']).'<br>';
                 //$html .='<b>Account:</b> 968-34567';
             $html .='</div>';
         $html .='</div>';
@@ -298,7 +298,7 @@ class Invoice{
     function getInvoiceAmmountDetails(){
         $html ='<div class="row">';
             $html .='<div class="col-xs-6">';
-                $html .='<p class="lead">Amount Due 2/22/2014</p>';
+                $html .='<p class="lead">Amount Due '.formatDate($this->details['INVOICE_CLOSE_DATE']).'</p>';
                 $html .='<div class="table-responsive">';
                     $html .='<table class="table">';
                     $html .='<tbody>';

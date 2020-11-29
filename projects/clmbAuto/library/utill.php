@@ -25,15 +25,16 @@ function getLeftMainMenue($mainMenueArr,$subMenueArr,$menueIcon){
 
 }
 
+
 function getHeaderProfileSect($userInfo){
     $html = '<li class="dropdown user user-menu">';
        $html .='<a href="#" class="dropdown-toggle" data-toggle="dropdown">';
-           $html .='<img src="http://'.IMG_ROOT.'userImg/user_omalka.jpg" class="user-image" alt="User Image">';
+           $html .='<img src="" class="user-image" alt="User Image">';
            $html .='<span class="hidden-xs">'.$userInfo->firstName.' '.$userInfo->LastName.'</span>';
        $html .='</a>';
        $html .='<ul class="dropdown-menu">';
            $html .='<li class="user-header">';
-               $html .='<img src="http://'.IMG_ROOT.'userImg/user_omalka.jpg" class="img-circle" alt="User Image">';
+               $html .='<img src="" class="img-circle" alt="User Image">';
                $html .='<p>'.$userInfo->firstName.' '.$userInfo->LastName.' - '.$userInfo->role.'<small>'.$userInfo->userName.'</small></p>';
            $html .='</li>';
            $html .='<li class="user-footer">';

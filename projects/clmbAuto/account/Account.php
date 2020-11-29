@@ -451,7 +451,9 @@ class Account{
                     $html .= '<td><a href="'.makeLocalUrl('account/profile_script.php','sec=PROFILE&act=custDetail&cmpId='.$customerData['COMPANY_ID']).'">'.$customerData['COMPANY_NAME'].'</a></td>';
                     $html .= '<td align="right">';
                         $html .= '<span><a href="'.makeLocalUrl('orders/order_script.php','sec=ORDER&custId='.$customerData['COMPANY_ID']).'"'.getIconButton('fa fa-folder','View Orders','Style="background-color: #0069d9;color:white;border-color: #0062cc;"',$totalOrders).'</a></span>';
-                        $html .= '<span><a href="'.makeLocalUrl('orders/order_creation.php','sec=ORD_CREATION&custId='.$customerData['COMPANY_ID']).'"'.getIconButton('fa fa-cart-plus"','Add Order','Style="background-color: #117a8b;color:white;border-color: #117a8b;"').'</a></span>';
+                        if( $this->userInfo->userIsSalesRep() ){
+                            $html .= '<span><a href="'.makeLocalUrl('orders/order_creation.php','sec=ORD_CREATION&custId='.$customerData['COMPANY_ID']).'"'.getIconButton('fa fa-cart-plus"','Add Order','Style="background-color: #117a8b;color:white;border-color: #117a8b;"').'</a></span>';
+                        }
                     $html .= '</td>';
                 }
             $html .= '</table>';

@@ -42,6 +42,7 @@ class Category{
     function setFltrs($fltr){
         $this->fltr = $fltr;
     }
+    
     function initiate(){
         $this->CategoryTableDefinitions();
 

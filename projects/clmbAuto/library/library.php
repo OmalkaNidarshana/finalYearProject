@@ -109,10 +109,13 @@ function contentBox($table){
  }
 
  function formatDate($date){
+    $dateVal = date('Y-m-d',strtotime($date));
+    return $dateVal;
+ }
+ function formatDateTime($date){
     $dateVal = date('Y-m-d H:i:s',strtotime($date));
     return $dateVal;
  }
-
  function strToTimeConverter($date){
     $dateVal = strtotime($date);
     return $dateVal;

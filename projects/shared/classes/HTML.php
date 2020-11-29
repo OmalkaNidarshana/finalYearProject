@@ -108,7 +108,7 @@ class HTML{
 		}else{
 			$multi ='';
 		}
-		$html ='<select id="'.$id.'" name="'.$name.'"'.$multi.$attr.'>';
+		$html ='<select id="'.$id.'" name="'.$name.'"'.$multi.'"'.$attr.'>';
 			foreach($optionArray as $value=>$lbl){
 				if($selectedVal == $lbl){
 					$html .='<option value="'.$value.'" selected>'.$lbl.'</option>';

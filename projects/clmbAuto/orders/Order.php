@@ -75,10 +75,10 @@ class Order{
         $html ='';
         $html .= '<div class="box-body table-responsive no-padding">';
             $html .= '<table class="table table-hover summarytable" id="ordrCreation" >';
-            $html .= '<tbody><tr>';
+            $html .= '<thead><tr>';
                 $html .= '<th>Brand</th><th>Model</th><th>Vehical Code</th><th>CC</th><th>Brisk</th><th>Brisk Code</th><th>Denso
-                        </th><th>IRIDIUM</th><th>Description</th><th>Quantity</th>';
-            $html .= '</tr>';
+                        </th><th>IRIDIUM</th><th>Description</th><th>Quantity</th><th>Action</th>';
+            $html .= '</tr></thead>';
             /*foreach( $this->categoryIds as $id){
                 $data = getCategoryDataBycategoryId($this->link,$id);
                 $html .= '<tr>';
@@ -93,7 +93,6 @@ class Order{
                     $html .= '<td>'.HTML::numberFeild('qty['.$id.']','1',array('style'=>'width:50px;height:15px;margin:0px;border-radius:3px;')).'</td>';
                 $html .= '</tr>';
             }*/
-            $html .= '</tbody>';
             $html .= '</table>';
         $html .= '<div>';
         
@@ -104,9 +103,9 @@ class Order{
         $html = '';
         $ordId = getMaxOrderId($this->link);
         $briskList = getItemList($this->link);
-
-        foreach($briskList as $brisk){
-            $briskData[$brisk['RECORD_ID']] = $brisk['BRISK_CODE'];
+        
+       foreach($briskList as $brisk){
+            $briskData[$brisk] = $brisk;
         }
 
         $newOrdId = $ordId+1;
@@ -117,10 +116,11 @@ class Order{
             $submitHtml .= '<tr>';
                 //$submitHtml .= '<td>'..'<td>';
                 //$submitHtml .= HTML::submitButtonFeild('order_initiate','Create Order',array('style'=>'width:100px; height:20px;')).'<td>';
-                $submitHtml .='<td style="text-align: left;width: 100px;"><b>Brisk Code : </b>&nbsp;</td><td>'.HTML::selectFeild('BRISK','BRISK',array(""=>"")+$briskData,'',false,array("style"=>"height: 25px;width: 100px;","onChange"=>"loadItemData();")).'</td>';
-                $submitHtml .= '<td style="text-align: right;">';
+                $submitHtml .='<td style="text-align: left;width: 100px;"><b>Brisk Code : </b>&nbsp;</td><td style="width: 150px;">'.HTML::selectFeild('BRISK','BRISK',array(""=>"")+$briskData,'',false,array("style"=>"height: 25px;width: 100px;","onChange"=>"loadModelList();")).'</td>';
+                $submitHtml .='<td style="text-align: left;width: 100px;"><b>Model : </b>&nbsp;</td><td>'.HTML::selectFeild('MODEL','MODEL',array(""=>""),'',false,array("style"=>"height: 25px;width: 100px;","onChange"=>"loadItemData();")).'</td>';
+                /*$submitHtml .= '<td style="text-align: right;">';
                 $submitHtml .= '<b>Expected Delivery Date : </b>&nbsp;'.HTML::dateFeild('EXPTD_DLV_DATE','EXPTD_DLV_DATE',array('placeholder'=>'dsadasd'));
-                $submitHtml .= '</td>';
+                $submitHtml .= '</td>';*/
             $submitHtml .= '</tr>';
         $submitHtml .= '</table>';
         $headr = '<b>Add Item &nbsp;&nbsp;|&nbsp;&nbsp;'.HTML::submitButtonFeild('order_initiate','Create Order',array('style'=>'width:100px; height:20px;'));//<span data-toggle="modal" data-target="#ADD_ITEM">'.getRawActionsIcon('addItem','Add Item').'</span>';
@@ -151,7 +151,7 @@ class Order{
         }
 
         $html = $dataTable->htmlTable();
-        return htmlTableBox($html,'Orders','true');
+        return htmlTableBox($html,'Orders');
 
     }
 

@@ -13,7 +13,7 @@ include_once $sysPath."/orders/OrderTableFormatter.php";
 include_once $projPath."/shared/classes/HTML.php";
 include_once $projPath."/shared/classes/Script.php";
 include_once $projPath."/shared/classes/SortableTable.php";
-include_once $projPath."/shared/classes/fldsAtribute.php";
+include_once $projPath."/shared/classes/FldsAtribute.php";
 include_once $projPath."/shared/classes/TableFormatter.php";
 include_once $projPath."/dbControler/shared.php";
 
@@ -44,13 +44,20 @@ if( $action =='orderSubmit' ){
    
     $link->insertUpdate($sql);
 }elseif($action =='deleteOrdLine'){
-    print_rr($_REQUEST);
+    
     $sql = 'delete from order_lines where ORDER_HEADER_ID ='.$ordId.' and LINE_NUM ='.$lineId;
     $link->insertUpdate($sql);
 }elseif($action =='loadItemData'){
-    $reletedItemData = getItemDataByBrisk($link,$_REQUEST['brisk']);
+    
+    $reletedItemData = getItemDataByBriskCodeAndModel($link,$_REQUEST['brisk'],$_REQUEST['model']);
     echo json_encode($reletedItemData);
-
+}elseif($action =='loadModelList'){
+    $briskCode = $_REQUEST['brsikCode'];
+    $modelList = getModelListByBrickCode($link,$briskCode);
+    foreach($modelList as $model){
+        $modelListArr[$model] = $model;
+    }
+    echo json_encode($modelListArr);
 }
 
 ?>

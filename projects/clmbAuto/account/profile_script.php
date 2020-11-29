@@ -38,7 +38,7 @@ if( $act == 'userInfo' ){
     $page[] = $acc->getUserPrivileges($userName);
     if($userInfo->role == 'ADMINISTRATOR'){
         if($userData['USER_TYPE'] == 'SALES_REP')
-        $page[] = $acc->getAssignCustomer($userName);
+            $page[] = $acc->getAssignCustomer($userName);
     }
     
 }elseif( $act == 'custDetail' ){

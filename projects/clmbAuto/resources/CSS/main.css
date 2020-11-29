@@ -272,3 +272,15 @@ button, input, select, textarea {
 .iconPadding{
     padding-left: 15px;
 }
+
+.blink {
+    color: #FF0000;
+    animation: blinker 1s;
+  }
+  
+ 
+  @keyframes blinker {
+    10% {
+      opacity: 0;
+    }
+  }

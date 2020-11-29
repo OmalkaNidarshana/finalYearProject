@@ -19,7 +19,7 @@ function getSubMenueArray(){
     $subMenueArr['ACC']['Sales'] = makeLocalUrl('main/restricted.php','') ;
     $subMenueArr['ACC']['Incomes'] = makeLocalUrl('main/restricted.php','') ;
     $subMenueArr['ACC']['Expenses'] = makeLocalUrl('main/restricted.php','') ;
-    $subMenueArr['CUSTOMER'] = makeLocalUrl('account/customer_script.php','CUSTOMER') ;
+    $subMenueArr['CUSTOMER'] = makeLocalUrl('account/customer_script.php','sec=CUSTOMER') ;
     $subMenueArr['ORDERS']['Orders'] = makeLocalUrl('orders/order_script.php','sec=ORDER');
     $subMenueArr['ORDERS']['Re-Orders'] = makeLocalUrl('main/restricted.php','') ;
     $subMenueArr['ORDERS']['Rejected Orders'] = makeLocalUrl('main/restricted.php','') ;

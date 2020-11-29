@@ -18,7 +18,7 @@ function insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$custId,$ordrDa
         $insertData['COMPANY_ID'] = $userInfo->cmpId;
         $insertData['CUSTOMER_ID'] = $custId;
         $insertData ['ORDER_NUM'] = getTextValue($ordNum);
-        $insertData['LINE_ITEM'] = count($ordrData);
+        $insertData['LINE_ITEM'] = count($quantityData);
         $insertData['ORDER_DATE'] = getCurrentDateTime();
         $insertData['EXPECTED_DELIVERY_DATE'] = dateTimeValue($exptDlvDate);
         $insertData['STATUS'] = getTextValue('NEW');
@@ -123,14 +123,20 @@ function insertCommission($link,$category,$total,$salesPrice,$rate,$ordNum){
 }
 
 function getItemList($link){ //get all unique item name from table
-    $sql = "select RECORD_ID, BRISK_CODE from category";
-    $data = $link->getRecordSetFromQuery($sql);
+    $sql = "select distinct(BRISK_CODE) from category";
+    $data = $link->getColumnDataFromQuery($sql);
     return $data;
 }
 
-function getItemDataByBrisk($link,$id){ //get all item type releted to brisk number
-    $sql = "SELECT * FROM category WHERE RECORD_ID = ".$id;
-    $data = $link->getRowDataFromQuery($sql);
+function getModelListByBrickCode($link,$briskCode){ //get all model list related to brisk code
+    $sql = "select distinct(MODEL) from category where BRISK_CODE = ".getTextValue($briskCode);
+    $data = $link->getColumnDataFromQuery($sql);
+    return $data;
+}
+
+function getItemDataByBriskCodeAndModel($link,$briskCode,$model){ //get all item type releted to brisk number
+    $sql = "SELECT * FROM category WHERE BRISK_CODE = ".getTextValue($briskCode)." and MODEL = ".getTextValue($model);
+    $data = $link->getRecordSetFromQuery($sql);
     return $data;
 }
 

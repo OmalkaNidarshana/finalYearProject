@@ -30,7 +30,7 @@ $ids = $userInfo->assignCompny;
      header("Location: ".makeLocalUrl('main/customer_restrict.php','') );
     exit;
 }*/
-
+$auth = new Authentication($link,$userInfo->userName,'');
 $ord = new Order($link,$userInfo);
 
 if( isset($_REQUEST['order_initiate']) ){
@@ -40,10 +40,9 @@ if( isset($_REQUEST['order_initiate']) ){
         $ordrData['desk'] = $_REQUEST['desk'];
         $ordNum = $_REQUEST['ORD_NUM'];
         $headerId = insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$customerId,$ordrData);
-        //$cartData = getPendingCartDataByUserId($link,$userInfo->userName);
-       // $cartId = $cartData['CART_ID'];
-       /* $sql = "update cart SET STATUS = 'COMPLETED'  where CART_ID=".$cartId;
-        $link->insertUpdate($sql);*/
+        $customerData = getCompanyDataByCmpId($link,$customerId);
+        $auth->sendorderCreationEmailContent($ordNum,$customerData['COMPANY_NAME'],$headerId,$userInfo);
+
         header('Location: '.makeLocalUrl('orders/order_details.php','sec=ORDER&id='.$headerId));
         exit;
 }

@@ -13,10 +13,13 @@ class UserInfo{
     var $privileges = array();
     var $link;
     var $assignCompny = array();
+    var $userInfo;
 
     function UserInfo($link,$userName){
         $this->link = $link;
         $this->userName = $userName;
+        $this->userInfo = getUserInfoByUserId($link,$userName);
+        //print_r($this->userInfo);
                 
     }
 
@@ -48,14 +51,30 @@ class UserInfo{
         $this->assignCompny = $assignCompny;
     }
 
-   /* function getUserAssignCompany(){
+   function userIsSalesRep(){
+        $this->userRole = $this->userInfo['USER_TYPE'];
+        if($this->userRole == 'SALES_REP')
+            return true;
+        else
+            return false;
+    }
+
+    function userIsAdmistrtor(){
+        if($this->userRole == 'ADMINISTRATOR')
+            return true;
+        else
+            return false;
 
     }
 
-    function getUserPrivilegeByUserId(){
+    function userIsAccountManager(){
+        if($this->userRole == 'ACCOUNT_MANAGER')
+            return true;
+        else
+            return false;
 
+    }
 
-    }*/
 }
 
 

@@ -156,6 +156,16 @@ class Authentication{
         $content .= $userInfo->firstName.' '.$userInfo->LastName;
         mail($to,$subject,$content,$headers);
     }
+
+    function sendorderCreationEmailContent($ordNumber,$customerName,$ordrId,$userInfo){
+        $subject = 'Brisk Lanka : New Order Has Been Created : Order NO | '.$ordNumber;
+        $headers = "Content-Type: text/html; charset=\"UTF-8\"; format=flowed \r\n";
+        $content = 'Hi Team,<br>';
+        $content .= 'New order has been created for '.$customerName.' by '.$userInfo->firstName.' '.$userInfo->LastName.'<br>';
+        $content .= 'Order link :'.makeLocalUrl('orders/order_details.php','sec=ORDER&id='.$ordrId);
+        mail('waautosuppl@gmail.com',$subject,$content,$headers);
+
+    }
 }
 
 ?>

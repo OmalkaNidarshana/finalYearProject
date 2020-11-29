@@ -10,7 +10,7 @@ include_once $projPath."/shared/classes/HTML.php";
 include_once $projPath."/shared/classes/Script.php";
 include_once $projPath."/shared/classes/SortableTable.php";
 include_once $projPath."/shared/classes/MainChart.php";
-include_once $projPath."/shared/classes/fldsAtribute.php";
+include_once $projPath."/shared/classes/FldsAtribute.php";
 include_once $projPath."/shared/classes/TableFormatter.php";
 include_once $projPath."/dbControler/shared.php";
 include_once $projPath."/dbControler/category.php";
