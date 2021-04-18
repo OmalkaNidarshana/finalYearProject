@@ -31,11 +31,14 @@
                 case 'STATUS':
                     $formatter = OrdersStatusColorBox($value);
                 break;
-                case 'PRICE':
-                case 'SPECIAL_PRICE':
+                case 'ADDITIONAL_DISSCOUNT':
+                    $formatter = $value.'%';
+                break;
+                case 'AMMOUNT':
+                case 'NET_AMMOUNT':
                 case 'SELL_PRICE':
-                case 'DIS':
                 case 'TOTAL':
+                case 'DISCOUNT':
                     $formatter = formatCurrency($value);
                 break;
                 case 'ACTION':

@@ -40,7 +40,7 @@ class Authentication{
 
     function checkLoginValidation(){
         if( empty($this->userData) && !empty($this->userName) ){
-            $this->errMsg = "Invalid Logins.";
+            $this->errMsg = "Invalid User Name";
         }elseif( empty($this->userName) && empty($this->password) ){
             $this->errMsg = "Please Enter Your Logins.";
         }elseif( empty($this->userName) ){

@@ -158,4 +158,11 @@ function getCustomerListByIds($link,$ids){
     $data = $link->getRecordSetFromQuery($sql);
     return $data;
 }
+
+function getUserPrivielegesByUserId($link,$userId){
+    $sql = "select PRIVE_NAME from user_privileges where USER_ID =".$userId;
+	$data = $link->getcolumnDataFromQuery($sql);
+    return $data;
+
+}
 ?>

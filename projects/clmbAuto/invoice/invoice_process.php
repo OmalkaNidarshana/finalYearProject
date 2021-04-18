@@ -6,7 +6,7 @@ include_once $sysPath."/library/library.php";
 include_once $sysPath."/account/Account.php";
 include_once $projPath."/shared/classes/Authentication.php";
 include_once $projPath."/shared/classes/DbConnection.php";
-include_once $projPath."/shared/classes/Email.php";
+//include_once $projPath."/shared/classes/Email.php";
 
 include_once $sysPath."/orders/Order.php";
 include_once $sysPath."/orders/OrderTableFormatter.php";
@@ -23,7 +23,7 @@ $action = isset($_REQUEST['action'])?$_REQUEST['action']:'';
 
 if( $action =='addInvoice' ){
     $orderData = getOrderDataByOrderNum($link,$_REQUEST['ORDER_NUM']);
-
+    
     $insertData = array();
     $paymentMethod = $_REQUEST['PAYMENT_METHOD'];
     $invoiceDate = strToTimeConverter($_REQUEST['INVOICE_DATE']);
@@ -40,8 +40,7 @@ if( $action =='addInvoice' ){
     }else{
         $insertData['INVOICE_CLOSE_DATE'] = dateTimeValue($_REQUEST['INVOICE_DATE']);
     }
-    print_rr($insertData['INVOICE_DATE']);
-    print_rr($insertData['INVOICE_CLOSE_DATE']);
+
     $firstName = $userInfo->firstName;
     $lstName = $userInfo->LastName;
     $insertData['ISSUED_BY'] = getTextValue($firstName.' '.$lstName);
@@ -49,7 +48,9 @@ if( $action =='addInvoice' ){
     $ordrId = getOrderIdByOrderNum($link,$_REQUEST['ORDER_NUM']);
     $total = getTotalFromOrderByorderHeaderId($link,$ordrId);
     $insertData['AMMOUNT'] = array_sum($total);
-
+    if( !empty($_REQUEST['ADDITIONAL_DISS']) )
+        $insertData['ADDITIONAL_DISSCOUNT'] = $_REQUEST['ADDITIONAL_DISS'];
+    $insertData['NET_AMMOUNT'] = $insertData['AMMOUNT'] - ($insertData['AMMOUNT']*($_REQUEST['ADDITIONAL_DISS']/100));
     $insertData['STATUS'] = getTextValue('PENDING');
     $insertData['CREATED_BY'] = $userInfo->intId;
     $insertData['MODIFIED_BY'] = $userInfo->intId;

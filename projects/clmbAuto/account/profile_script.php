@@ -32,14 +32,16 @@ if( isset($_REQUEST['addUser']) ){
 $userData = getUserInfoByUserName($link,$userName);
 
 $acc = new Account($link,$userInfo,$cmpId);
+$acc->setUserName($userName);
+if( !empty($userData) ){
+    $acc->setUserId($userData['USER_INTID']);
+}
+
 
 if( $act == 'userInfo' ){
-    $page[] = $acc->getUserInfo($userName);
-    $page[] = $acc->getUserPrivileges($userName);
-    if($userInfo->role == 'ADMINISTRATOR'){
-        if($userData['USER_TYPE'] == 'SALES_REP')
-            $page[] = $acc->getAssignCustomer($userName);
-    }
+    $page[] = $acc->getUserInfo();
+    $page[] = $acc->getUserAssignedPrive();
+
     
 }elseif( $act == 'custDetail' ){
     $page[] = $acc->getCompanyInfo();

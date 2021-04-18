@@ -24,6 +24,9 @@ $csFiles[] = STYLE_ROOT."main.css";
 $page[] = '';
 
 $acc = new Account($link,$userInfo,$userInfo->cmpId);
+$acc->setUserName($userName);
+
+$userData = getUserInfoByUserName($link,$userName);
 
 if( isset($_REQUEST['editUserData']) ){
     $userData = $_REQUEST['editUser'];
@@ -43,9 +46,12 @@ if( isset($_REQUEST['editUserData']) ){
     updateUserData($link,$userName,$userDataArr);
 }
 
-$page[] = $acc->getUserEditForm($userName);
-$page[] = $acc->getEditUserPrivileges($userName);
-
+$page[] = $acc->getUserEditForm();
+$page[] = $acc->getEditUserPrivileges();
+if($userInfo->role == 'ADMINISTRATOR'){
+    if($userData['USER_TYPE'] == 'SALES_REP')
+        $page[] = $acc->getAssignCustomer();
+}
 
 include_once $sysPath."/library/header.php";
     getPageContentArea($page);

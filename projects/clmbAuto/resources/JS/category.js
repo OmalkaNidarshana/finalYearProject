@@ -13,8 +13,7 @@ function addToCart(catId,cmpId){
 
 function loadCatEditPopUp(id){
     var url = $("#editCategoryProcess").val()+'?catId='+id+'&action=editCategory';
-    alert(url);
-     $.ajax({
+    $.ajax({
          type: "POST",
          url: url,
          dataType: "JSON",
@@ -26,3 +25,21 @@ function loadCatEditPopUp(id){
          
       });
  }
+
+ function saveEditLine(){
+    var url = $("#editCategoryProcess").val()+'?action=saveEditLine';
+    var postdata = $("#EDIT_CATEGORY_FORM").serialize();
+    $.ajax({
+         type: "POST",
+         url: url,
+         data: postdata,
+         //dataType: "JSON",
+         success: function(data){
+            location.reload();
+         }
+         
+    });
+ }
+
+
+

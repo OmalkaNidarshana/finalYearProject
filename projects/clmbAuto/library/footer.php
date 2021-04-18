@@ -1,6 +1,7 @@
 <?php
 $footer = '</div>';
 $footer .= '<footer class="main-footer">';
+$footer .='<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>';
 $footer .= '<div class="pull-right hidden-xs">';
 $footer .= '<b>Version</b> 2.4.18';
 $footer .= '</div>';

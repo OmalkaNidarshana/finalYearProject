@@ -14,6 +14,7 @@
             $this->categoryIds = $categoryIds;
         }
 
+        
         function formatters($id,$value,$data){
                     
              switch($id){

@@ -50,13 +50,14 @@ class SortableTable{
 	}
 
 	function getPagingIds(){
-		if($this->totalFound > $this->pageSize){
+		$this->idList = $this->fullDataIdList;
+		/*if($this->totalFound > $this->pageSize){
 			$this->isPaging = true;
-			list($idList,$this->pageNumbers) = getChunckDataByPageSize($this->fullDataIdList,$this->pageSize);
+			list($idList,$this->pageNumbers) = getChunckDataByPageSize($this->fullDataIdList);
 			$this->idList = $idList[$this->pageNum];
 		}else{
 			$this->idList = $this->fullDataIdList;
-		}
+		}*/
 	}
 
 	function getTableData(){
@@ -68,7 +69,6 @@ class SortableTable{
 		$this->getFullIdSet();
 		$this->getPagingIds();
 		$this->getTableData();
-		
 	}
 
 	function paging(){
@@ -103,17 +103,17 @@ class SortableTable{
 
 	function htmlTable(){
 		$table = '';
-		if( $this->isPaging){
+		/*if( $this->isPaging){
 			$table .= $this->paging();
 	  	}else{
 			$table .='<div class="dataTables_paginate paging_simple_numbers col-sm-8" id="example1_paginate"></div>';
-		}
+		}*/
 		if( !empty($this->headerLevelData) ){
 			$table .='<div class="pagination col-sm-4 headerLvl" id="headerLvlData">';
 				$table .=$this->headerLevelData;
 			$table .='</div>';
 		}
-		$table .= '<table class="table table-hover" table cellspacing="1" cellpadding="2" id="sortableTable">';
+		$table .= '<table class="table table-bordered table-hover dataTable" id="sortableTable">';
 		$table .= $this->htmlHeader();
 		$table .= '<tbody>';
 		$cnt = count($this->summaryOrder);
@@ -147,11 +147,11 @@ class SortableTable{
 		}
 		$table .='</tbody>';
 		$table .= '</table>';
-		if( $this->isPaging){
+		/*if( $this->isPaging){
 			$table .= $this->paging();
 	  	}else{
 			$table .='<div class="dataTables_paginate paging_simple_numbers" id="example1_paginate"></div>';
-		}
+		}*/
 	  return $table;
 	}
 

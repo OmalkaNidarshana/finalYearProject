@@ -6,10 +6,11 @@ function getMaxOrderId($link){
     return $data;
 }
 
-function insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$custId,$ordrData){
+function insertUpdateOrders($link,$userInfo,$ordNum,$custId,$ordrData){
     $quantityData = $ordrData['qty'];
     $descriptionData = $ordrData['desk'];
-   
+    $disscountData = $ordrData['diss'];
+
     $insertData = array();
     $sql = 'select max(ORDER_ID) from orders where ORDER_NUM ='.getTextValue($ordNum);
     $id = $link->getObjectDataFromQuery($sql);
@@ -20,7 +21,7 @@ function insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$custId,$ordrDa
         $insertData ['ORDER_NUM'] = getTextValue($ordNum);
         $insertData['LINE_ITEM'] = count($quantityData);
         $insertData['ORDER_DATE'] = getCurrentDateTime();
-        $insertData['EXPECTED_DELIVERY_DATE'] = dateTimeValue($exptDlvDate);
+       // $insertData['EXPECTED_DELIVERY_DATE'] = dateTimeValue($exptDlvDate);
         $insertData['STATUS'] = getTextValue('NEW');
         $insertData['CREATED_BY'] = $userInfo->intId;
         $insertData['MODIFIED_BY'] = $userInfo->intId;
@@ -33,14 +34,15 @@ function insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$custId,$ordrDa
         foreach( $quantityData as $categoryId=>$quantity ){
             $categoryData = getCategoryDataBycategoryId($link,$categoryId);
             $description = $descriptionData[$categoryId];
-            insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$categoryData,$exptDlvDate,$quantity,$ordNum,$description);
+            $discount = $disscountData[$categoryId];
+            insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$categoryData,$discount,$quantity,$ordNum,$description);
             $lineNum++;
         }
     }
     return $headerId;
 }
 
-function insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$data,$exptDlvDate,$quantity,$ordNum,$description){
+function insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$data,$discount,$quantity,$ordNum,$description){
     $sql = 'select LINE_ID from order_lines where ORDER_HEADER_ID ='.$headerId.' and LINE_NUM='.$lineNum;
     $lineId = $link->getObjectDataFromQuery($sql);
     if( empty($lineId) ){
@@ -49,17 +51,18 @@ function insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$data,$exptDl
         $insertData['CATEGORY'] = getTextValue($data['VEHICAL_CODE']);
         $insertData['QUANTITY'] = $quantity;
         $insertData['SELL_PRICE'] = $data['SELL_PRICE'];
+        $insertData['DISCOUNT_RATE'] = $discount;
         $insertData['TOTAL'] = $quantity*$data['SELL_PRICE'];
-        $insertData['DISCOUNT'] = $insertData['TOTAL']*($data['DIS']/100);
+
+        $insertData['DISCOUNT'] = $insertData['TOTAL']*($discount/100);
         $insertData['ORDER_DATE'] = getCurrentDateTime();
-        $insertData['EXPECTED_DELIVERY_DATE'] =  dateTimeValue($exptDlvDate);
         $insertData['STATUS'] = getTextValue('NEW');
         $insertData['DESCRIPTION'] = getTextValue($description);
         $insertData['CREATED_BY'] = $userInfo->intId;
         $insertData['MODIFIED_BY'] = $userInfo->intId;
         $insertData['CREATED_DATE'] = getCurrentDateTime();
         $insertData['MODIFIED_DATE'] = getCurrentDateTime();
-  
+        
         $sql = 'insert into order_lines ('.implode(",",array_keys($insertData) ).') values ('.implode(",",array_values($insertData) ).')';
         $link->insertUpdate($sql);
         insertCommission($link,$data['VEHICAL_CODE'],$insertData['TOTAL'],$data['SELL_PRICE'],$data['COMMISION'],$ordNum);

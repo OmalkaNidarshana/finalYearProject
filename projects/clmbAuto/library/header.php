@@ -37,7 +37,8 @@ $headerSect .= '<meta name="viewport" content="width=device-width, user-scalable
 $headerSect .= '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">';
 $headerSect .= '<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>';
 $headerSect .= '<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>';
-
+$headerSect .='<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">';
+  
 $headerSect .= '<script src="http://'.ADMIN_STYLE_ROOT.'bower_components/jquery/dist/jquery.min.js"></script>';
 $headerSect .= '<script src="http://'.ADMIN_STYLE_ROOT.'bower_components/jquery-ui/jquery-ui.min.js"></script>';
 $headerSect .= '<script>$.widget.bridge(\'uibutton\', $.ui.button);</script>';

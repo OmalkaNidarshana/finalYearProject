@@ -147,7 +147,6 @@ if( $action == 'addCustomer'){
 }
 
 if($action == 'customerAssign'){
-    
     $userName = $_REQUEST['userId'];
     $custIds = implode(",",$_REQUEST['ASSIGN_CMP']);
     $sql = "update user_info set ASSIGN_COMPANY =".getTextValue($custIds)." where USER_NAME =".getTextValue($userName);

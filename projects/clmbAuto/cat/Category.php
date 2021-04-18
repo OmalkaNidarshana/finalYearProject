@@ -18,7 +18,7 @@ class Category{
     var $categoryIdsArr = array();
 
     var $summaryFlds = array('BRAND','MODEL','VEHICAL_CODE','ENGINE','CC','BRISK','BRISK_CODE','DENSO','IRIDIUM',
-                            'STOCK_NO','PRICE','DIS','SPECIAL_PRICE','SELL_PRICE','COMMISION','ACTION');
+                            'STOCK_NO','STOCK','PRICE','DIS','SELL_PRICE','COMMISION','ACTION');
 
     var $searchFlds = array('BRAND','MODEL','VEHICAL_CODE','ENGINE','CC','BRISK','BRISK_CODE','DENSO');
 
@@ -83,7 +83,7 @@ class Category{
         $header = 'Categories';
         $header .= '<span  data-toggle="modal" data-target="#ADD_CATEGORY">'.getRawActionsIcon('add','Add Item').'</span>';
 
-        return htmlTableBox($html,$header,'true');
+        return htmlTableBox($html,$header);
 
     }
 
@@ -239,71 +239,76 @@ class Category{
     }
 
     function getCategoryEditForm($catId){
+        $categoryData = getCategoryDataBycategoryId($this->link,$catId);
+        //print_rr($categoryData);
+
         $html = '';
         $html .= HTML::formStart('','POST','EDIT_CATEGORY_FORM');
         $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
-             
-        $html .=HTML::hiddenFeild('editCategoryProcess',makeLocalUrl('cat/category_process.php',''),array('id'=>'editCategoryProcess') );
-
+        $html .=HTML::hiddenFeild('categoryId',$categoryData['RECORD_ID'],array('id'=>'categoryId'));
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Brand : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[BRAND]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[BRAND]',$categoryData['BRAND'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Model :  ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[MODEL]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[MODEL]',$categoryData['MODEL'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Vehical Code :   ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[VEHICAL_CODE]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[VEHICAL_CODE]',$categoryData['VEHICAL_CODE'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Engine : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[ENGINE] ','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[ENGINE] ',$categoryData['ENGINE'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('CC : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[CC]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[CC]',$categoryData['CC'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Brisk : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[BRISK]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[BRISK]',$categoryData['BRISK'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Brisk Code : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[BRISK_CODE]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[BRISK_CODE]',$categoryData['BRISK_CODE'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Denso : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[DENSO]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[DENSO]',$categoryData['DENSO'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('IRIDIUM : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[IRIDIUM]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[IRIDIUM]',$categoryData['IRIDIUM'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Stock No : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[STOCK_NO]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[STOCK_NO]',$categoryData['STOCK_NO'],array('style'=>'width:300px;')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Stock : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[STOCK]',$categoryData['STOCK'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Price : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[PRICE]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[PRICE]',$categoryData['PRICE'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Dis : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[DIS]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[DIS]',$categoryData['DIS'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Special Price : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[SPECIAL_PRICE]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[SPECIAL_PRICE]',$categoryData['SPECIAL_PRICE'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Sell Price : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[SELL_PRICE]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[SELL_PRICE]',$categoryData['SELL_PRICE'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Commision : ',array("style"=>"padding:5px;") ).'</td>';
-            $html .='<td>'.HTML::textFeild('catData[COMMISION]','',array('style'=>'width:300px;')).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[COMMISION]',$categoryData['COMMISION'],array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td></td>';
@@ -312,11 +317,12 @@ class Category{
         $html .= HTML::openCloseTable(false,false);
         $html .= HTML::formEnd();
         
-        return $popUp;
+        return $html;
     }
 
     function loadEdiCatPopup(){
         $html = '<div id="editCatPopUp"></div>';
+        $html .=HTML::hiddenFeild('editCategoryProcess',makeLocalUrl('cat/category_process.php',''),array('id'=>'editCategoryProcess') );
         $btn = HTML::submitButtonFeild('edit_cat','Save',$attr=array('onclick'=>'saveEditLine();'));
         $popUp = modalPopupBox('Edit Line','EDIT_CATEGORY_POPUP',$html,$btn);
         return $popUp;

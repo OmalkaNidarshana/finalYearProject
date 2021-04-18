@@ -97,7 +97,7 @@ class HTML{
 
 	function textArea($name,$id,$maxRow,$maxCol,$attr=array()){
 		$attr = HTML::makeInputAttribute($attr);
-		$html ='<textarea id="'.$id.'" name="'.$name.'" rows="'.$maxRow.'" cols="'.$maxCol.'"'.$attr.'">';
+		$html ='<textarea id="'.$id.'" name="'.$name.'" rows="'.$maxRow.'" cols="'.$maxCol.'"'.$attr.'"></textarea>';
 		return $html;
 	}
 

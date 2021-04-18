@@ -34,12 +34,12 @@ $auth = new Authentication($link,$userInfo->userName,'');
 $ord = new Order($link,$userInfo);
 
 if( isset($_REQUEST['order_initiate']) ){
-        $exptDlvDate = $_REQUEST['EXPTD_DLV_DATE'];
         $customerId = $_REQUEST['custId'];
         $ordrData['qty'] = $_REQUEST['qty'];
         $ordrData['desk'] = $_REQUEST['desk'];
+        $ordrData['diss'] = $_REQUEST['diss'];
         $ordNum = $_REQUEST['ORD_NUM'];
-        $headerId = insertUpdateOrders($link,$userInfo,$ordNum,$exptDlvDate,$customerId,$ordrData);
+        $headerId = insertUpdateOrders($link,$userInfo,$ordNum,$customerId,$ordrData);
         $customerData = getCompanyDataByCmpId($link,$customerId);
         $auth->sendorderCreationEmailContent($ordNum,$customerData['COMPANY_NAME'],$headerId,$userInfo);
 

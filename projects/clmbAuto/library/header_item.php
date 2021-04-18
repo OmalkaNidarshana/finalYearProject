@@ -10,6 +10,8 @@ function getMainMenueArray(){
     $mainMenueArr['PERIOD'] = 'Credit Period';
     $mainMenueArr['RECEIPT'] = 'Receipt';
     $mainMenueArr['INVOICE'] = 'Invoice';
+    $mainMenueArr['REPORT'] = 'Report';
+
     return $mainMenueArr;
 }
 
@@ -19,6 +21,7 @@ function getSubMenueArray(){
     $subMenueArr['ACC']['Sales'] = makeLocalUrl('main/restricted.php','') ;
     $subMenueArr['ACC']['Incomes'] = makeLocalUrl('main/restricted.php','') ;
     $subMenueArr['ACC']['Expenses'] = makeLocalUrl('main/restricted.php','') ;
+    $subMenueArr['ACC']['Out Standing'] = makeLocalUrl('main/restricted.php','') ;
     $subMenueArr['CUSTOMER'] = makeLocalUrl('account/customer_script.php','sec=CUSTOMER') ;
     $subMenueArr['ORDERS']['Orders'] = makeLocalUrl('orders/order_script.php','sec=ORDER');
     $subMenueArr['ORDERS']['Re-Orders'] = makeLocalUrl('main/restricted.php','') ;
@@ -28,20 +31,26 @@ function getSubMenueArray(){
     $subMenueArr['PERIOD'] = makeLocalUrl('main/restricted.php','') ;
     $subMenueArr['RECEIPT'] = makeLocalUrl('main/restricted.php','') ;
     $subMenueArr['INVOICE'] = makeLocalUrl('invoice/invoice_script.php','sec=INV') ;
+    $subMenueArr['REPORT']['Orders'] = makeLocalUrl('report/order_report_script.php','sec=REP_ORDER') ;
+    $subMenueArr['REPORT']['Re-Orders'] = makeLocalUrl('report/re_order_report_script.php','sec=REP_RE_ORDER') ;
+    $subMenueArr['REPORT']['Rejected Orders'] = makeLocalUrl('report/rejected_order_report_script.php','sec=REP_REJCT_ORDER') ;
+    $subMenueArr['REPORT']['Sales'] = makeLocalUrl('report/sales_report_script.php','sec=REP_SALES') ;
     return $subMenueArr;
 }
 
 function getHeaderMenueIcons(){
-    $MenueIcons['HOME'] = 'fa fa-home fa-lg';
-    $MenueIcons['PROFILE'] = 'fa fa-user fa-lg';
-    $MenueIcons['ACC'] = 'fa fa-credit-card fa-lg';
+    $MenueIcons['HOME'] = 'fa fa-home';
+    $MenueIcons['PROFILE'] = 'fa fa-user';
+    $MenueIcons['ACC'] = 'fa fa-credit-card';
     $MenueIcons['CUSTOMER'] = 'fa fa-handshake-o';
-    $MenueIcons['CATEGORY'] = 'fa fa-sign-in fa-lg';
-    $MenueIcons['COMMISSION'] = 'fa fa-usd fa-lg';
-    $MenueIcons['ORDERS'] = 'fa fa-arrows-v fa-lg';
-    $MenueIcons['PERIOD'] = 'fa fa-clock-o fa-lg';
-    $MenueIcons['RECEIPT'] = 'fa fa-file-text-o fa-lg';
-    $MenueIcons['INVOICE'] = 'fa fa-cc-visa fa-lg';
+    $MenueIcons['CATEGORY'] = 'fa fa-sign-in';
+    $MenueIcons['COMMISSION'] = 'fa fa-usd';
+    $MenueIcons['ORDERS'] = 'fa fa-arrows-v';
+    $MenueIcons['PERIOD'] = 'fa fa-clock-o';
+    $MenueIcons['RECEIPT'] = 'fa fa-receipt	';
+    $MenueIcons['INVOICE'] = 'fa fa-cc-visa ';
+    $MenueIcons['INVOICE'] = 'fa fa-cc-visa ';
+    $MenueIcons['REPORT'] = 'fa fa-file-text-o';
     return $MenueIcons;
 }
 

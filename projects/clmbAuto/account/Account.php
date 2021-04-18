@@ -11,7 +11,9 @@ class Account{
     var $sysPrivileges = array();
     var $companyPrivileges = array();
     var $customerCompanyList = array();
-   
+    var $userName = '';
+    var $userId = '';
+
     function Account($link,$userInfo,$cmpId){
         $this->link = $link;
         $this->userInfo = $userInfo;
@@ -31,6 +33,9 @@ class Account{
         
         
     }
+
+    function setUserName($userName){ $this->userName=$userName;}
+    function setUserId($userId){ $this->userId=$userId;}
 
     function getCompanyInfo(){
         $html = '';
@@ -178,8 +183,8 @@ class Account{
         return $popUp;
     }
 
-    function getUserInfo($userName){
-        $userdata = getUserInfoByUserId($this->link,$userName);
+    function getUserInfo(){
+        $userdata = getUserInfoByUserId($this->link,$this->userName);
         $html = '';
         $html .= '<div class="box-body table-responsive no-padding">';
               $html .= '<table class="table table-hover summarytable">';
@@ -217,7 +222,7 @@ class Account{
         $html .= '</div>';
 
         $head = 'User Informations';
-        if( $userName == $this->userInfo->userName || $this->userInfo->role == 'ADMINISTRATOR')
+        if( $this->userName == $this->userInfo->userName || $this->userInfo->role == 'ADMINISTRATOR')
             $head .= ' &nbsp&nbsp|&nbsp&nbsp<span><a href="'.makeLocalUrl('account/user_edit.php','sec=PROFILE&act=useredit&userId='.$userdata['USER_NAME']).'">'.getRawActionsIcon('edit','Edit User').'</a></span>&nbsp';
         return contentBorder($html,$head);
     }
@@ -267,7 +272,7 @@ class Account{
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td></td>';
-            $html .='<td>'.HTML::submitButtonFeild('editCustomer','Save',array('style'=>'float: right;')).'</td>';
+            $html .='<td>'.HTML::buttonFeild('editCustomer','Save',array('style'=>'float: right;','onclick'=>'editCustomer(\''.$this->cmpId.'\');')).'</td>';
         $html .='</tr>';
         $html .= HTML::openCloseTable(false,false);
         $html .= HTML::formEnd();
@@ -311,9 +316,33 @@ class Account{
 
     }
 
-    function getEditUserPrivileges($userName){
+    function getUserAssignedPrive(){
+        $userdata = getUserInfoByUserId($this->link,$this->userName);
+        $userPrive = getUserPrivielegesByUserId($this->link,$userdata['USER_INTID']);
+                    
+        $html = '';
+        $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
+        foreach( $userPrive as $priv){
+            $html .='<tr>';
+                $html .='<td>'.HTML::lblFeild($priv,array("style"=>"padding:5px;") ).'</td>';
+                /*if( in_array($privData['PRIVE_NAME'],$userPrive) ){
+                    $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','',true).'</td>';
+                }else{
+                    $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','').'</td>';
+                }
+                $html .='<td style="color:blue;"></td>';*/
+            $html .='</tr>';
+        }
+   
+        //$html .='<td>'.HTML::submitButtonFeild('save','Save',array('onclick'=>'addUser();','style'=>'float: right;')).'</td>';
         
-        $userdata = getUserInfoByUserId($this->link,$userName);
+        $html .= HTML::openCloseTable(false,false);
+        return contentBorder($html,'Assigned User Privileges');
+    }
+
+    function getEditUserPrivileges(){
+        
+        $userdata = getUserInfoByUserId($this->link,$this->userName);
         $userPrive = getUserPrivilegesByCmpId($this->link,$userdata['USER_INTID']);
                
         $html = '';
@@ -336,16 +365,17 @@ class Account{
         return contentBorder($html,'Edit User Privileges');
     }
 
-    function getAssignCustomer($userId){
+    function getAssignCustomer(){
         $customerList = getCustomerList($this->link);
-        $userData = getUserInfoByUserName($this->link,$userId);
+        $userData = getUserInfoByUserName($this->link,$this->userName);
+       
         $assignCompany = explode(",",$userData['ASSIGN_COMPANY']);
         $html = '';
         //$html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
         //$html .='<div class ="container">';
         $html .= HTML::formStart('','POST','ASIGN_CUSTOMER');
         $html .=HTML::hiddenFeild('customerAssign',makeLocalUrl('account/acc_process.php','action=customerAssign'),array('id'=>'customerAssign'));
-        $html .=HTML::hiddenFeild('userId',$userId);
+        $html .=HTML::hiddenFeild('userId',$this->userId);
         $html .='<div class ="row">';
         //print_rr($customerList);
         foreach( $customerList as $customerData){
@@ -364,8 +394,8 @@ class Account{
         return contentBorder($html,'Assign Customer'.$btn);
     }
 
-    function getUserEditForm($userName){
-        $userdata = getUserInfoByUserId($this->link,$userName);
+    function getUserEditForm(){
+        $userdata = getUserInfoByUserId($this->link,$this->userName);
         $html = '';
         global $countryArray;
         foreach( $countryArray as $country){
@@ -514,10 +544,4 @@ class Account{
         return $popUp;
     }
 }
-
-
-
-
-
-
 ?>

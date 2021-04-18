@@ -1,3 +1,8 @@
+$(document).ready( function () {
+   $('#sortableTable').DataTable({
+         
+   });
+} );
 
 function toggleRegulerSearch(){
     var e = document.getElementById('REGULER_SEARCH');
@@ -117,5 +122,22 @@ function assignCustomer(){
        }
         
    });
+
+}
+
+function editCustomer(cmpId){
+   alert(cmpId);
+  /* var url = $("#editCompanyProcessPath").val();
+   var postData = $('#EDIT_COMPANY').serialize();
+   $.ajax({
+       type: "POST",
+       url: url,
+       data:postData,
+       success: function(data){
+           location.reload();
+       }
+        
+   });*/
+
 
 }

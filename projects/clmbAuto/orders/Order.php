@@ -77,7 +77,7 @@ class Order{
             $html .= '<table class="table table-hover summarytable" id="ordrCreation" >';
             $html .= '<thead><tr>';
                 $html .= '<th>Brand</th><th>Model</th><th>Vehical Code</th><th>CC</th><th>Brisk</th><th>Brisk Code</th><th>Denso
-                        </th><th>IRIDIUM</th><th>Description</th><th>Quantity</th><th>Action</th>';
+                        </th><th>IRIDIUM</th><th>Description</th><th>Discount</th><th>Quantity</th><th>Action</th>';
             $html .= '</tr></thead>';
             /*foreach( $this->categoryIds as $id){
                 $data = getCategoryDataBycategoryId($this->link,$id);
@@ -117,8 +117,8 @@ class Order{
             $submitHtml .= '<tr>';
                 //$submitHtml .= '<td>'..'<td>';
                 //$submitHtml .= HTML::submitButtonFeild('order_initiate','Create Order',array('style'=>'width:100px; height:20px;')).'<td>';
-                $submitHtml .='<td style="text-align: left;width: 100px;"><b>Brisk Code : </b>&nbsp;</td><td style="width: 150px;">'.HTML::selectFeild('BRISK','BRISK',array(""=>"")+$briskData,'',false,array("style"=>"height: 25px;width: 100px;","onChange"=>"loadModelList();")).'</td>';
-                $submitHtml .='<td style="text-align: left;width: 100px;"><b>Model : </b>&nbsp;</td><td>'.HTML::selectFeild('MODEL','MODEL',array(""=>""),'',false,array("style"=>"height: 25px;width: 100px;","onChange"=>"loadItemData();")).'</td>';
+                $submitHtml .='<td style="text-align: left;width: 100px;"><b>Brisk Code : </b>&nbsp;</td><td style="width: 150px;">'.HTML::selectFeild('BRISK','BRISK',array(""=>"")+$briskData,'',false,array("style"=>"height: 30px;","onChange"=>"loadModelList();")).'</td>';
+                $submitHtml .='<td style="text-align: left;width: 100px;"><b>Model : </b>&nbsp;</td><td>'.HTML::selectFeild('MODEL','MODEL',array(""=>""),'',false,array("style"=>"height: 30px;","onChange"=>"loadItemData();")).'</td>';
                 /*$submitHtml .= '<td style="text-align: right;">';
                 $submitHtml .= '<b>Expected Delivery Date : </b>&nbsp;'.HTML::dateFeild('EXPTD_DLV_DATE','EXPTD_DLV_DATE',array('placeholder'=>'dsadasd'));
                 $submitHtml .= '</td>';*/
@@ -209,10 +209,15 @@ class Order{
         $html .= '<div class="box-body table-responsive no-padding">';
             $html .= '<table class="table table-hover summarytable" >';
             $html .= '<tbody><tr>';
-                $html .= '<th>Line#</th><th>Category</th><th>Quantity</th><th>Unit Price (Rs.)</th><th>Total (Rs.)</th><th>Discount (Rs.)</th><th>Order Date</th><th>Description</th><th>Expected Delivery Date</th>
+                $html .= '<th>Line#</th><th>Category</th><th>Quantity</th><th>Unit Price (Rs.)</th><th>Total (Rs.)</th><th>Discount (Rs.)</th><th>Discount Rate(%)</th><th>Order Date</th>
+                            <th>Description</th>
                             <th>Status</th>';
-                    if($this->details['STATUS'] !== 'SUBMITTED'){
-                        $html .='<th>Action</th>';
+                    if($this->details['STATUS'] !== 'CANCELD'){
+                        //if($this->details['STATUS'] !== 'SUBMITTED'){
+                            $html .='<th>Action</th>';
+                        //}else{
+
+                        //}
                     }
             $html .= '</tr>';
             foreach( $orderLIne as $data){
@@ -223,13 +228,18 @@ class Order{
                     $html .= '<td>'.$this->formatter->formatters('SELL_PRICE',$data['SELL_PRICE'],'').'</td>';
                     $html .= '<td>'.$this->formatter->formatters('TOTAL',$data['TOTAL'],'').'</td>';
                     $html .= '<td>'.$this->formatter->formatters('TOTAL',$data['DISCOUNT'],'').'</td>';
+                    $html .= '<td>'.$this->formatter->formatters('',$data['DISCOUNT_RATE'],'').'</td>';
                     $html .= '<td>'.$data['ORDER_DATE'].'</td>';
                     $html .= '<td>'.$data['DESCRIPTION'].'</td>';
-                    $html .= '<td>'.$data['EXPECTED_DELIVERY_DATE'].'</td>';
                     $html .= '<td>'.$this->formatter->formatters('STATUS',$data['STATUS'],'').'</td>';
-                    if($this->details['STATUS'] !== 'SUBMITTED'){
-                        $html .= '<td><span onclick="loadEditPopUp(\''.$this->id.'\',\''.$data['LINE_NUM'].'\')">'.getRawActionsIcon('edit','Edit Line').'</span>&nbsp;&nbsp;&nbsp;
-                                    <span onclick="deleteOrderLine(\''.$this->id.'\',\''.$data['LINE_NUM'].'\');">'.getRawActionsIcon('delete','Delete Line').'</span></td>';
+                    if($this->details['STATUS'] !== 'CANCELD'){
+                        if($this->details['STATUS'] !== 'SUBMITTED'){
+                            $html .= '<td><span onclick="loadEditPopUp(\''.$this->id.'\',\''.$data['LINE_NUM'].'\')">'.getRawActionsIcon('edit','Edit Line').'</span>&nbsp;&nbsp;&nbsp;
+                                        <span onclick="deleteOrderLine(\''.$this->id.'\',\''.$data['LINE_NUM'].'\');">'.getRawActionsIcon('delete','Delete Line').'</span></td>';
+                        }else{
+                            
+                            $html .= '<td>'.HTML::submitButtonFeild('reject_item','Reject',$attr=array('onclick'=>'loadRejecItemPopUp('.$this->id.','.$data['LINE_NUM'].');','style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:red")).'</td>';
+                        }
                     }
                 $html .= '</tr>';
             }
@@ -275,6 +285,7 @@ class Order{
         
         $html .= HTML::hiddenFeild('orderProcessUrl',makeLocalUrl('orders/order_process.php',''),array('id'=>'orderProcessUrl'));
         $html .= HTML::hiddenFeild('lineId',$lineId,array('id'=>'lineId'));
+        $html .= HTML::hiddenFeild('diss',$lineData['DISCOUNT_RATE'],array('id'=>'diss'));
         $html .= '<tr>';
             $html .= '<td>'.HTML::lblFeild('Quantity : ').'</td><td align="right">'.HTML::numberFeild('QUANTITY',$lineData['QUANTITY']).'</td>';
         $html .= '</tr>';
@@ -286,10 +297,43 @@ class Order{
         return $html;
     }
 
+    function getRejectItemForm($orderId,$lineId){
+        $lineData = getOrderLineDateByHeaderAndLineId($this->link,$orderId,$lineId);
+
+        
+        $html = '';
+        $html .= HTML::formStart('','POST','EDIT_LINE');
+        $html .= '<table>';
+        $html .= '<tbody>';
+        $html .= '<tr>';
+        $html .= '<td align="right">'.HTML::lblFeild('Line# : ').'</td><td>&nbsp;&nbsp;'.$lineId.'</td>';
+        $html .= '</tr>';
+        
+        $html .= HTML::hiddenFeild('orderProcessUrl',makeLocalUrl('orders/order_process.php',''),array('id'=>'orderProcessUrl'));
+        $html .= HTML::hiddenFeild('lineId',$lineId,array('id'=>'lineId'));
+        $html .= '<tr>';
+            $html .= '<td align="right">'.HTML::lblFeild('Reject Reason &nbsp;&nbsp;: ').'</td><td >&nbsp;&nbsp;'.HTML::textArea('REJECT_REASON','REJECT_REASON','','').'</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td align="right">'.HTML::lblFeild('Rejected Date &nbsp;&nbsp;: ').'</td><td>&nbsp;&nbsp;'.HTML::dateFeild('EXPECTED_DELIVERY_DATE',$lineData['EXPECTED_DELIVERY_DATE']).'</td>';
+        $html .= '</tr>';
+        $html .= '</table>';
+        $html .= HTML::formEnd();
+        return $html;
+    }
+
     function loadEditLinePopup(){
         $html = '<div id="editLinePopUp"></div>';
         $btn = HTML::submitButtonFeild('edit_line','Save',$attr=array('onclick'=>'saveEditLine('.$this->id.');'));
         $popUp = modalPopupBox('Edit Line','EDIT_LINE_POPUP',$html,$btn);
+        return $popUp;
+
+    }
+
+    function loadRejectItemPopup(){
+        $html = '<div id="rejectItemPopUp"></div>';
+        $btn = HTML::submitButtonFeild('reject_item','Reject',$attr=array('onclick'=>'saveEditLine('.$this->id.');','style'=>'background-color:red'));
+        $popUp = modalPopupBox('Reject Item','REJECT_ITEM_POPUP',$html,$btn);
         return $popUp;
 
     }
@@ -328,6 +372,8 @@ class Order{
         $html = '';
        
         $currentId = getMaxRecIdFromInvoiveTable($this->link);
+        $discountList = array(''=>'','0.5'=>'0.5%','1'=>'1%','1.5'=>'1.5%','2'=>'2%','2.5'=>'2.5%','3'=>'3%','3.5'=>'3.5%','4'=>'4%','4.5'=>'4.5%','5'=>'5%');
+
         if( empty($currentId) ){
             $newId = 1;
         }else{
@@ -337,21 +383,24 @@ class Order{
 
         $paymentMethod = array('CASH'=>'Cash','CHEQUE'=>'Cheque');
         $orderArray = getSubmittedOrders($this->link);
-        $ordNum = 'ORD-NUM-'.$this->id;
+        
         $html .= HTML::formStart('','POST','INV_ADD');
         $html .= HTML::hiddenFeild('invoiceProcessUrl',makeLocalUrl('invoice/invoice_process.php',''),array('id'=>'invoiceProcessUrl'));
         $html .= HTML::hiddenFeild('INV_NUM',$invNUm,array('id'=>'INV_NUM'));
-        $html .= HTML::hiddenFeild('ORDER_NUM',$ordNum,array('id'=>'ORDER_NUM'));
+        $html .= HTML::hiddenFeild('ORDER_NUM',$this->details['ORDER_NUM'],array('id'=>'ORDER_NUM'));
         $html .= '<table>';
         $html .= '<tbody>';
         $html .= '<tr>';
             $html .= '<td>'.HTML::lblFeild('Invoice Number : ').'</td><td align="right" style="color:blue;">'.$invNUm.'</td>';
         $html .= '<tr>';
         $html .= '<tr>';
-            $html .= '<td>'.HTML::lblFeild('Order Number : ').'</td><td align="right">'.$ordNum.'</td>';
+            $html .= '<td>'.HTML::lblFeild('Order Number : ').'</td><td align="right">'.$this->details['ORDER_NUM'].'</td>';
         $html .= '<tr>';
         $html .= '<tr>';
             $html .= '<td>'.HTML::lblFeild('Payment Method: ').'</td><td align="right">'.HTML::selectFeild('PAYMENT_METHOD','PAYMENT_METHOD',$paymentMethod,array('style'=>'width:200px')).'</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+            $html .= '<td>'.HTML::lblFeild('Additional Discount: ').'</td><td align="right">'.HTML::selectFeild('ADDITIONAL_DISS','ADDITIONAL_DISS',$discountList,array('style'=>'width:200px')).'</td>';
         $html .= '</tr>';
         $html .= '<tr>';
             $html .= '<td>'.HTML::lblFeild('Invoice Date : ').'</td><td align="right">'.HTML::dateFeild('INVOICE_DATE','',array('style'=>'width:150px')).'</td>';
@@ -364,15 +413,17 @@ class Order{
 
     function getActionPanel(){
         $btn = '';
-        HTML::submitButtonFeild('order_initiate','Create Order',array('style'=>'width:100px; height:20px;'));
-        if( $this->details['STATUS'] == 'SUBMITTED'){
-            $btn .= HTML::submitButtonFeild('re_open','Re Open',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:brown"));
-            $btn .= '<span data-toggle="modal" data-target="#ADD_INV_POPUP">'.HTML::submitButtonFeild('create_invoce','Create Invoice',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:orange")).'</span>';
-        }else{
-            $btn .= HTML::submitButtonFeild('order_submit','Submit',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px;",'onclick'=>'submitOrder('.$this->id.');'));
+        if( !$this->details['STATUS'] == 'CANCELD'){
+            HTML::submitButtonFeild('order_initiate','Create Order',array('style'=>'width:100px; height:20px;'));
+            if( $this->details['STATUS'] == 'SUBMITTED'){
+                $btn .= HTML::submitButtonFeild('re_open','Re Open',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:brown"));
+                $btn .= '<span data-toggle="modal" data-target="#ADD_INV_POPUP">'.HTML::submitButtonFeild('create_invoce','Create Invoice',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:orange")).'</span>';
+            }else{
+                $btn .= HTML::submitButtonFeild('order_submit','Submit',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px;",'onclick'=>'submitOrder('.$this->id.');'));
+            }
+            $btn .= HTML::submitButtonFeild('order_cancel','Cancel',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:red",'onclick'=>'cancleOrder('.$this->id.');'));
+            return contentBox($btn);
         }
-        $btn .= HTML::submitButtonFeild('order_submit','Cancel',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:red",'onclick'=>'submitOrder('.$this->id.');'));
-        return contentBox($btn);
     }
 
     function getOrderCreationAction(){

@@ -92,6 +92,15 @@ function contentBox($table){
     return $str;
  }
 
+ function getNumValue($val){
+    if( empty($val) ){
+        return intval($val);
+    }else{
+        return $val;
+    }
+    
+ }
+
  function dateTimeValue($date){
     //$date = strtotime($date);
     $mysqltime = "'".date ($date)."'";
@@ -263,7 +272,11 @@ function OrdersStatusColorBox($status){
         case 'pending':
             $icon = 'greenIcon';
         break;
+        case 'canceld':
+            $icon = 'redIcon';
+        break;
         case 'submitted':
+        case 'paid':
             $icon = 'orangeIcon';
         break;
         default:

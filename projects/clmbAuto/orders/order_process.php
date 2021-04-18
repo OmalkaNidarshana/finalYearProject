@@ -31,12 +31,22 @@ if( $action =='orderSubmit' ){
     $ord = new Order($link,$userInfo);
     $editLinePopup = $ord->getOrderLineEditForm($ordId,$lineId);
     echo json_encode($editLinePopup);
+}elseif( $action =='loadRejecItemPopUp' ){
+    $ord = new Order($link,$userInfo);
+    $editLinePopup = $ord->getRejectItemForm($ordId,$lineId);
+    echo json_encode($editLinePopup);
 }elseif( $action =='editOrderLine' ){
     $orderLineData = getOrderLineDateByHeaderAndLineId($link,$ordId,$lineId);
     $updateData = array();
+
+    $discountRate = $_REQUEST['diss'];
+    $total = $_REQUEST['QUANTITY']*$orderLineData['SELL_PRICE'];
+
     $updateData['QUANTITY'] = $_REQUEST['QUANTITY'];
-    $updateData['TOTAL'] = $_REQUEST['QUANTITY']*$orderLineData['SELL_PRICE'];
+    $updateData['TOTAL'] = $total;
+    $updateData['DISCOUNT'] = $total*($discountRate/100);
     $updateData['EXPECTED_DELIVERY_DATE'] = dateTimeValue($_REQUEST['EXPECTED_DELIVERY_DATE']);
+
     foreach($updateData as $key=>$value){
         $dataArr[] = $key.'='.$value;
     }
@@ -58,6 +68,14 @@ if( $action =='orderSubmit' ){
         $modelListArr[$model] = $model;
     }
     echo json_encode($modelListArr);
+}elseif($action =='cancleOrder'){
+    $sql = 'update orders set STATUS = '.getTextValue('CANCELD').'where ORDER_ID='.$ordId;
+    $link->insertUpdate($sql);
+
+    $sql = 'update order_lines set STATUS = '.getTextValue('CANCELD').'where ORDER_HEADER_ID='.$ordId;
+    $link->insertUpdate($sql);
+
+
 }
 
 ?>

@@ -12,6 +12,20 @@ function submitOrder(id){
      });
 }
 
+function cancleOrder(id){
+    
+    var url = $("#orderProcessUrl").val()+'?orderId='+id+'&action=cancleOrder';
+    
+    $.ajax({
+        type: "POST",
+        url: url,
+        success: function(data){
+            location.reload();
+        }
+        
+     });
+}
+
 function loadEditPopUp(id,lineId){
    var url = $("#orderProcessUrl").val()+'?orderId='+id+'&lineId='+lineId+'&action=loadEditLineForm';
     
@@ -27,6 +41,22 @@ function loadEditPopUp(id,lineId){
         
      });
 }
+
+function loadRejecItemPopUp(id,lineId){
+    var url = $("#orderProcessUrl").val()+'?orderId='+id+'&lineId='+lineId+'&action=loadRejecItemPopUp';
+     
+     $.ajax({
+         type: "POST",
+         url: url,
+         dataType: "JSON",
+         success: function(data){
+             //alert(data);
+             $('#REJECT_ITEM_POPUP').modal('show');
+             $('#rejectItemPopUp').html(data);
+         }
+         
+      });
+ }
 
 function saveEditLine(id){
     
@@ -118,6 +148,8 @@ function loadItemData(){
                     row.append($("<td class='summarytable'>" + data[i]["DENSO"] + "</td>"));
                     row.append($("<td class='summarytable'>" + data[i]["IRIDIUM"] + "</td>"));
                     row.append($("<td class='summarytable'><textarea name='desk["+data[i]["RECORD_ID"]+"]'rows='1' cols='25' /></td>"));
+                    row.append($("<td class='summarytable'><select name='diss["+data[i]["RECORD_ID"]+"]'><option value='5'>5%</option><option value='10'>10%</option>"
+                                    +"<option value='15'>15%</option><option value='20'>20%</option><option value='25'>25%</option><option value='30'>30%</option></select></td>"));
                     row.append($("<td class='summarytable'><input type='number' name='qty["+recId+"]' value='1'/></td>"));
                     row.append($("<td class='summarytable deleteIcon' onclick='deleteInlineItem("+recId+");' title='Delete this line'>X<td>"));
                     $("#ordrCreation").append(row);
@@ -133,4 +165,5 @@ function loadItemData(){
 
 function deleteInlineItem(recId){
     $('#row_'+recId).remove();
+
 }

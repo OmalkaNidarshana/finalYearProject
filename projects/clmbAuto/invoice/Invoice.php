@@ -22,7 +22,7 @@ class Invoice{
     var $orderLineData;
     var $customerData;
     var $total;
-    var $summaryFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','INVOICE_CLOSE_DATE','ISSUED_BY','DESCRIPTION');
+    var $summaryFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','ADDITIONAL_DISSCOUNT','AMMOUNT','NET_AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','INVOICE_CLOSE_DATE','ISSUED_BY','DESCRIPTION');
 
     var $searchFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','ISSUED_BY','DESCRIPTION','CUSTOMER_ID');
 
@@ -39,7 +39,7 @@ class Invoice{
             $this->customerData = getCompanyDataByCmpId($this->link,$this->details['CUSTOMER_ID']);
             $orderId = getOrderIdByOrderNum($link,$this->details['ORDER_NUM']);
             $this->orderLineData = geOrderLineByOrderHeaderId($this->link,$orderId);
-            $this->total = getTotalFromOrderByorderHeaderId($this->link,$orderId);
+            
         }
             
         
@@ -226,7 +226,7 @@ class Invoice{
             $html .='<div class="row">';
             $html .='<div class="col-xs-12">';
                 $html .='<h2 class="page-header"><i class="fa fa-globe"></i> Brisk Lanka.';
-                    $html .='<small class="pull-right">Date: '.formatDate($this->details['INVOICE_CLOSE_DATE']).'</small>';
+                    $html .='<small class="pull-right">Date: '.formatDate($this->details['CREATED_DATE']).'</small>';
                 $html .='</h2>';
             $html .='</div>';
         $html .='</div>';
@@ -272,20 +272,32 @@ class Invoice{
         $html .='<div class="col-xs-12 table-responsive">';
             $html .='<table class="table table-striped"><thead>';
                 $html .='<tr>';
-                    $html .='<th>Qty</th>';
+                    
                     $html .='<th>Product</th>';
+                    $html .='<th>Qty</th>';
                     $html .='<th>Description</th>';
-                    $html .='<th>Subtotal</th>';
+                    $html .='<th>Unit Price</th>';
+                    $html .='<th>Total</th>';
+                    $html .='<th>Discount(%)</th>';
+                    $html .='<th>Net Price</th>';
+                    $html .='<th>Sub Total</th>';
                 $html .='</tr>';
                 $html .='</thead>';
                 $html .='<tbody>';
                 foreach($this->orderLineData as $data){
                     $html .='<tr>';
-                        $html .='<td>'.$data['QUANTITY'].'</td>';
                         $html .='<td>'.$data['CATEGORY'].'</td>';
+                        $html .='<td>'.$data['QUANTITY'].'</td>';
                         $html .='<td>'.$data['DESCRIPTION'].'</td>';
+                        $html .='<td>'.$this->formatter->formatters('SELL_PRICE',$data['SELL_PRICE'],'').'</td>';
                         $html .='<td>'.$this->formatter->formatters('TOTAL',$data['TOTAL'],'').'</td>';
+                        $html .='<td>'.$data['DISCOUNT_RATE'].'</td>';
+                        $html .='<td>'.$this->formatter->formatters('DISCOUNT',$data['DISCOUNT'],'').'</td>';
+                        $netAmount = $data['TOTAL']-$data['DISCOUNT'];
+                        $html .='<td>'.$this->formatter->formatters('DISCOUNT',$netAmount,'').'</td>';
                     $html .='</tr>';
+
+
                 }
                 $html .='</tbody>';
             $html .='</table>';
@@ -295,6 +307,19 @@ class Invoice{
     }
 
     function getInvoiceAmmountDetails(){
+        $netAmount = [];
+        $additionalDiscount = 0;
+        foreach($this->orderLineData as $data){
+            $netAmount[] = $data['TOTAL']-$data['DISCOUNT'];
+        }
+        $netTotal = array_sum($netAmount);
+       
+        if( !empty($this->details['ADDITIONAL_DISSCOUNT']) && $this->details['ADDITIONAL_DISSCOUNT'] != 0.00){
+            $additionalDiscountRate = $this->details['ADDITIONAL_DISSCOUNT'];
+        }else{
+            $additionalDiscountRate = '';
+        }
+
         $html ='<div class="row">';
             $html .='<div class="col-xs-6">';
                 $html .='<p class="lead">Amount Due '.formatDate($this->details['INVOICE_CLOSE_DATE']).'</p>';
@@ -303,8 +328,21 @@ class Invoice{
                     $html .='<tbody>';
                         $html .='<tr>';
                             $html .='<th>Total:</th>';
-                            $html .='<td>'.$this->formatter->formatters('TOTAL',array_sum($this->total),'').'</td>';
+                            $html .='<td>'.$this->formatter->formatters('TOTAL',$netTotal,'').'</td>';
                         $html .='</tr>';
+                        
+                        if( !empty($additionalDiscountRate) ){
+                            $html .='<tr>';
+                                $html .='<th>Discount:</th>';
+                                $additionalDiscount = $netTotal *($additionalDiscountRate/100);
+                                $html .='<td>'.$this->formatter->formatters('TOTAL',$additionalDiscount,'').'</td>';
+                            $html .='</tr>';
+                        }
+                        $html .='<tr>';
+                            $html .='<th>Net Amount:</th>';
+                            $additionalDiscount = $netTotal-$additionalDiscount;
+                        $html .='<td>'.$this->formatter->formatters('TOTAL',$additionalDiscount,'').'</td>';
+                    $html .='</tr>';
                     $html .='</tbody></table>';
                 $html .='</div>';
             $html .='</div>';
