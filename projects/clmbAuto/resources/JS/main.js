@@ -125,9 +125,8 @@ function assignCustomer(){
 
 }
 
-function editCustomer(cmpId){
-   alert(cmpId);
-  /* var url = $("#editCompanyProcessPath").val();
+function editCompany(){
+  var url = $("#editCompanyProcessPath").val();
    var postData = $('#EDIT_COMPANY').serialize();
    $.ajax({
        type: "POST",
@@ -137,7 +136,22 @@ function editCustomer(cmpId){
            location.reload();
        }
         
-   });*/
-
-
+   });
 }
+
+function deletelCompany(){
+   if (confirm('Are you sure, Do you want to delete this Company')) { 
+      var url = $("#editCompanyProcessPath").val();
+      $.ajax({
+         type: "POST",
+         url: url,
+         //data:postData,
+         //dataType : JSON,
+         success: function(data){
+            alert(data);
+            location.replace(data);
+         }
+            
+      });
+   }
+ }

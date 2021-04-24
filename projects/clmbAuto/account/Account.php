@@ -39,6 +39,7 @@ class Account{
 
     function getCompanyInfo(){
         $html = '';
+        $html .=HTML::hiddenFeild('editCompanyProcessPath',makeLocalUrl('account/acc_process.php','action=deleteCompany&cmpId='.$this->cmpId),array('id'=>'editCompanyProcessPath'));
         $html .= '<div class="box-body table-responsive no-padding">';
               $html .= '<table class="table table-hover summarytable">';
                 $html .= '<tr>';
@@ -70,7 +71,9 @@ class Account{
 
         $head = 'Company Informations';
         if( isset($_REQUEST['act']) && $_REQUEST['act'] == 'custDetail' ){
-            $head .= ' &nbsp&nbsp|&nbsp<span><a href="'.makeLocalUrl('account/company_edit.php','sec=PROFILE&act=custDetail&cmpId='.$this->cmpId).'">'.getRawActionsIcon('edit','Edit Company').'</a></span>&nbsp';
+            $head .= ' &nbsp&nbsp|&nbsp<span><a href="'.makeLocalUrl('account/company_edit.php','sec=PROFILE&act=custDetail&cmpId='.$this->cmpId).'">'.getRawActionsIcon('edit','Edit Company').'</a></span>';
+            $head .= '<span onclick="deletelCompany();">'.getRawActionsIcon('delete','Delete Company').'</span>';
+            
         }else{
             $head .= ' &nbsp&nbsp|&nbsp<span><a href="'.makeLocalUrl('account/company_edit.php','cmpId='.$this->cmpId).'">'.getRawActionsIcon('edit','Edit Company').'</a></span>&nbsp';
         }
@@ -237,7 +240,7 @@ class Account{
         $html .= HTML::formStart('','POST','EDIT_COMPANY');
         $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
        
-        $html .=HTML::hiddenFeild('editCompanyProcessPath',makeLocalUrl('account/acc_process.php','action=editCompany'),array('id'=>'editCompanyProcessPath'));
+        $html .=HTML::hiddenFeild('editCompanyProcessPath',makeLocalUrl('account/acc_process.php','action=editCompany&cmpId='.$this->cmpId),array('id'=>'editCompanyProcessPath'));
         $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Company Name : ',array("style"=>"padding:5px;") ).'</td>';
             $html .='<td>'.HTML::textFeild('cmpdata[COMPANY_NAME]',$this->cmpData['COMPANY_NAME'],array('style'=>'width:300px;','id'=>'COMPANY_NAME')).'</td>';
@@ -272,7 +275,7 @@ class Account{
         $html .='</tr>';
         $html .='<tr>';
             $html .='<td></td>';
-            $html .='<td>'.HTML::buttonFeild('editCustomer','Save',array('style'=>'float: right;','onclick'=>'editCustomer(\''.$this->cmpId.'\');')).'</td>';
+            $html .='<td>'.HTML::buttonFeild('editCustomer','Save',array('style'=>'float: right;','onClick'=>'editCompany();')).'</td>';
         $html .='</tr>';
         $html .= HTML::openCloseTable(false,false);
         $html .= HTML::formEnd();

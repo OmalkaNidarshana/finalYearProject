@@ -78,49 +78,49 @@
 .addCmpIcon{
     cursor: pointer;
     font-size: 17px;
-    padding: 10px;
+    /*padding: 10px;*/
     color: brown;
 }
 
 .stockIcon{
     cursor: pointer;
     font-size: 17px;
-    padding: 10px;
+    /*padding: 10px;*/
     color: yellow;
 }
 
 .cartIcon{
     cursor: pointer;
     font-size: 17px;
-    padding: 5px;
+    /*padding: 5px;*/
     color: green;
 }
 
 .editIcon{
     cursor: pointer;
     font-size: 17px;
-    padding: 10px;
+    /*padding: 10px;*/
     color: blue;
 }
 
 .deleteIcon{
     cursor: pointer;
     font-size: 17px;
-    padding: 10px;
+    /*padding: 10px;*/
     color: red;
 }
 
 .addUser{
     cursor: pointer;
     font-size: 17px;
-    padding: 10px;
+    /*padding: 10px;*/
     color: green;
 }
 
 .disable{
     cursor: pointer;
     font-size: 17px;
-    padding: 5px;
+    /*padding: 5px;*/
     color: gainsboro;
 }
 
@@ -155,7 +155,7 @@ input[type=text], input[type=tel], input[type=date], input[type=number],input[ty
     box-sizing: border-box;
   }
   
-  input[type=submit] {
+  input[type=submit],input[type=button] {
     background-color: #4CAF50;
     color: white;
     height: 30px;

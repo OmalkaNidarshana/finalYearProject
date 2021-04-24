@@ -151,9 +151,35 @@ if($action == 'customerAssign'){
     $custIds = implode(",",$_REQUEST['ASSIGN_CMP']);
     $sql = "update user_info set ASSIGN_COMPANY =".getTextValue($custIds)." where USER_NAME =".getTextValue($userName);
     $link->insertUpdate($sql);
-
-
 }
 
+if($action == 'editCompany'){
+   $cmpData = $_REQUEST['cmpdata'];
+   $uData = [];
 
+   $uData['COMPANY_NAME'] = getTextValue($cmpData['COMPANY_NAME']);
+   $uData['ADRESS'] = getTextValue($cmpData['ADRESS']);
+   $uData['POSATL_CODE'] = getTextValue($cmpData['POSATL_CODE']);
+   $uData['CITY'] = getTextValue($cmpData['CITY']);
+   $uData['COUNTRY'] = getTextValue($cmpData['COUNTRY']);
+   $uData['EMAIL'] = getTextValue($cmpData['EMAIL']);
+   $uData['PHONE'] = getTextValue($cmpData['PHONE']);
+
+   foreach($uData as $fld=>$val){
+        $data[] = $fld.'='.$val;
+   }
+   $sql = "update company set ".implode(",",$data)." where COMPANY_ID=".$cmpId;
+   print_rr($sql);
+   $link->insertUpdate($sql);
+}
+
+if( $action == 'deleteCompany'){
+    /*$sql = "delete from company where COMPANY_ID"=.$cmpId;
+    $link->insertUpdate($sql);*/
+    //header("Location: ".makeLocalUrl('account/profile_script.php','sec=PROFILE') );
+    $lock = makeLocalUrl('account/profile_script.php','sec=PROFILE');
+    echo json_encode($lock);
+ 
+}
 ?>
+
