@@ -163,7 +163,7 @@ class Authentication{
         $content = 'Hi Team,<br>';
         $content .= 'New order has been created for '.$customerName.' by '.$userInfo->firstName.' '.$userInfo->LastName.'<br>';
         $content .= 'Order link :'.makeLocalUrl('orders/order_details.php','sec=ORDER&id='.$ordrId);
-        mail('waautosuppl@gmail.com',$subject,$content,$headers);
+        mail('omalkanidarshana@gmail.com',$subject,$content,$headers);
 
     }
 }

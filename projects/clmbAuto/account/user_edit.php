@@ -29,8 +29,9 @@ $acc->setUserName($userName);
 $userData = getUserInfoByUserName($link,$userName);
 
 if( isset($_REQUEST['editUserData']) ){
-    $userData = $_REQUEST['editUser'];
-    foreach( $userData as $key=>$val){
+
+    $userEditData = $_REQUEST['editUser'];
+    foreach( $userEditData as $key=>$val){
         if( empty($val) ){
             $userDataArr[$key] = '';
         }else{
@@ -42,14 +43,14 @@ if( isset($_REQUEST['editUserData']) ){
     $target_dir = $sysPath.'/resources/image/userImg/';
     $target_file = $target_dir . basename($_FILES["USER_IMAGE"]["name"]);
     move_uploaded_file($_FILES["USER_IMAGE"]["tmp_name"], $target_file);
-
     updateUserData($link,$userName,$userDataArr);
+    header("Location: ".makeLocalUrl('account/profile_script.php','sec=PROFILE&act=userInfo&userId='.$userEditData['USER_NAME'].'') );
 }
 
 $page[] = $acc->getUserEditForm();
 $page[] = $acc->getEditUserPrivileges();
 if($userInfo->role == 'ADMINISTRATOR'){
-    if($userData['USER_TYPE'] == 'SALES_REP')
+     if($userData['USER_TYPE'] == 'SALES_REP')
         $page[] = $acc->getAssignCustomer();
 }
 

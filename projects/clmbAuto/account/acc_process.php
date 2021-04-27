@@ -169,17 +169,29 @@ if($action == 'editCompany'){
         $data[] = $fld.'='.$val;
    }
    $sql = "update company set ".implode(",",$data)." where COMPANY_ID=".$cmpId;
-   print_rr($sql);
-   $link->insertUpdate($sql);
+    $link->insertUpdate($sql);
+
+    $cmpData = getCompanyDataByCmpId($link,$cmpId);
+    if($cmpData['COMPANY_TYPE'] == 'DISTRIBUTOR' ){
+        $lock = makeLocalUrl('account/profile_script.php','sec=PROFILE');
+    }else{
+        $lock = makeLocalUrl('account/profile_script.php','sec=PROFILE&act=custDetail&cmpId='.$cmpId.'');
+    }
+    echo json_encode($lock);
 }
 
 if( $action == 'deleteCompany'){
-    /*$sql = "delete from company where COMPANY_ID"=.$cmpId;
-    $link->insertUpdate($sql);*/
-    //header("Location: ".makeLocalUrl('account/profile_script.php','sec=PROFILE') );
+    $sql = "delete from company where COMPANY_ID=".$cmpId;
+    $link->insertUpdate($sql);
     $lock = makeLocalUrl('account/profile_script.php','sec=PROFILE');
     echo json_encode($lock);
- 
+}
+
+if( $action == 'deleteUser'){
+    $sql = "delete from user_info where USER_NAME=".getTextValue($_REQUEST['userName']);
+    $link->insertUpdate($sql);
+    $lock = makeLocalUrl('account/profile_script.php','sec=PROFILE');
+    echo json_encode($lock);
 }
 ?>
 

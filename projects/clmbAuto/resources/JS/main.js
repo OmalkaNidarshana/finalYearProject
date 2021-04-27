@@ -133,7 +133,8 @@ function editCompany(){
        url: url,
        data:postData,
        success: function(data){
-           location.reload();
+         data = $.parseJSON(data);
+         location.replace(data);
        }
         
    });
@@ -146,9 +147,25 @@ function deletelCompany(){
          type: "POST",
          url: url,
          //data:postData,
-         //dataType : JSON,
+         //dataType : json,
          success: function(data){
-            alert(data);
+            data = $.parseJSON(data);
+            location.replace(data);
+         }
+            
+      });
+   }
+ }
+ function deleteUser(){
+   if (confirm('Are you sure, Do you want to delete this User')) { 
+      var url = $("#deletUserProcessPath").val();
+      $.ajax({
+         type: "POST",
+         url: url,
+         //data:postData,
+         //dataType : json,
+         success: function(data){
+            data = $.parseJSON(data);
             location.replace(data);
          }
             

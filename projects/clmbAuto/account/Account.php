@@ -13,6 +13,8 @@ class Account{
     var $customerCompanyList = array();
     var $userName = '';
     var $userId = '';
+    var $userdata =array();
+    var $userPrive = array();
 
     function Account($link,$userInfo,$cmpId){
         $this->link = $link;
@@ -30,10 +32,16 @@ class Account{
         $this->sysPrivileges = getSystemPrivileges($this->link);
         $this->companyPrivileges = getCompanyPrivilegesByCmpId($this->link,$this->cmpId);
         $this->customerCompanyList = getCustomerListByDistId($this->link,$this->cmpId);
+        $this->userdata = getUserInfoByUserId($this->link,$this->userName);
+        
+        if( !empty($this->userdata)){
+            $this->userPrive = getUserPrivielegesByUserId($this->link,$this->userdata['USER_INTID']);
+        }
+        
         
         
     }
-
+    
     function setUserName($userName){ $this->userName=$userName;}
     function setUserId($userId){ $this->userId=$userId;}
 
@@ -189,6 +197,7 @@ class Account{
     function getUserInfo(){
         $userdata = getUserInfoByUserId($this->link,$this->userName);
         $html = '';
+        $html .=HTML::hiddenFeild('deletUserProcessPath',makeLocalUrl('account/acc_process.php','action=deleteUser&userName='.$this->userName),array('id'=>'deletUserProcessPath'));
         $html .= '<div class="box-body table-responsive no-padding">';
               $html .= '<table class="table table-hover summarytable">';
                 $html .= '<tr>';
@@ -225,9 +234,12 @@ class Account{
         $html .= '</div>';
 
         $head = 'User Informations';
-        if( $this->userName == $this->userInfo->userName || $this->userInfo->role == 'ADMINISTRATOR')
+        if( $this->userName == $this->userInfo->userName || $this->userInfo->role == 'ADMINISTRATOR'){
             $head .= ' &nbsp&nbsp|&nbsp&nbsp<span><a href="'.makeLocalUrl('account/user_edit.php','sec=PROFILE&act=useredit&userId='.$userdata['USER_NAME']).'">'.getRawActionsIcon('edit','Edit User').'</a></span>&nbsp';
-        return contentBorder($html,$head);
+            if($this->userInfo->role == 'ADMINISTRATOR')
+                $head .= '<span onclick="deleteUser();">'.getRawActionsIcon('delete','Delete User').'</span>';
+        }
+            return contentBorder($html,$head);
     }
 
     function getCompanyEditForm(){
@@ -320,6 +332,28 @@ class Account{
     }
 
     function getUserAssignedPrive(){
+                        
+        $html = '';
+        $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
+        foreach( $this->userPrive as $priv){
+            $html .='<tr>';
+                $html .='<td>'.HTML::lblFeild($priv,array("style"=>"padding:5px;") ).'</td>';
+                /*if( in_array($privData['PRIVE_NAME'],$userPrive) ){
+                    $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','',true).'</td>';
+                }else{
+                    $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','').'</td>';
+                }
+                $html .='<td style="color:blue;"></td>';*/
+            $html .='</tr>';
+        }
+   
+        //$html .='<td>'.HTML::submitButtonFeild('save','Save',array('onclick'=>'addUser();','style'=>'float: right;')).'</td>';
+        
+        $html .= HTML::openCloseTable(false,false);
+        return contentBorder($html,'Assigned User Privileges');
+    }
+
+    function getUserAssignedCustomer(){
         $userdata = getUserInfoByUserId($this->link,$this->userName);
         $userPrive = getUserPrivielegesByUserId($this->link,$userdata['USER_INTID']);
                     
@@ -340,7 +374,7 @@ class Account{
         //$html .='<td>'.HTML::submitButtonFeild('save','Save',array('onclick'=>'addUser();','style'=>'float: right;')).'</td>';
         
         $html .= HTML::openCloseTable(false,false);
-        return contentBorder($html,'Assigned User Privileges');
+        return contentBorder($html,'Assigned Customer');
     }
 
     function getEditUserPrivileges(){
