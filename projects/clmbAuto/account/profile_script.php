@@ -32,7 +32,7 @@ if( isset($_REQUEST['addUser']) ){
 $userData = getUserInfoByUserName($link,$userName);
 
 $acc = new Account($link,$userInfo,$cmpId);
-$acc->setUserName($userName);
+$acc->init($userName);
 if( !empty($userData) ){
     $acc->setUserId($userData['USER_INTID']);
 }

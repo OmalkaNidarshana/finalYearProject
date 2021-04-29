@@ -24,7 +24,7 @@ $csFiles[] = STYLE_ROOT."main.css";
 $page[] = '';
 
 $acc = new Account($link,$userInfo,$userInfo->cmpId);
-$acc->setUserName($userName);
+$acc->init($userName);
 
 $userData = getUserInfoByUserName($link,$userName);
 

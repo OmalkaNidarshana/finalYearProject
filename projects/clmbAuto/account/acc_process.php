@@ -150,6 +150,7 @@ if($action == 'customerAssign'){
     $userName = $_REQUEST['userId'];
     $custIds = implode(",",$_REQUEST['ASSIGN_CMP']);
     $sql = "update user_info set ASSIGN_COMPANY =".getTextValue($custIds)." where USER_NAME =".getTextValue($userName);
+    print_rr($sql);
     $link->insertUpdate($sql);
 }
 
@@ -192,6 +193,41 @@ if( $action == 'deleteUser'){
     $link->insertUpdate($sql);
     $lock = makeLocalUrl('account/profile_script.php','sec=PROFILE');
     echo json_encode($lock);
+}
+
+if( $action == 'assignPriv'){
+    $privArray = array();
+    $grantPrivs = array();
+    $revokePrivs = array();
+
+    $userIntId = $_REQUEST['userIntId'];
+    if( isset($_REQUEST['PRIVES']) )
+        $privArray = $_REQUEST['PRIVES'];
+
+    $currentPrivileges = getUserPrivielegesByUserId($link,$userIntId);
+
+    $grantPrivs = array_diff($privArray,$currentPrivileges);
+    $revokePrivs = array_diff($currentPrivileges,$privArray);
+
+    if( !empty($grantPrivs) ){
+        foreach($grantPrivs as $priv){
+            $inserData['PRIVE_NAME'] = getTextValue($priv);
+            $inserData['USER_ID'] = $userIntId;
+            $inserData['CREATED_BY'] = $userInfo->intId;
+            $inserData['CREATED_DATE'] = getCurrentDateTime();
+            $sql = "insert into user_privileges (".implode(",",array_keys($inserData)).") values (".implode(",",array_values($inserData)).")";
+            $link->insertUpdate($sql);
+        }
+    }
+
+    if( !empty($revokePrivs) ){
+        foreach($revokePrivs as $priv){
+            $sql = "delete from user_privileges where PRIVE_NAME =".getTextValue($priv)." and USER_ID=".$userIntId;
+            $link->insertUpdate($sql);
+        }
+    }
+
+    
 }
 ?>
 

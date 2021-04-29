@@ -172,3 +172,18 @@ function deletelCompany(){
       });
    }
  }
+
+ function assignPriv(){
+   var url = $("#assignPrivLoc").val();
+   var postData = $('#ASIGN_PRIV').serialize();
+   $.ajax({
+       type: "POST",
+       url: url,
+       data:postData,
+       success: function(data){
+         location.reload();
+       }
+        
+   });
+
+ }

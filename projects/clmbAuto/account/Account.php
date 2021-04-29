@@ -28,20 +28,21 @@ class Account{
         foreach($this->sysRoles as $role){
             $this->role[$role['ROLE_NAME']] = $role['ROLE_NAME'];
         }
-
+        
         $this->sysPrivileges = getSystemPrivileges($this->link);
         $this->companyPrivileges = getCompanyPrivilegesByCmpId($this->link,$this->cmpId);
         $this->customerCompanyList = getCustomerListByDistId($this->link,$this->cmpId);
+
+    }
+    
+    function init($userName){
+        $this->setUserName($userName);
         $this->userdata = getUserInfoByUserId($this->link,$this->userName);
-        
         if( !empty($this->userdata)){
             $this->userPrive = getUserPrivielegesByUserId($this->link,$this->userdata['USER_INTID']);
         }
-        
-        
-        
     }
-    
+
     function setUserName($userName){ $this->userName=$userName;}
     function setUserId($userId){ $this->userId=$userId;}
 
@@ -195,38 +196,37 @@ class Account{
     }
 
     function getUserInfo(){
-        $userdata = getUserInfoByUserId($this->link,$this->userName);
         $html = '';
         $html .=HTML::hiddenFeild('deletUserProcessPath',makeLocalUrl('account/acc_process.php','action=deleteUser&userName='.$this->userName),array('id'=>'deletUserProcessPath'));
         $html .= '<div class="box-body table-responsive no-padding">';
               $html .= '<table class="table table-hover summarytable">';
                 $html .= '<tr>';
                     $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">User Name : &nbsp</span></td>';
-                    $html .= '<td>'.$userdata['USER_NAME'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td>'.$this->userdata['USER_NAME'].'</td><td style="height:40px;" width="150px;" align="right">';
                     $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Title : &nbsp</span></td>';
-                    $html .= '<td>'.$userdata['TITLE'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td>'.$this->userdata['TITLE'].'</td><td style="height:40px;" width="150px;" align="right">';
                 $html .= '</tr>';
                 $html .= '<tr>';    
                     $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">First Name : &nbsp</span></td>';
-                    $html .= '<td>'.$userdata['FIRST_NAME'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td>'.$this->userdata['FIRST_NAME'].'</td><td style="height:40px;" width="150px;" align="right">';
                     $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Last Name : &nbsp</span></td>';
-                    $html .= '<td>'.$userdata['LAST_NAME'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td>'.$this->userdata['LAST_NAME'].'</td><td style="height:40px;" width="150px;" align="right">';
                 $html .= '</tr>';
                 $html .= '<tr>';    
                     $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Adress 1 : &nbsp</span></td>';
-                    $html .= '<td>'.$userdata['ADDRESS_1'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td>'.$this->userdata['ADDRESS_1'].'</td><td style="height:40px;" width="150px;" align="right">';
                     $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Adress 2 : &nbsp</span></td>';
-                    $html .= '<td>'.$userdata['ADDRESS_2'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td>'.$this->userdata['ADDRESS_2'].'</td><td style="height:40px;" width="150px;" align="right">';
                 $html .= '</tr>';
                 $html .= '<tr>';    
                     $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">City : &nbsp</span></td>';
-                    $html .= '<td>'.$userdata['CITY'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td>'.$this->userdata['CITY'].'</td><td style="height:40px;" width="150px;" align="right">';
                     $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Country : &nbsp</span></td>';
-                    $html .= '<td>'.$userdata['COUNTRY'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td>'.$this->userdata['COUNTRY'].'</td><td style="height:40px;" width="150px;" align="right">';
                 $html .= '</tr>';
                 $html .= '<tr>';    
                     $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Phone : &nbsp</span></td>';
-                    $html .= '<td>'.$userdata['PHONE'].'</td><td style="height:40px;" width="150px;" align="right">';
+                    $html .= '<td>'.$this->userdata['PHONE'].'</td><td style="height:40px;" width="150px;" align="right">';
                     $html .= '<td style="height:40px;" width="150px;" align="right"></td>';
                     $html .= '<td></td><td style="height:40px;" width="150px;" align="right">';
                 $html .= '</tr>';
@@ -235,7 +235,7 @@ class Account{
 
         $head = 'User Informations';
         if( $this->userName == $this->userInfo->userName || $this->userInfo->role == 'ADMINISTRATOR'){
-            $head .= ' &nbsp&nbsp|&nbsp&nbsp<span><a href="'.makeLocalUrl('account/user_edit.php','sec=PROFILE&act=useredit&userId='.$userdata['USER_NAME']).'">'.getRawActionsIcon('edit','Edit User').'</a></span>&nbsp';
+            $head .= ' &nbsp&nbsp|&nbsp&nbsp<span><a href="'.makeLocalUrl('account/user_edit.php','sec=PROFILE&act=useredit&userId='.$this->userdata['USER_NAME']).'">'.getRawActionsIcon('edit','Edit User').'</a></span>&nbsp';
             if($this->userInfo->role == 'ADMINISTRATOR')
                 $head .= '<span onclick="deleteUser();">'.getRawActionsIcon('delete','Delete User').'</span>';
         }
@@ -316,21 +316,6 @@ class Account{
 
     }
 
-    function getUserPrivileges(){
-        $html = '';
-        $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
-        foreach( $this->sysPrivileges as $privData){
-            $html .='<tr>';
-                $html .='<td>'.HTML::lblFeild($privData['PRIVE_NAME'],array("style"=>"padding:5px;") ).'</td>';
-                $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','').'</td>';
-                $html .='<td></td>';
-            $html .='</tr>';
-        }
-        $html .= HTML::openCloseTable(false,false);
-        return contentBorder($html,'User Privileges');
-
-    }
-
     function getUserAssignedPrive(){
                         
         $html = '';
@@ -354,14 +339,14 @@ class Account{
     }
 
     function getUserAssignedCustomer(){
-        $userdata = getUserInfoByUserId($this->link,$this->userName);
-        $userPrive = getUserPrivielegesByUserId($this->link,$userdata['USER_INTID']);
-                    
+        $assignedCustomer = 
         $html = '';
         $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
-        foreach( $userPrive as $priv){
+        $assignCompany = explode(",",$this->userdata['ASSIGN_COMPANY']);
+        foreach( $assignCompany as $cmpId){
+            $cmpData = getCompanyDataByCmpId($this->link,$cmpId);
             $html .='<tr>';
-                $html .='<td>'.HTML::lblFeild($priv,array("style"=>"padding:5px;") ).'</td>';
+                $html .='<td>'.HTML::lblFeild($cmpData['COMPANY_NAME'],array("style"=>"padding:5px;") ).'</td>';
                 /*if( in_array($privData['PRIVE_NAME'],$userPrive) ){
                     $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','',true).'</td>';
                 }else{
@@ -378,41 +363,41 @@ class Account{
     }
 
     function getEditUserPrivileges(){
-        
-        $userdata = getUserInfoByUserId($this->link,$this->userName);
-        $userPrive = getUserPrivilegesByCmpId($this->link,$userdata['USER_INTID']);
+  
+        $userPrive = getUserPrivilegesByCmpId($this->link,$this->userdata['USER_INTID']);
                
         $html = '';
+        $html .= HTML::formStart('','POST','ASIGN_PRIV');
+        $html .=HTML::hiddenFeild('assignPrivLoc',makeLocalUrl('account/acc_process.php','action=assignPriv&userIntId='.$this->userdata['USER_INTID']),array('id'=>'assignPrivLoc'));
         $html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
+        $html .='<div class ="row">';
         foreach( $this->sysPrivileges as $privData){
-            $html .='<tr>';
-                $html .='<td>'.HTML::lblFeild($privData['PRIVE_NAME'],array("style"=>"padding:5px;") ).'</td>';
-                if( in_array($privData['PRIVE_NAME'],$userPrive) ){
-                    $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','',true).'</td>';
-                }else{
-                    $html .='<td>'.HTML::checkboxFeild('PRIVE_ID['.$privData['PRIVE_ID'].']','').'</td>';
-                }
-                $html .='<td style="color:blue;"></td>';
-            $html .='</tr>';
+            //$html .='<td>'.$privData['PRIVE_NAME'].'</td>';
+            if( in_array($privData['PRIVE_NAME'],$userPrive) ){
+                $html .='<div ><div class="col-sm-2">'.$privData['PRIVE_NAME'].'</div><div class="col-sm-2">'.HTML::checkboxFeild('PRIVES['.$privData['PRIVE_ID'].']',$privData['PRIVE_NAME'],true).'</div></div>';
+            }else{
+                $html .='<div ><div class="col-sm-2">'.$privData['PRIVE_NAME'].'</div><div class="col-sm-2">'.HTML::checkboxFeild('PRIVES['.$privData['PRIVE_ID'].']',$privData['PRIVE_NAME']).'</div></div>';
+            }
+            //$html .='<td style="color:blue;"></td>';
         }
-   
-        $html .='<td>'.HTML::submitButtonFeild('save','Save',array('onclick'=>'addUser();','style'=>'float: right;')).'</td>';
+        $html .='</div>';
+        $html .= HTML::formEnd();
+        $btn ='<span>'.HTML::submitButtonFeild('save','Save',array('onclick'=>'assignPriv();','style'=>'margin-left: 10px;')).'</span>';
         
         $html .= HTML::openCloseTable(false,false);
-        return contentBorder($html,'Edit User Privileges');
+        return contentBorder($html,'Edit User Privileges'.$btn);
     }
 
     function getAssignCustomer(){
         $customerList = getCustomerList($this->link);
-        $userData = getUserInfoByUserName($this->link,$this->userName);
+       // $userData = getUserInfoByUserName($this->link,$this->userName);
        
-        $assignCompany = explode(",",$userData['ASSIGN_COMPANY']);
+        $assignCompany = explode(",",$this->userdata['ASSIGN_COMPANY']);
         $html = '';
         //$html .= HTML::openCloseTable(true,false,array("style"=>"font-size:12px;"));
         //$html .='<div class ="container">';
         $html .= HTML::formStart('','POST','ASIGN_CUSTOMER');
-        $html .=HTML::hiddenFeild('customerAssign',makeLocalUrl('account/acc_process.php','action=customerAssign'),array('id'=>'customerAssign'));
-        $html .=HTML::hiddenFeild('userId',$this->userId);
+        $html .=HTML::hiddenFeild('customerAssign',makeLocalUrl('account/acc_process.php','action=customerAssign&userId='.$this->userName),array('id'=>'customerAssign'));
         $html .='<div class ="row">';
         //print_rr($customerList);
         foreach( $customerList as $customerData){
