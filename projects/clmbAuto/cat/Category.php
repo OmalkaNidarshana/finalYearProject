@@ -206,6 +206,10 @@ class Category{
             $html .='<td>'.HTML::textFeild('catData[STOCK_NO]','',array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
         $html .='<tr>';
+            $html .='<td>'.HTML::lblFeild('Stock : ',array("style"=>"padding:5px;") ).'</td>';
+            $html .='<td>'.HTML::textFeild('catData[STOCK]','',array('style'=>'width:300px;')).'</td>';
+        $html .='</tr>';
+        $html .='<tr>';
             $html .='<td>'.HTML::lblFeild('Price : ',array("style"=>"padding:5px;") ).'</td>';
             $html .='<td>'.HTML::textFeild('catData[PRICE]','',array('style'=>'width:300px;')).'</td>';
         $html .='</tr>';
@@ -230,7 +234,7 @@ class Category{
             $html .='<td></td>';
         $html .='</tr>';
         
-        $btn = HTML::submitButtonFeild('save','Save',array('onclick'=>'addCategory();','style'=>'float: right;'));
+        $btn = HTML::buttonFeild('save','Save',array('onclick'=>'addCategory();','style'=>'float: right;'));
        
         $html .= HTML::openCloseTable(false,false);
         $html .= HTML::formEnd();
@@ -323,7 +327,7 @@ class Category{
     function loadEdiCatPopup(){
         $html = '<div id="editCatPopUp"></div>';
         $html .=HTML::hiddenFeild('editCategoryProcess',makeLocalUrl('cat/category_process.php',''),array('id'=>'editCategoryProcess') );
-        $btn = HTML::submitButtonFeild('edit_cat','Save',$attr=array('onclick'=>'saveEditLine();'));
+        $btn = HTML::buttonFeild('edit_cat','Save',$attr=array('onclick'=>'saveEditLine();'));
         $popUp = modalPopupBox('Edit Line','EDIT_CATEGORY_POPUP',$html,$btn);
         return $popUp;
 

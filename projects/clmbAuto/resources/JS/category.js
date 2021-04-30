@@ -35,11 +35,42 @@ function loadCatEditPopUp(id){
          data: postdata,
          //dataType: "JSON",
          success: function(data){
-            location.reload();
+            //location.reload();
          }
          
     });
  }
 
+ function addCategory(){
+   var url = $("#addCategory").val();
+   var postdata = $("#ADD_CATEGORY_FORM").serialize();
+   $.ajax({
+        type: "POST",
+        url: url,
+        data: postdata,
+        dataType: "JSON",
+        success: function(data){
+           location.reload();
+        }
+        
+   });
 
+ }
+
+ 
+ function deleteItem($id){
+   if (confirm('Are you sure, Do you want to delete this Company')) { 
+      var url = $("#editCategoryProcess").val()+'?action=deleteItem&catId='+$id;
+      $.ajax({
+         type: "POST",
+         url: url,
+         //data: postdata,
+         dataType: "JSON",
+         success: function(data){
+            location.reload();
+         }
+         
+      });
+   }
+ }
 

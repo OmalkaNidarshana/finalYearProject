@@ -53,11 +53,39 @@ function getCategoryDataBycategoryId($link,$catId){// get gategory data by categ
     return $data;
 }
 
-function insertUpdateCategory($link,$cateData,$catId){// inser and update category data into category table
+function updateCategory($link,$cateData,$catId){// update category data from category table
     global $userInfo;
     $data = array();
-    $catDataArr = getCategoryDataBycategoryId($link,$catId);
-    $id = $catDataArr['RECORD_ID'];
+    $data['BRAND'] = getTextValue($cateData['BRAND']);
+    $data['MODEL'] = getTextValue($cateData['MODEL']);
+    $data['VEHICAL_CODE'] = getTextValue($cateData['VEHICAL_CODE']);
+    $data['ENGINE'] = getTextValue($cateData['ENGINE']);
+    $data['CC'] = getTextValue($cateData['CC']);
+    $data['BRISK'] = getTextValue($cateData['BRISK']);
+    $data['BRISK_CODE'] = getTextValue($cateData['BRISK_CODE']);
+    $data['DENSO'] = getTextValue($cateData['DENSO']);
+    $data['IRIDIUM'] = getTextValue($cateData['IRIDIUM']);
+    $data['STOCK_NO'] = getNumValue($cateData['STOCK_NO']);
+    $data['STOCK'] = getNumValue($cateData['STOCK']);
+    $data['PRICE'] = getNumValue($cateData['PRICE']);
+    $data['DIS'] = getNumValue($cateData['DIS']);
+    $data['SPECIAL_PRICE'] = getNumValue($cateData['SPECIAL_PRICE']);
+    $data['SELL_PRICE'] = getNumValue($cateData['SELL_PRICE']);
+    $data['COMMISION'] = getNumValue($cateData['COMMISION']);
+
+    $data['MODIFIED_DATE'] = getCurrentDateTime();
+    $data['MODIFIED_BY'] = $userInfo->intId;
+
+    foreach($data as $k=>$v){
+        $updateData[] = $k.'='.$v;
+    }
+    $sql = "update category set ".implode(",",$updateData)." where RECORD_ID=".$catId;
+    $link->insertUpdate($sql);
+}
+
+function insertCategory($link,$cateData){// insert  category data into category table
+    global $userInfo;
+    $data = array();
     $data['BRAND'] = getTextValue($cateData['BRAND']);
     $data['MODEL'] = getTextValue($cateData['MODEL']);
     $data['VEHICAL_CODE'] = getTextValue($cateData['VEHICAL_CODE']);
@@ -75,22 +103,12 @@ function insertUpdateCategory($link,$cateData,$catId){// inser and update catego
     $data['SELL_PRICE'] = getNumValue($cateData['SELL_PRICE']);
     $data['COMMISION'] = getNumValue($cateData['COMMISION']);
     $data['CREATED_DATE'] = getCurrentDateTime();
-    $data['CREATED_BY'] = $userInfo->intId;
+    $data['CREATED_BY'] = getNumValue($userInfo->intId);
     $data['MODIFIED_DATE'] = getCurrentDateTime();
-    $data['MODIFIED_BY'] = $userInfo->intId;
+    $data['MODIFIED_BY'] = getNumValue($userInfo->intId);
 
-    if( empty($id) ){
-        $sql = 'insert into category ('.implode(',',array_keys($data)).') values ('.implode(',',array_values($data)).')';
-    }else{
-        unset($data['CREATED_BY']);
-        unset($data['CREATED_DATE']);
 
-        foreach($data as $k=>$v){
-            $updateData[] = $k.'='.$v;
-        }
-       
-        $sql = "update category set ".implode(",",$updateData)." where RECORD_ID=".$id;
-    }
+    $sql = 'insert into category ('.implode(',',array_keys($data)).') values('.implode(',',array_values($data)).')';
     $link->insertUpdate($sql);
 }
 ?>

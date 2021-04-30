@@ -31,7 +31,7 @@
                 break;
                 case 'ACTION':
                     $formatter = '<span onclick="loadCatEditPopUp('.$data['RECORD_ID'].')">'.getRawActionsIcon('edit','Edit Item').'</span>';
-                    $formatter .= '<span>'.getRawActionsIcon('delete','Delete Item').'</span>';
+                    $formatter .= '<span onclick="deleteItem('.$data['RECORD_ID'].')">'.getRawActionsIcon('delete','Delete Item').'</span>';
                 break;
                 
                 default:
