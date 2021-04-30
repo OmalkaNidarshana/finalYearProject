@@ -39,8 +39,13 @@ if( $action=='addCart' ){
 }elseif( $action=='saveEditLine' ){
     $catId = $_REQUEST['categoryId'];
     $catData = $_REQUEST['catData'];
-    insertUpdateCategory($link,$catData,$catId);
+    updateCategory($link,$catData,$catId);
+}elseif( $action=='addCategory' ){
+   insertCategory($link,$_REQUEST['catData']);
+}elseif( $action=='deleteItem' ){
+   $sql = "delete from category where RECORD_ID=".$catId;
+   $link->insertUpdate($sql);
 }
 
-
+DAIHATSU	HIJET	S200P	EF-VE	660	A-LINE 11	DR15YCY-1	K20PR-U11		27	5	Rs.364	30.00	Rs.550	0%
 ?>
