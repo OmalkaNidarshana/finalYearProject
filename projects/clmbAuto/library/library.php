@@ -112,7 +112,7 @@ function contentBox($table){
  }
 
  function formatCurrency($val){
-    $currencyVal = 'Rs.'.$val."/=";
+    $currencyVal = 'Rs.'.number_format($val,2)."/=";
     return $currencyVal;
  }
 
