@@ -174,7 +174,7 @@ class Order{
         $html .= HTML::formStart('','POST','SUBMIT_ORDER');
         $html .= HTML::hiddenFeild('orderProcessUrl',makeLocalUrl('orders/order_process.php',''),array('id'=>'orderProcessUrl'));
         $html .= '<div class="box-body table-responsive no-padding">';
-              $html .= '<table class="table table-hover summarytable">';
+              $html .= '<table class="table table-hover summarytable" id="orderHeader">';
                 $html .= '<tr>';
                     $html .= '<td style="height:40px;" width="150px;" align="right"><span class="detailsHeader">Order Num : &nbsp</span></td>';
                     $html .= '<td>'.$this->details['ORDER_NUM'].'</td><td style="height:40px;" width="150px;" align="right">';
@@ -207,10 +207,10 @@ class Order{
         $orderLIne = geOrderLineByOrderHeaderId($this->link,$this->id);
         $html ='';
         $html .= '<div class="box-body table-responsive no-padding">';
-            $html .= '<table class="table table-hover summarytable" >';
+            $html .= '<table class="table table-hover summarytable" id="lineTable">';
             $html .= '<tbody><tr>';
-                $html .= '<th>Line#</th><th>Category</th><th>Quantity</th><th>Unit Price (Rs.)</th><th>Total (Rs.)</th><th>Discount (Rs.)</th><th>Discount Rate(%)</th><th>Order Date</th>
-                            <th>Description</th>
+                $html .= '<th>Line#</th><th>BRAND</th><th>Model</th><th>Brisk</th><th>Category</th><th>Quantity</th><th>Unit Price (Rs.)</th><th>Total (Rs.)</th>
+                            <th>Discount (Rs.)</th><th>Discount Rate(%)</th><th>Order Date</th><th>Description</th>
                             <th>Status</th>';
                     if($this->details['STATUS'] !== 'CANCELD'){
                         //if($this->details['STATUS'] !== 'SUBMITTED'){
@@ -221,8 +221,24 @@ class Order{
                     }
             $html .= '</tr>';
             foreach( $orderLIne as $data){
-                $html .= '<tr>';
+                
+                $rejetdOrderData = getRejectedOrdrIdByHeaderAndLineId($this->link,$this->details['ORDER_NUM'],$data['LINE_NUM']);
+                if( !empty($rejetdOrderData) && ($rejetdOrderData['REJECTED_QTY'] < $data['QUANTITY'] ) ){
+                    $css = 'background-color: sandybrown;';
+                    $rejected = true;
+                }elseif(!empty($rejetdOrderData) && ($rejetdOrderData['REJECTED_QTY'] = $data['QUANTITY'] ) ){
+                    $css = 'background-color: tan;';
+                    $rejected = true;
+                }else{
+                    $css = '';
+                    $rejected = false;
+                }
+                
+                $html .= '<tr style="'.$css.'">';
                     $html .= '<td>'.$data['LINE_NUM'].'</td>';
+                    $html .= '<td>'.$data['BRAND'].'</td>';
+                    $html .= '<td>'.$data['MODEL'].'</td>';
+                    $html .= '<td>'.$data['BRISK'].'</td>';
                     $html .= '<td>'.$data['CATEGORY'].'</td>';
                     $html .= '<td>'.$data['QUANTITY'].'</td>';
                     $html .= '<td>'.$this->formatter->formatters('SELL_PRICE',$data['SELL_PRICE'],'').'</td>';
@@ -237,15 +253,19 @@ class Order{
                             $html .= '<td><span onclick="loadEditPopUp(\''.$this->id.'\',\''.$data['LINE_NUM'].'\')">'.getRawActionsIcon('edit','Edit Line').'</span>&nbsp;&nbsp;&nbsp;
                                         <span onclick="deleteOrderLine(\''.$this->id.'\',\''.$data['LINE_NUM'].'\');">'.getRawActionsIcon('delete','Delete Line').'</span></td>';
                         }else{
-                            
-                            $html .= '<td>'.HTML::submitButtonFeild('reject_item','Reject',$attr=array('onclick'=>'loadRejecItemPopUp('.$this->id.','.$data['LINE_NUM'].');','style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:red")).'</td>';
+                            if($rejected){
+                                $html .= '<td>'.OrdersStatusColorBox('REJECTED').'</td>';
+                            }else{
+                                $html .= '<td>'.HTML::submitButtonFeild('reject_item','Reject',$attr=array('onclick'=>'loadRejecItemPopUp('.$this->id.','.$data['LINE_NUM'].');','style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:red")).'</td>';
+                            }
+                                
                         }
                     }
                 $html .= '</tr>';
             }
             $html .= '</tbody>';
             $html .= '</table>';
-        $html .= '<div>';
+        $html .= '</div>';
         $head =  'Order Lines';
         return contentBorder($html,$head);
     }
@@ -261,14 +281,13 @@ class Order{
         $totalAmount = array_sum($totalArr);
         $totalDiscount = array_sum($dissArr);
         $netAmount = $totalAmount-$totalDiscount;
-        $html = '<table class="table table-hover summarytable" >';
-            $html .= '<tbody>';
-                $html .= '<tr>';
-                $html .= '<td><b>Total Amount :</b>&nbsp;&nbsp;Rs.'.$totalAmount.'</td><td align=""><b>Total Disount :</b>&nbsp;&nbsp;Rs.'.$totalDiscount.'</td><td align=""><b>Net Amount :</b>&nbsp;&nbsp;Rs.'.$netAmount.'</td>';
-                $html .= '</tr>';
-            $html .= '</tbody>';
-        $html .= '</table>';
-        return $html;
+
+        $html = '';
+        $html .= getWidgetsBox('blueIcon','fa  fa-calculator','Total',formatCurrency($totalAmount));
+        $html .=getWidgetsBox('redIcon','fa  fa-percent','Discount',formatCurrency($totalDiscount));
+        $html .=getWidgetsBox('greenIcon','fa fa-money','Net Amount',formatCurrency($netAmount));
+    
+        return contentBox($html);
 
     }
     function getOrderLineEditForm($orderId,$lineId){
@@ -302,7 +321,7 @@ class Order{
 
         
         $html = '';
-        $html .= HTML::formStart('','POST','EDIT_LINE');
+        $html .= HTML::formStart('','POST','REJECT_ITEM');
         $html .= '<table>';
         $html .= '<tbody>';
         $html .= '<tr>';
@@ -312,10 +331,13 @@ class Order{
         $html .= HTML::hiddenFeild('orderProcessUrl',makeLocalUrl('orders/order_process.php',''),array('id'=>'orderProcessUrl'));
         $html .= HTML::hiddenFeild('lineId',$lineId,array('id'=>'lineId'));
         $html .= '<tr>';
+            $html .= '<td align="right">'.HTML::lblFeild('Rejected Quantity &nbsp;&nbsp;: ').'</td><td >&nbsp;&nbsp;'.HTML::numberFeild('REJECTED_QTY','',array('id'=>'REJECTED_QTY')).'</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
             $html .= '<td align="right">'.HTML::lblFeild('Reject Reason &nbsp;&nbsp;: ').'</td><td >&nbsp;&nbsp;'.HTML::textArea('REJECT_REASON','REJECT_REASON','','').'</td>';
         $html .= '</tr>';
         $html .= '<tr>';
-        $html .= '<td align="right">'.HTML::lblFeild('Rejected Date &nbsp;&nbsp;: ').'</td><td>&nbsp;&nbsp;'.HTML::dateFeild('EXPECTED_DELIVERY_DATE',$lineData['EXPECTED_DELIVERY_DATE']).'</td>';
+        $html .= '<td align="right">'.HTML::lblFeild('Rejected Date &nbsp;&nbsp;: ').'</td><td>&nbsp;&nbsp;'.HTML::dateFeild('REJECTED_DATE','').'</td>';
         $html .= '</tr>';
         $html .= '</table>';
         $html .= HTML::formEnd();
@@ -332,7 +354,7 @@ class Order{
 
     function loadRejectItemPopup(){
         $html = '<div id="rejectItemPopUp"></div>';
-        $btn = HTML::submitButtonFeild('reject_item','Reject',$attr=array('onclick'=>'saveEditLine('.$this->id.');','style'=>'background-color:red'));
+        $btn = HTML::submitButtonFeild('reject_item','Reject',$attr=array('onclick'=>'rejectItem('.$this->id.');','style'=>'background-color:red'));
         $popUp = modalPopupBox('Reject Item','REJECT_ITEM_POPUP',$html,$btn);
         return $popUp;
 
@@ -413,22 +435,35 @@ class Order{
 
     function getActionPanel(){
         $btn = '';
-        if( !$this->details['STATUS'] == 'CANCELD'){
-            HTML::submitButtonFeild('order_initiate','Create Order',array('style'=>'width:100px; height:20px;'));
+        if( $this->details['STATUS'] != 'CANCELD'){
+            $btn .='<span id="actionPanel">';
             if( $this->details['STATUS'] == 'SUBMITTED'){
                 $btn .= HTML::submitButtonFeild('re_open','Re Open',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:brown"));
                 $btn .= '<span data-toggle="modal" data-target="#ADD_INV_POPUP">'.HTML::submitButtonFeild('create_invoce','Create Invoice',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:orange")).'</span>';
-            }else{
+            }elseif($this->details['STATUS'] == 'VERIFIED'){
                 $btn .= HTML::submitButtonFeild('order_submit','Submit',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px;",'onclick'=>'submitOrder('.$this->id.');'));
+            }else{
+                $btn .= HTML::submitButtonFeild('verify_order','Verify',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:darkgoldenrod",'onclick'=>'verifyOrder('.$this->id.');'));
+                $btn .= HTML::submitButtonFeild('order_cancel','Cancel',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:red",'onclick'=>'cancleOrder('.$this->id.');'));
             }
-            $btn .= HTML::submitButtonFeild('order_cancel','Cancel',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:red",'onclick'=>'cancleOrder('.$this->id.');'));
+            $btn .='</span>';
             return contentBox($btn);
         }
+        
     }
 
     function getOrderCreationAction(){
         $btn = HTML::submitButtonFeild('order_initiate','Create Order',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px;"));
         return contentBox($btn);
+    }
+
+    function getVerifingNote(){
+        $html ='<div class="box-body" id="verifingCntent">
+            
+        </div>';
+        $head = 'Verify Note';
+        if( $this->details['STATUS'] == 'NEW')
+            return contentBorder($html,$head);
     }
 }
 ?>

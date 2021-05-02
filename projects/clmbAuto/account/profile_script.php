@@ -41,7 +41,10 @@ if( !empty($userData) ){
 if( $act == 'userInfo' ){
     $page[] = $acc->getUserInfo();
     $page[] = $acc->getUserAssignedPrive();
-    $page[] = $acc->getUserAssignedCustomer();
+    if($userData['USER_TYPE'] == 'SALES_REP'){
+        $page[] = $acc->getUserAssignedCustomer();
+    }
+    
 }elseif( $act == 'custDetail' ){
     $page[] = $acc->getCompanyInfo();
 }else{

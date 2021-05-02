@@ -24,8 +24,8 @@ function getSubMenueArray(){
     $subMenueArr['ACC']['Out Standing'] = makeLocalUrl('main/restricted.php','') ;
     $subMenueArr['CUSTOMER'] = makeLocalUrl('account/customer_script.php','sec=CUSTOMER') ;
     $subMenueArr['ORDERS']['Orders'] = makeLocalUrl('orders/order_script.php','sec=ORDER');
-    $subMenueArr['ORDERS']['Re-Orders'] = makeLocalUrl('main/restricted.php','') ;
-    $subMenueArr['ORDERS']['Rejected Orders'] = makeLocalUrl('main/restricted.php','') ;
+    $subMenueArr['ORDERS']['Re-Orders'] = makeLocalUrl('orders/order_script.php','sec=ORDER') ;
+    $subMenueArr['ORDERS']['Rejected Orders'] = makeLocalUrl('orders/rejected_orders_script.php','sec=RECTED_ORDER') ;
     $subMenueArr['COMMISSION'] = makeLocalUrl('main/restricted.php','') ;
     $subMenueArr['CATEGORY'] =  makeLocalUrl('cat/category_script.php','sec=CAT') ;
     $subMenueArr['PERIOD'] = makeLocalUrl('main/restricted.php','') ;

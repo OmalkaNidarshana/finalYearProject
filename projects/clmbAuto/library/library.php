@@ -36,13 +36,12 @@ function htmlTableBox($table,$head,$isSearch=false){
 function contentBox($table){
 
     $html = '<div class="col-xs-12">
-        <div class="box">
-        <div class="box-body table-responsive ">
-             '.$table.'
-        </div>
-       
-        </div>
-     </div>';
+            <div class="box">
+                <div class="box-body table-responsive ">
+                '.$table.'
+                </div>
+            </div>
+        </div>';
      return $html;
  }
 
@@ -113,7 +112,7 @@ function contentBox($table){
  }
 
  function formatCurrency($val){
-    $currencyVal = 'Rs.'.$val;
+    $currencyVal = 'Rs.'.$val."/=";
     return $currencyVal;
  }
 
@@ -144,13 +143,13 @@ function contentBox($table){
  function contentBorder($data,$title){
     $html ='<div class="col-xs-12">';
         $html .='<div class="box">';
-            $html .='<div class="box-header">';
-                $html .='<h3 class="box-title" style="font-size:13px;">'.$title.'</h3>';
+                $html .='<div class="box-header">';
+                    $html .='<h3 class="box-title" style="font-size:13px;">'.$title.'</h3>';
                 //$html .='<hr style="height:2px;border-width:0;background-color:LightGray">';
-            $html .='</div>';
-            $html .='<div class="box-body">';
-                $html .= $data;
-            $html .='</div>';
+                $html .='</div>';
+                $html .='<div class="box-body">';
+                    $html .= $data;
+                $html .='</div>';
         $html .='</div>';
     $html .='</div>';
     return $html;
@@ -273,10 +272,13 @@ function OrdersStatusColorBox($status){
             $icon = 'greenIcon';
         break;
         case 'canceld':
+        case 'rejected':
+        case 'faild':
             $icon = 'redIcon';
         break;
         case 'submitted':
         case 'paid':
+        case 'verified':
             $icon = 'orangeIcon';
         break;
         default:
@@ -299,5 +301,18 @@ function getIconButton($faIcon,$title,$style='',$count=''){
     return $btn;
 }
 
+function getWidgetsBox($color,$icon,$text,$amount){
+    $html ='<div class="col-md-4 col-sm-6 col-xs-12" >
+                <div class="info-box">
+                <span class="info-box-icon '.$color.'" style="color: white;"><i class="'.$icon.'"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">'.$text.'</span>
+                    <span class="info-box-number">'.$amount.'</span>
+                </div>
+                <!-- /.info-box-content -->
+                </div>
+            </div>';
+    return $html;
+}
 
 ?>

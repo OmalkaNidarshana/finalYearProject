@@ -48,8 +48,14 @@ function insertUpdateOrderLines($link,$userInfo,$headerId,$lineNum,$data,$discou
     if( empty($lineId) ){
         $insertData['ORDER_HEADER_ID'] = $headerId;
         $insertData['LINE_NUM'] = $lineNum;
-        $insertData['CATEGORY'] = getTextValue($data['VEHICAL_CODE']);
+        
+        
         $insertData['QUANTITY'] = $quantity;
+        $insertData['CAT_ID'] = $data['RECORD_ID'];
+        $insertData['BRAND'] = getTextValue($data['BRAND']);
+        $insertData['MODEL'] = getTextValue($data['MODEL']);
+        $insertData['BRISK'] = getTextValue($data['BRISK']);
+        $insertData['CATEGORY'] = getTextValue($data['VEHICAL_CODE']);
         $insertData['SELL_PRICE'] = $data['SELL_PRICE'];
         $insertData['DISCOUNT_RATE'] = $discount;
         $insertData['TOTAL'] = $quantity*$data['SELL_PRICE'];
@@ -147,6 +153,12 @@ function getItemDataByBriskCodeAndModel($link,$briskCode,$model){ //get all item
 function getTotalOrderByCustomerId($link,$custId){// get number of order for each customer
     $sql ='select count(ORDER_ID) from orders where CUSTOMER_ID ='.$custId;
     $data = $link->getObjectDataFromQuery($sql);
+    return $data;
+}
+
+function getRejectedOrdrIdByHeaderAndLineId($link,$ordrNum,$lineId){
+    $sql ='select * from reject_orders where ORDER_NUM ='.getTextValue($ordrNum).' and LINE_NUM ='.$lineId;
+    $data = $link->getRowDataFromQuery($sql);
     return $data;
 }
 ?>

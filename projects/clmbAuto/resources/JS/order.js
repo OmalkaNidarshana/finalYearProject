@@ -165,5 +165,48 @@ function loadItemData(){
 
 function deleteInlineItem(recId){
     $('#row_'+recId).remove();
+}
 
+function verifyOrder(ordId){
+    var url = $("#orderProcessUrl").val()+'?ordId='+ordId+'&action=verifyOrder';
+    //$("#searchingProgressIcon").show();
+     $.ajax({
+        type: "POST",
+        url: url,
+        //data: postData,
+        //dataType: "json",
+        
+        success: function(data){
+            data = $.parseJSON(data);
+            $("#verifingCntent").empty();
+            $.each( data, function( key, value ) {
+                $("#verifingCntent").append("<p class='"+value.css+"' style='font-size: 16px;'>"+value.msg+"</p>");
+                if(value.qty){
+                    $("#verifingCntent").append("<p class='"+value.qty.qntycss+"'>"+value.qty.qntyVerify+"</p>");
+                }
+                if(value.price){
+                    $("#verifingCntent").append("<p class='"+value.price.pricecss+"'>"+value.price.priceVeri+"</p>");
+                }
+            });
+            $("#actionPanel").load(window.location.href + " #actionPanel" );
+            $("#orderHeader").load(window.location.href + " #orderHeader" );
+            $("#lineTable").load(window.location.href + " #lineTable" );
+        }
+    });
+}
+
+function rejectItem(id){
+    var url = $("#orderProcessUrl").val()+'?orderId='+id+'&action=rejectItem';
+    var postData = $('#REJECT_ITEM').serialize();
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: postData,
+        //dataType: "JSON",
+        success: function(data){
+            location.reload();
+
+        }
+        
+     });
 }

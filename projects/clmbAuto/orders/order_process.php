@@ -18,6 +18,7 @@ include_once $projPath."/shared/classes/TableFormatter.php";
 include_once $projPath."/dbControler/shared.php";
 
 include_once $projPath."/dbControler/order.php";
+include_once $projPath."/dbControler/category.php";
 
 $action = isset($_REQUEST['action'])?$_REQUEST['action']:'';
 $ordId = isset($_REQUEST['orderId'])?$_REQUEST['orderId']:'';
@@ -75,6 +76,100 @@ if( $action =='orderSubmit' ){
     $sql = 'update order_lines set STATUS = '.getTextValue('CANCELD').'where ORDER_HEADER_ID='.$ordId;
     $link->insertUpdate($sql);
 
+}elseif($action =='verifyOrder'){
+    $ordId = $_REQUEST['ordId'];
+    $ordLineData = geOrderLineByOrderHeaderId($link,$ordId);
+    foreach($ordLineData as $data){
+        $catId = $data['CAT_ID'];
+        $catrgorydata = getCategoryDataBycategoryId($link,$catId);
+        $msg = 'Verifing Line Number '.$data['LINE_NUM'];
+        $css = 'lead';
+        $jsonData[$data['LINE_NUM']]['msg'] = $msg;
+        $jsonData[$data['LINE_NUM']]['css'] = $css;
+
+        if($data['QUANTITY']<=$catrgorydata['STOCK']){
+            $qntryVerify = '--- Line quantity is matched.';
+            $jsonData[$data['LINE_NUM']]['qty']['qntyVerify'] = $qntryVerify;
+            $jsonData[$data['LINE_NUM']]['qty']['qntycss'] = 'text-green';
+            $qtyErr = false;
+        }else{
+            $qntyVerify = '--- Line quantity exceed stock quantity.';
+            $jsonData[$data['LINE_NUM']]['qty']['qntyVerify'] = $qntyVerify;
+            $jsonData[$data['LINE_NUM']]['qty']['qntycss'] = 'text-red';
+            $qtyErr = true;
+        }
+
+        if($data['SELL_PRICE']=$catrgorydata['SELL_PRICE']){
+            $priceVeri = '--- Unit price is matched.';
+            $jsonData[$data['LINE_NUM']]['price']['priceVeri'] = $priceVeri;
+            $jsonData[$data['LINE_NUM']]['price']['pricecss'] = 'text-green';
+            $priceErr = false;
+        }else{
+            $priceVeri = '--- Unit price is dose not matched.';
+            $jsonData[$data['LINE_NUM']]['price']['priceVeri'] = $priceVeri;
+            $jsonData[$data['LINE_NUM']]['price']['pricecss'] = 'text-red';
+            $priceErr = true;
+        }
+
+        if( !$qtyErr && !$priceErr ){
+            $sql = 'update order_lines set STATUS = "VERIFIED" where ORDER_HEADER_ID ='.$ordId.' and LINE_NUM ='.$data['LINE_NUM'];
+            $link->insertUpdate($sql);
+
+            $sql = 'update orders set STATUS = "VERIFIED" where ORDER_ID ='.$ordId;
+            $link->insertUpdate($sql);
+
+            $newStock = $catrgorydata['STOCK']-$data['QUANTITY'];
+            $sql = 'update category set STOCK = '.$newStock.' where RECORD_ID ='.$catId;
+            $link->insertUpdate($sql);
+
+        }else{
+            $sql = 'update order_lines set STATUS = "FAILD"  where  ORDER_HEADER_ID ='.$ordId.' and LINE_NUM ='.$data['LINE_NUM'];
+            $link->insertUpdate($sql);
+
+            $sql = 'update orders set STATUS = "FAILD" where ORDER_ID ='.$ordId;
+            $link->insertUpdate($sql);
+        }
+    }
+    echo json_encode($jsonData);
+}elseif($action =='rejectItem'){
+    
+    $orderId = $_REQUEST['orderId'];
+    $lineId = $_REQUEST['lineId'];
+    $orderData = getOrderDetailsByOrderId($link,$orderId);
+    $orderLineData = getOrderLineDateByHeaderAndLineId($link,$orderId,$lineId);
+
+    $data['ORDER_NUM'] = getTextValue($orderData['ORDER_NUM']);
+    $data['CUSTOMER_ID'] = getNumValue($orderData['CUSTOMER_ID']);
+    $data['ORDER_DATE'] = dateTimeValue($orderData['ORDER_DATE']);
+    
+    $data['LINE_NUM'] = getNumValue($orderLineData['LINE_NUM']);
+    $data['BRAND'] = getTextValue($orderLineData['BRAND']);
+    $data['MODEL'] = getTextValue($orderLineData['MODEL']);
+    $data['BRISK'] = getTextValue($orderLineData['BRISK']);
+    $data['CATEGORY'] = getTextValue($orderLineData['CATEGORY']);
+
+    $data['REJECTED_QTY'] = getNumValue($_REQUEST['REJECTED_QTY']);
+    $data['REJECTED_REASON'] = getTextValue($_REQUEST['REJECT_REASON']);
+    $data['REJECTED_DATE'] = dateTimeValue($_REQUEST['REJECTED_DATE']);
+
+    $data['CREATED_BY'] = $userInfo->intId;
+    $data['MODIFIED_BY'] = $userInfo->intId;
+    $data['CREATED_DATE'] = getCurrentDateTime();
+    $data['MODIFIED_DATE'] = getCurrentDateTime();
+
+    $sql = 'insert into reject_orders ('.implode(",",array_keys($data)).') values ('.implode(",",array_values($data)).')';
+    $link->insertUpdate($sql);
+
+    if( $_REQUEST['REJECTED_QTY'] < $orderLineData['QUANTITY'] ){
+       $description = 'Partialy quantity rejected';
+    }elseif( $_REQUEST['REJECTED_QTY'] = $orderLineData['QUANTITY'] ){
+        $description = 'Fully quantity rejected';
+    }else{
+        $description = '';
+    }
+
+    $sql = 'update order_lines set DESCRIPTION = '.getTextValue($description).'  where  ORDER_HEADER_ID ='.$orderId.' and LINE_NUM ='.$orderLineData['LINE_NUM'];
+    $link->insertUpdate($sql);
 
 }
 
