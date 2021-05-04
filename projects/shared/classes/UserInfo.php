@@ -14,13 +14,20 @@ class UserInfo{
     var $link;
     var $assignCompny = array();
     var $userInfo;
+    var $cmpPrivileges;
+    var $userPrivileges;
 
     function UserInfo($link,$userName){
         $this->link = $link;
         $this->userName = $userName;
         $this->userInfo = getUserInfoByUserId($link,$userName);
-        //print_r($this->userInfo);
-                
+
+             
+    }
+
+    function init(){
+        $this->userPrivileges = getUserPrivielegesByUserId($this->link,$this->intId);
+        $this->cmpPrivileges = getCompanyPrivilegesByCmpId($this->link,$this->cmpId);
     }
 
     function setFirstname($firstName){
@@ -53,14 +60,14 @@ class UserInfo{
 
    function userIsSalesRep(){
         $this->userRole = $this->userInfo['USER_TYPE'];
-        if($this->userRole == 'SALES_REP')
+        if($this->role == 'SALES_REP')
             return true;
         else
             return false;
     }
 
     function userIsAdmistrtor(){
-        if($this->userRole == 'ADMINISTRATOR')
+        if($this->role == 'ADMINISTRATOR')
             return true;
         else
             return false;
@@ -68,13 +75,142 @@ class UserInfo{
     }
 
     function userIsAccountManager(){
-        if($this->userRole == 'ACCOUNT_MANAGER')
+        if($this->role == 'ACCOUNT_MANAGER')
             return true;
         else
             return false;
 
     }
 
+    function isUserHasAccountPriv(){
+        $priv = 'ACCOUNT';
+        if( in_array($priv,$this->cmpPrivileges) ){
+            if( in_array($priv,$this->userPrivileges) ){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function isUserHasOrdrPriv(){
+        $priv = 'ORDERS';
+        if( in_array($priv,$this->cmpPrivileges) ){
+            if( in_array($priv,$this->userPrivileges) ){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function isUserHasCategorytPriv(){
+        $priv = 'CATEGORY';
+        if( in_array($priv,$this->cmpPrivileges) ){
+            if( in_array($priv,$this->userPrivileges) ){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function isUserHasInvoicePriv(){
+        $priv = 'INVOICE';
+        if( in_array($priv,$this->cmpPrivileges) ){
+            if( in_array($priv,$this->userPrivileges) ){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function isUserHasAddUsertPriv(){
+        $priv = 'ADD_USER';
+        if( in_array($priv,$this->cmpPrivileges) ){
+            if( in_array($priv,$this->userPrivileges) ){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function isUserHasAddCustomerPriv(){
+        $priv = 'ADD_CUSTOMER';
+        if( in_array($priv,$this->cmpPrivileges) ){
+            if( in_array($priv,$this->userPrivileges) ){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function isUserHasAssignPriv(){
+        $priv = 'ASSIGN_PRIVILEGES';
+        if( in_array($priv,$this->cmpPrivileges) ){
+            if( in_array($priv,$this->userPrivileges) ){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function isUserHasCommissionPriv(){
+        $priv = 'COMMISSION';
+        if( in_array($priv,$this->cmpPrivileges) ){
+            if( in_array($priv,$this->userPrivileges) ){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function isUserHasAssignCustPriv(){
+        $priv = 'ASSIGN_CUSTOMER';
+        if( in_array($priv,$this->cmpPrivileges) ){
+            if( in_array($priv,$this->userPrivileges) ){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function isUserHasReportPriv(){
+        $priv = 'REPORT';
+        if( in_array($priv,$this->cmpPrivileges) ){
+            if( in_array($priv,$this->userPrivileges) ){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
 }
 
 

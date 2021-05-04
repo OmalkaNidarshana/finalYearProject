@@ -14,6 +14,11 @@ include_once $projPath."/shared/classes/TableFormatter.php";
 include_once $projPath."/dbControler/shared.php";
 include_once $projPath."/dbControler/order.php";
 
+if( !$userInfo->isUserHasOrdrPriv() ){
+    header("Location: ".makeLocalUrl('main/restricted.php','') );
+    exit; 
+}
+
 $jsFiles[] = JS_ROOT."sortable_table.js";
 $jsFiles[] = JS_ROOT."main.js";
 

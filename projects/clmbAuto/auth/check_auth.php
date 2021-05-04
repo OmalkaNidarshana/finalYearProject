@@ -27,6 +27,7 @@ $userInfo->setRole($userData['USER_TYPE']);
 $userInfo->setCmpId($userData['COMPANY_ID']);
 $userInfo->setCmpType($userData['COMPANY_TYPE']);
 $userInfo->setAssignCompny($assignCompany);
+$userInfo->init();
 
 
 ?>

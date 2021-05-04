@@ -15,7 +15,10 @@ include_once $projPath."/shared/classes/TableFormatter.php";
 include_once $projPath."/dbControler/shared.php";
 include_once $projPath."/dbControler/category.php";
 
-
+if( !$userInfo->isUserHasCategorytPriv() ){
+    header("Location: ".makeLocalUrl('main/restricted.php','') );
+    exit; 
+}
 //$jsFiles[] = JS_ROOT."sortable_table.js";
 $jsFiles[] = JS_ROOT."main.js";
 $jsFiles[] = JS_ROOT."category.js";

@@ -15,6 +15,17 @@ include_once $projPath."/dbControler/shared.php";
 include_once $projPath."/dbControler/order.php";
 include_once $projPath."/dbControler/invoice.php";
 
+/*if( !$userInfo->userIsAdmistrtor() || !$userInfo->userIsAccountManager() ){
+    header("Location: ".makeLocalUrl('main/restricted.php','') );
+    exit; 
+}
+*/
+
+if( !$userInfo->isUserHasAccountPriv() ){
+    header("Location: ".makeLocalUrl('main/restricted.php','') );
+    exit; 
+}
+
 $jsFiles[] = JS_ROOT."sortable_table.js";
 $jsFiles[] = JS_ROOT."main.js";
 $jsFiles[] = JS_ROOT."invoice.js";

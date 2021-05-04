@@ -17,6 +17,11 @@ include_once $projPath."/dbControler/order.php";
 include_once $projPath."/dbControler/invoice.php";
 include_once $projPath."/dbControler/shared.php";
 
+if( !$userInfo->isUserHasInvoicePriv() ){
+    header("Location: ".makeLocalUrl('main/restricted.php','') );
+    exit; 
+}
+
 /*include_once "../library.php";
 include_once "header_item.php";
 */

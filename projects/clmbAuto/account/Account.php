@@ -80,11 +80,14 @@ class Account{
 
         $head = 'Company Informations';
         if( isset($_REQUEST['act']) && $_REQUEST['act'] == 'custDetail' ){
-            $head .= ' &nbsp&nbsp|&nbsp<span><a href="'.makeLocalUrl('account/company_edit.php','sec=PROFILE&act=custDetail&cmpId='.$this->cmpId).'">'.getRawActionsIcon('edit','Edit Company').'</a></span>';
-            $head .= '<span onclick="deletelCompany();">'.getRawActionsIcon('delete','Delete Company').'</span>';
-            
+            if( $this->userInfo->userIsAdmistrtor() ){
+                $head .= ' &nbsp&nbsp|&nbsp<span><a href="'.makeLocalUrl('account/company_edit.php','sec=PROFILE&act=custDetail&cmpId='.$this->cmpId).'">'.getRawActionsIcon('edit','Edit Company').'</a></span>';
+                $head .= '<span onclick="deletelCompany();">'.getRawActionsIcon('delete','Delete Company').'</span>';
+            }
         }else{
-            $head .= ' &nbsp&nbsp|&nbsp<span><a href="'.makeLocalUrl('account/company_edit.php','cmpId='.$this->cmpId).'">'.getRawActionsIcon('edit','Edit Company').'</a></span>&nbsp';
+            if( $this->userInfo->userIsAdmistrtor() ){
+                $head .= ' &nbsp&nbsp|&nbsp<span><a href="'.makeLocalUrl('account/company_edit.php','cmpId='.$this->cmpId).'">'.getRawActionsIcon('edit','Edit Company').'</a></span>&nbsp';
+            }
         }
         return contentBorder($html,$head);
 
@@ -130,8 +133,9 @@ class Account{
             $html .= '</table>';
         $html .= '</div>';
         $head =  'Users';
+        if( $this->userInfo->userIsAdmistrtor() || $this->userInfo->userIsAccountManager() ){
             $head .= ' &nbsp&nbsp|&nbsp&nbsp<span data-toggle="modal" data-target="#ADD_USER">'.getRawActionsIcon('addUser','Add User').'</span>&nbsp';
-      
+        }
         return contentBorder($html,$head);
     }
 
@@ -234,9 +238,9 @@ class Account{
         $html .= '</div>';
 
         $head = 'User Informations';
-        if( $this->userName == $this->userInfo->userName || $this->userInfo->role == 'ADMINISTRATOR'){
+        if( $this->userName == $this->userInfo->userName || $this->userInfo->userIsAdmistrtor() || $this->userInfo->userIsAccountManager() ){
             $head .= ' &nbsp&nbsp|&nbsp&nbsp<span><a href="'.makeLocalUrl('account/user_edit.php','sec=PROFILE&act=useredit&userId='.$this->userdata['USER_NAME']).'">'.getRawActionsIcon('edit','Edit User').'</a></span>&nbsp';
-            if($this->userInfo->role == 'ADMINISTRATOR')
+            if($this->userInfo->userIsAdmistrtor())
                 $head .= '<span onclick="deleteUser();">'.getRawActionsIcon('delete','Delete User').'</span>';
         }
             return contentBorder($html,$head);
@@ -382,10 +386,19 @@ class Account{
         }
         $html .='</div>';
         $html .= HTML::formEnd();
-        $btn ='<span>'.HTML::submitButtonFeild('save','Save',array('onclick'=>'assignPriv();','style'=>'margin-left: 10px;')).'</span>';
+        
         
         $html .= HTML::openCloseTable(false,false);
-        return contentBorder($html,'Edit User Privileges'.$btn);
+        if($this->userInfo->userIsAdmistrtor() || $this->userInfo->userIsAccountManager()() ){
+            if($this->userInfo->isUserHasAssignPriv()){
+                $htmlCntet = $html;
+                $btn ='<span>'.HTML::submitButtonFeild('save','Save',array('onclick'=>'assignPriv();','style'=>'margin-left: 10px;')).'</span>';
+            }
+        }else{
+            $htmlCntet = "<span style='color: red;''>User don't have this privilege, Please contact your Adminstrator.</span>";
+            $btn ='';
+        }
+        return contentBorder($htmlCntet,'Edit User Privileges'.$btn);
     }
 
     function getAssignCustomer(){
@@ -488,7 +501,9 @@ class Account{
             $html .= '</tbody>';
             $html .= '</table>';
         $head =  'Customers';
+        if( $this->userInfo->userIsAdmistrtor() || $this->userInfo->userIsAccountManager() ){
             $head .= ' &nbsp&nbsp|&nbsp&nbsp<span data-toggle="modal" data-target="#ADD_CUSTOMER">'.getRawActionsIcon('addCmp','Add Customer').'</span>&nbsp';
+        }
         return contentBorder($html,$head);
     }
     

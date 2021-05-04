@@ -16,6 +16,12 @@ include_once $projPath."/dbControler/shared.php";
 include_once $projPath."/dbControler/order.php";
 include_once $projPath."/dbControler/report.php";
 
+if( !$userInfo->isUserHasReportPriv() ){
+    header("Location: ".makeLocalUrl('main/restricted.php','') );
+    exit; 
+}
+
+
 $jsFiles[] = JS_ROOT."sortable_table.js";
 $jsFiles[] = JS_ROOT."main.js";
 
