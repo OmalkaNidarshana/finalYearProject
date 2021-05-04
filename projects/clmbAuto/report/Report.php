@@ -9,13 +9,16 @@ class Report{
     var $categoryIds;
     var $errMsg;
     var $categoryIdsArr = array();
-    var $fltr;
+    var $fltrs = array();
+    var $dateFltrs;
     var $ordBy;
     var $pageNum;
     var $colList = '*';
     var $formatter;
     var $dataTable;
     var $structure;
+    var $dateLbl = 'All Data';
+    var $dateMode;
     var $tblColumns = array();
     var $fldDefinition = array();
     var $details;
@@ -51,8 +54,20 @@ class Report{
         $this->errMsg = $errMsg;
     }
 
-    function setFltrs($fltr){
-        $this->fltr = $fltr;
+    function setFltrs($fltrs){
+        $this->fltrs = $fltrs;
+    }
+
+    function setDateFltrs($dateFltrs){
+        $this->dateFltrs = $dateFltrs;
+    }
+
+    function setDateMode($dateMode){
+        $this->dateMode = $dateMode;
+    }
+
+    function setDateLbl($dateLbl){
+        $this->dateLbl = $dateLbl;
     }
 
     function initiate(){
@@ -72,20 +87,25 @@ class Report{
     }
 
     function getReportSummaryTable(){
-        $ordIds = getSubmittedOrderIds($this->link);
-        $itemData = getSubmittedOrdersItemByOrdIds($this->link,$ordIds);
-       /*print_rr($itemData);
-        exit;*/
+        $itemData = array();
+        $ordIds = getSubmittedOrderIds($this->link,$this->dateFltrs);
+        if( !empty($ordIds) )
+            $itemData = getSubmittedOrdersItemByOrdIds($this->link,$ordIds);
         $html ='';
         $html .= '<div class="box-body table-responsive no-padding">';
-            $html .= '<table class="table table-hover summarytable" id="sortableTable">';
+            $html .= '<table class="table table-hover summarytable" id="orderReportTable">';
+            $html .= '<thead>';
             $html .= '<tr>';
-                $html .= '<th>Category</th><th>Quantity</th><th>Unit Price (Rs.)</th><th>Total (Rs.)</th><th>Discount (Rs.)</th><th>Discount Rate(%)</th><th>Order Date</th>';
+                $html .= '<th>Brand</th><th>Model</th><th>Brisk</th><th>Category</th><th>Quantity</th><th>Unit Price (Rs.)</th>
+                            <th>Total (Rs.)</th><th>Discount (Rs.)</th><th>Discount Rate(%)</th><th>Order Date</th>';
             $html .= '</tr>';
+            $html .= '</thead>';
             $html .= '<tbody>';
             foreach( $itemData as $data){
                 $html .= '<tr>';
-                    
+                    $html .= '<td>'.$data['BRAND'].'</td>';
+                    $html .= '<td>'.$data['MODEL'].'</td>';
+                    $html .= '<td>'.$data['BRISK'].'</td>';
                     $html .= '<td>'.$data['CATEGORY'].'</td>';
                     $html .= '<td>'.$data['QUANTITY'].'</td>';
                     $html .= '<td>'.$this->formatter->formatters('SELL_PRICE',$data['SELL_PRICE'],'').'</td>';
@@ -97,24 +117,51 @@ class Report{
             }
             $html .= '</tbody>';
             $html .= '</table>';
+            $fileTitle = 'Colombo Auto Supllier Order Report on :'.$this->dateLbl;
+                     $html .= '<script>$(document).ready( function () {
+                        $(\'#orderReportTable\').DataTable({
+                            dom: \'Bfrtip\',
+                            buttons: [
+                                {
+                                    extend:    \'csvHtml5\',
+                                    text:      \'<i class="fa fa-file-text-o"></i>\',
+                                    titleAttr: \'Download CSV\',
+                                    title:      \''.$fileTitle.'\'
+                                },
+                                {
+                                    extend:    \'pdfHtml5\',
+                                    text:      \'<i class="fa fa-file-pdf-o"></i>\',
+                                    titleAttr: \'Dowanload PDF\',
+                                    title:      \''.$fileTitle.'\'
+                                }
+                            ]
+                        });
+                        } );
+                    </script>';
         $html .= '<div>';
-        $head =  'Order Report';
+        if(!empty($itemData) ){
+            $cnt = count($itemData);
+        }else{
+            $cnt = 0;
+        }
+        $head =  'Order Report &nbsp;|&nbsp; <span style="color:blue">Window :&nbsp;'.$this->dateLbl.'</span><span style="color:red">&nbsp;&nbsp;[&nbsp;'.$cnt.'&nbsp; Records Founds]</span>';
         return contentBorder($html,$head);
     }
     
     
     function getSalesReportSummaryTable(){
-        $invData = getPaidInvoiceByOrdIds($this->link);
+        $invData = getPaidInvoiceByOrdIds($this->link,$this->dateFltrs);
         $html ='';
         $html .= '<div class="box-body table-responsive no-padding">';
-            $html .= '<table class="table table-hover summarytable" id="sortableTable">';
+            $html .= '<table class="table table-hover summarytable" id="salesRepotTable">';
+            $html .= '<thead>';
             $html .= '<tr>';
                 $html .= '<th>Invoice Number</th><th>Order Number</th><th>Ammount (Rs.)</th><th>Net Ammount (Rs.)</th><th>Discount (%)</th><th>Invoice Date</th><th>Issue By</th>';
             $html .= '</tr>';
+            $html .= '</thead>';
             $html .= '<tbody>';
             foreach( $invData as $data){
                 $html .= '<tr>';
-                    
                     $html .= '<td>'.$data['INV_NUM'].'</td>';
                     $html .= '<td>'.$data['ORDER_NUM'].'</td>';
                     $html .= '<td>'.$this->formatter->formatters('AMMOUNT',$data['AMMOUNT'],'').'</td>';
@@ -127,8 +174,93 @@ class Report{
             }
             $html .= '</tbody>';
             $html .= '</table>';
+            $fileTitle = 'Colombo Auto Supllier Sales Order Report on :'.$this->dateLbl;
+                     $html .= '<script>$(document).ready( function () {
+                        $(\'#salesRepotTable\').DataTable({
+                            dom: \'Bfrtip\',
+                            buttons: [
+                                {
+                                    extend:    \'csvHtml5\',
+                                    text:      \'<i class="fa fa-file-text-o"></i>\',
+                                    titleAttr: \'Download CSV\',
+                                    title:      \''.$fileTitle.'\'
+                                },
+                                {
+                                    extend:    \'pdfHtml5\',
+                                    text:      \'<i class="fa fa-file-pdf-o"></i>\',
+                                    titleAttr: \'Dowanload PDF\',
+                                    title:      \''.$fileTitle.'\'
+                                }
+                            ]
+                        });
+                        } );
+                    </script>';
+           
         $html .= '<div>';
-        $head =  'Sales Report';
+        if(!empty($invData) ){
+            $cnt = count($invData);
+        }else{
+            $cnt = 0;
+        }
+        $head =  'Sales Report &nbsp;|&nbsp; <span style="color:blue">Window :&nbsp;'.$this->dateLbl.'</span><span style="color:red">&nbsp;&nbsp;[&nbsp;'.$cnt.'&nbsp; Records Founds]</span>';
+        return contentBorder($html,$head);
+    }
+
+    function getRejectOrderReportSummaryTable(){
+        $rejectedOrderData = getRejectedOrderData($this->link,$this->dateFltrs);
+        $html ='';
+        $html .= '<div class="box-body table-responsive no-padding">';
+            $html .= '<table class="table table-hover summarytable" id="RejectOrderReportTable">';
+            $html .= '<thead>';
+            $html .= '<tr>';
+                $html .= '<th>Order Num</th><th>Line Num</th><th>Brand</th><th>Model</th><th>Brisk</th><th>Category</th><th>Rejected Quantity</th><th>Reject Resaon</th>
+                            <th>Reject Date</th>';
+            $html .= '</tr>';
+            $html .= '</thead>';
+            $html .= '<tbody>';
+            foreach( $rejectedOrderData as $data){
+                $html .= '<tr>';
+                    $html .= '<td>'.$data['ORDER_NUM'].'</td>';
+                    $html .= '<td>'.$data['LINE_NUM'].'</td>';
+                    $html .= '<td>'.$data['BRAND'].'</td>';
+                    $html .= '<td>'.$data['MODEL'].'</td>';
+                    $html .= '<td>'.$data['BRISK'].'</td>';
+                    $html .= '<td>'.$data['CATEGORY'].'</td>';
+                    $html .= '<td>'.$data['REJECTED_QTY'].'</td>';
+                    $html .= '<td>'.$data['REJECTED_REASON'].'</td>';
+                    $html .= '<td>'.$data['REJECTED_DATE'].'</td>';
+                $html .= '</tr>';
+            }
+            $html .= '</tbody>';
+            $html .= '</table>';
+            $fileTitle = 'Colombo Auto Supllier Rejected Order Report on :'.$this->dateLbl;
+                     $html .= '<script>$(document).ready( function () {
+                        $(\'#RejectOrderReportTable\').DataTable({
+                            dom: \'Bfrtip\',
+                            buttons: [
+                                {
+                                    extend:    \'csvHtml5\',
+                                    text:      \'<i class="fa fa-file-text-o"></i>\',
+                                    titleAttr: \'Download CSV\',
+                                    title:      \''.$fileTitle.'\'
+                                },
+                                {
+                                    extend:    \'pdfHtml5\',
+                                    text:      \'<i class="fa fa-file-pdf-o"></i>\',
+                                    titleAttr: \'Dowanload PDF\',
+                                    title:      \''.$fileTitle.'\'
+                                }
+                            ]
+                        });
+                        } );
+                    </script>';
+        $html .= '<div>';
+        if(!empty($itemData) ){
+            $cnt = count($itemData);
+        }else{
+            $cnt = 0;
+        }
+        $head =  'Rejected Order Report &nbsp;|&nbsp; <span style="color:blue">Window :&nbsp;'.$this->dateLbl.'</span><span style="color:red">&nbsp;&nbsp;[&nbsp;'.$cnt.'&nbsp; Records Founds]</span>';
         return contentBorder($html,$head);
     }
 
@@ -140,7 +272,6 @@ class Report{
         $html .= HTML::submitButtonFeild('date_range[thisQater]','This Quater',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:forestgreen"));
         $html .= HTML::submitButtonFeild('date_range[thisYear]','This Year',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:forestgreen"));
         $html .= HTML::submitButtonFeild('date_range[lastYear]','Last Year',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:forestgreen"));
-        $html .= HTML::submitButtonFeild('date_range[all]','All',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:forestgreen"));
         $html .= HTML::formEnd();
        
         return contentBox($html);

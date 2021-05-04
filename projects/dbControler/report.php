@@ -1,7 +1,11 @@
 <?php
 
-function getSubmittedOrderIds($link){
+function getSubmittedOrderIds($link,$fltr){
     $sql = "select ORDER_ID from orders where STATUS =".getTextValue('SUBMITTED');
+    if(!empty($fltr)){
+        $sql .=" and ".$fltr;
+    }
+
     $data = $link->getcolumnDataFromQuery($sql);
     return $data;
 }
@@ -12,10 +16,21 @@ function getSubmittedOrdersItemByOrdIds($link,$ordIdsArr){
     return $data;
 }
 
-function getPaidInvoiceByOrdIds($link){
-    $sql = "select * from invoice where STATUS =".getTextValue('PAID');
+function getPaidInvoiceByOrdIds($link,$fltr){
+    $sql = "select * from invoice where STATUS !=".getTextValue('PENDING');
+    if(!empty($fltr)){
+        $sql .=" and ".$fltr;
+    }
     $data = $link->getRecordSetFromQuery($sql);
     return $data;
 }
 
+function getRejectedOrderData($link,$fltr){
+    $sql = "select * from reject_orders";
+    if(!empty($fltr)){
+        $sql .=" where ".$fltr;
+    }
+    $data = $link->getRecordSetFromQuery($sql);
+    return $data;
+}
 ?>
