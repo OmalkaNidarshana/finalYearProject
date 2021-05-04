@@ -47,5 +47,4 @@ if( $action=='addCart' ){
    $link->insertUpdate($sql);
 }
 
-DAIHATSU	HIJET	S200P	EF-VE	660	A-LINE 11	DR15YCY-1	K20PR-U11		27	5	Rs.364	30.00	Rs.550	0%
 ?>

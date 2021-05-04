@@ -171,6 +171,80 @@ if( $action =='orderSubmit' ){
     $sql = 'update order_lines set DESCRIPTION = '.getTextValue($description).'  where  ORDER_HEADER_ID ='.$orderId.' and LINE_NUM ='.$orderLineData['LINE_NUM'];
     $link->insertUpdate($sql);
 
+}elseif($action =='reOrder'){
+    $ordId =  $_REQUEST['orderId'];
+    $maxId = getMaxOrderId($link);
+    $newOrderId = $maxId+1;
+    
+    $orderData = getOrderDetailsByOrderId($link,$ordId);
+    
+    $newOrderData = $orderData;
+    $newOrderData['ORDER_ID'] = $newOrderId;
+    $newOrderData['ORDER_NUM'] = getTextValue('ORD-NUM-'.$newOrderId);
+    $newOrderData['ORDER_DATE'] = getCurrentDateTime();
+    $newOrderData['ORDER_TYPE'] = getTextValue('RE_ORDER');
+    $newOrderData['STATUS'] = getTextValue('NEW');
+    $newOrderData['CREATED_BY'] = $userInfo->intId;
+    $newOrderData['MODIFIED_BY'] = $userInfo->intId;
+    $newOrderData['CREATED_DATE'] = getCurrentDateTime();
+    $newOrderData['MODIFIED_DATE'] = getCurrentDateTime();
+    $newOrderData['DESCRIPTION'] = getTextValue('');
+    $newOrderData['EXPECTED_DELIVERY_DATE'] = dateTimeValue($orderData['EXPECTED_DELIVERY_DATE']);
+    $newOrderData['ACTUAL_DELIVERY_DATE'] = dateTimeValue($orderData['ACTUAL_DELIVERY_DATE']);
+
+    $sql = 'insert into orders ('.implode(",",array_keys($newOrderData)).') values ('.implode(",",array_values($newOrderData)).')';
+    $link->insertUpdate($sql);
+
+    
+    $ordrLineData = geOrderLineByOrderHeaderId($link,$ordId);
+    foreach($ordrLineData as $lineData){
+        
+        unset($lineData['LINE_ID']);
+        $lineData['ORDER_HEADER_ID'] = $newOrderId;
+        $lineData['ORDER_DATE'] = getCurrentDateTime();
+        $lineData['STATUS'] = getTextValue('NEW');
+        $lineData['CREATED_BY'] = $userInfo->intId;
+        $lineData['MODIFIED_BY'] = $userInfo->intId;
+        $lineData['CREATED_DATE'] = getCurrentDateTime();
+        $lineData['MODIFIED_DATE'] = getCurrentDateTime();
+        $lineData['BRAND'] = getTextValue($lineData['BRAND']);
+        $lineData['MODEL'] = getTextValue($lineData['MODEL']);
+        $lineData['BRISK'] = getTextValue($lineData['BRISK']);
+        $lineData['CATEGORY'] = getTextValue($lineData['CATEGORY']);
+        $lineData['DESCRIPTION'] = getTextValue('');
+        $lineData['EXPECTED_DELIVERY_DATE'] = dateTimeValue($lineData['EXPECTED_DELIVERY_DATE']);
+        $lineData['ACTUAL_DELIVERY_DATE'] = dateTimeValue($lineData['ACTUAL_DELIVERY_DATE']);
+        $lineData['REJECTED_DATE'] = dateTimeValue($lineData['REJECTED_DATE']);
+        $lineData['REJECTED_REASON'] = dateTimeValue($lineData['REJECTED_REASON']);
+       
+        $sql = 'insert into order_lines ('.implode(",",array_keys($lineData)).') values ('.implode(",",array_values($lineData)).')';
+        $link->insertUpdate($sql);
+
+        
+    }
+
+    $reOrdData = $orderData;
+    $reOrdData['PARENT_ORDER_ID'] = $orderData['ORDER_ID'];
+    $reOrdData['REF_ORDER_ID'] = $newOrderId;
+    $reOrdData['PARENT_ORDER_NUM'] = getTextValue($orderData['ORDER_NUM']);
+    $reOrdData['ORDER_DATE'] = getCurrentDateTime();
+    $reOrdData['ORDER_TYPE'] = getTextValue('RE_ORDER');
+    $reOrdData['ORDER_NUM'] = getTextValue('ORD-NUM-'.$newOrderId);
+    $reOrdData['STATUS'] = getTextValue('NEW');
+    $reOrdData['DESCRIPTION'] = getTextValue('');
+    $reOrdData['EXPECTED_DELIVERY_DATE'] = dateTimeValue($orderData['EXPECTED_DELIVERY_DATE']);
+    $reOrdData['ACTUAL_DELIVERY_DATE'] = dateTimeValue($orderData['ACTUAL_DELIVERY_DATE']);
+    $reOrdData['CREATED_BY'] = $userInfo->intId;
+    $reOrdData['MODIFIED_BY'] = $userInfo->intId;
+    $reOrdData['CREATED_DATE'] = getCurrentDateTime();
+    $reOrdData['MODIFIED_DATE'] = getCurrentDateTime();
+    
+    $sql = 'insert into re_orders ('.implode(",",array_keys($reOrdData)).') values ('.implode(",",array_values($reOrdData)).')';
+    $link->insertUpdate($sql);
+
+    $loc = makeLocalUrl('orders/order_details.php','sec=ORDER&id='.$newOrderId);
+    echo json_encode($loc);
+
 }
 
 ?>

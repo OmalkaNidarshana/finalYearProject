@@ -33,4 +33,14 @@ function getRejectedOrderData($link,$fltr){
     $data = $link->getRecordSetFromQuery($sql);
     return $data;
 }
+
+function getReOrderIds($link,$fltr){
+    $sql = "select REF_ORDER_ID from re_orders";
+    if(!empty($fltr)){
+        $sql .=" where ".$fltr;
+    }
+
+    $data = $link->getcolumnDataFromQuery($sql);
+    return $data;
+}
 ?>

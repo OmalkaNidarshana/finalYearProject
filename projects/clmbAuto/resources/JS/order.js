@@ -210,3 +210,19 @@ function rejectItem(id){
         
      });
 }
+
+function reOrder(id){
+    var url = $("#orderProcessUrl").val()+'?orderId='+id+'&action=reOrder';
+    //var postData = $('#REJECT_ITEM').serialize();
+    $.ajax({
+        type: "POST",
+        url: url,
+        //data: postData,
+        //dataType: "JSON",
+        success: function(data){
+            data = $.parseJSON(data);
+            location.replace(data);
+        }
+        
+     });
+}

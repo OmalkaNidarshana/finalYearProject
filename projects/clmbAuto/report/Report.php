@@ -144,7 +144,7 @@ class Report{
         }else{
             $cnt = 0;
         }
-        $head =  'Order Report &nbsp;|&nbsp; <span style="color:blue">Window :&nbsp;'.$this->dateLbl.'</span><span style="color:red">&nbsp;&nbsp;[&nbsp;'.$cnt.'&nbsp; Records Founds]</span>';
+        $head =  'Order Report &nbsp;|&nbsp; <span style="color:blue">Window :&nbsp;'.$this->dateLbl.'</span><span style="color:red">&nbsp;&nbsp;[&nbsp;'.$cnt.'&nbsp; Records Founds&nbsp]</span>';
         return contentBorder($html,$head);
     }
     
@@ -202,7 +202,7 @@ class Report{
         }else{
             $cnt = 0;
         }
-        $head =  'Sales Report &nbsp;|&nbsp; <span style="color:blue">Window :&nbsp;'.$this->dateLbl.'</span><span style="color:red">&nbsp;&nbsp;[&nbsp;'.$cnt.'&nbsp; Records Founds]</span>';
+        $head =  'Sales Report &nbsp;|&nbsp; <span style="color:blue">Window :&nbsp;'.$this->dateLbl.'</span><span style="color:red">&nbsp;&nbsp;[&nbsp;'.$cnt.'&nbsp; Records Founds&nbsp]</span>';
         return contentBorder($html,$head);
     }
 
@@ -260,7 +260,70 @@ class Report{
         }else{
             $cnt = 0;
         }
-        $head =  'Rejected Order Report &nbsp;|&nbsp; <span style="color:blue">Window :&nbsp;'.$this->dateLbl.'</span><span style="color:red">&nbsp;&nbsp;[&nbsp;'.$cnt.'&nbsp; Records Founds]</span>';
+        $head =  'Rejected Order Report &nbsp;|&nbsp; <span style="color:blue">Window :&nbsp;'.$this->dateLbl.'</span><span style="color:red">&nbsp;&nbsp;[&nbsp;'.$cnt.'&nbsp; Records Founds&nbsp]</span>';
+        return contentBorder($html,$head);
+    }
+
+    function getReOrderSummaryTable(){
+        $itemData = array();
+        $ordIds = getReOrderIds($this->link,$this->dateFltrs);
+        
+        if( !empty($ordIds) )
+            $itemData = getSubmittedOrdersItemByOrdIds($this->link,$ordIds);
+        $html ='';
+        $html .= '<div class="box-body table-responsive no-padding">';
+            $html .= '<table class="table table-hover summarytable" id="orderReportTable">';
+            $html .= '<thead>';
+            $html .= '<tr>';
+                $html .= '<th>Brand</th><th>Model</th><th>Brisk</th><th>Category</th><th>Quantity</th><th>Unit Price (Rs.)</th>
+                            <th>Total (Rs.)</th><th>Discount (Rs.)</th><th>Discount Rate(%)</th><th>Order Date</th>';
+            $html .= '</tr>';
+            $html .= '</thead>';
+            $html .= '<tbody>';
+            foreach( $itemData as $data){
+                $html .= '<tr>';
+                    $html .= '<td>'.$data['BRAND'].'</td>';
+                    $html .= '<td>'.$data['MODEL'].'</td>';
+                    $html .= '<td>'.$data['BRISK'].'</td>';
+                    $html .= '<td>'.$data['CATEGORY'].'</td>';
+                    $html .= '<td>'.$data['QUANTITY'].'</td>';
+                    $html .= '<td>'.$this->formatter->formatters('SELL_PRICE',$data['SELL_PRICE'],'').'</td>';
+                    $html .= '<td>'.$this->formatter->formatters('TOTAL',$data['TOTAL'],'').'</td>';
+                    $html .= '<td>'.$this->formatter->formatters('TOTAL',$data['DISCOUNT'],'').'</td>';
+                    $html .= '<td>'.$this->formatter->formatters('',$data['DISCOUNT_RATE'],'').'</td>';
+                    $html .= '<td>'.$data['ORDER_DATE'].'</td>';
+                $html .= '</tr>';
+            }
+            $html .= '</tbody>';
+            $html .= '</table>';
+            $fileTitle = 'Colombo Auto Supllier Order Report on :'.$this->dateLbl;
+                     $html .= '<script>$(document).ready( function () {
+                        $(\'#orderReportTable\').DataTable({
+                            dom: \'Bfrtip\',
+                            buttons: [
+                                {
+                                    extend:    \'csvHtml5\',
+                                    text:      \'<i class="fa fa-file-text-o"></i>\',
+                                    titleAttr: \'Download CSV\',
+                                    title:      \''.$fileTitle.'\'
+                                },
+                                {
+                                    extend:    \'pdfHtml5\',
+                                    text:      \'<i class="fa fa-file-pdf-o"></i>\',
+                                    titleAttr: \'Dowanload PDF\',
+                                    title:      \''.$fileTitle.'\'
+                                }
+                            ]
+                        });
+                        } );
+                    </script>';
+        $html .= '<div>';
+        if(!empty($itemData) ){
+            $cnt = count($itemData);
+        }else{
+            $cnt = 0;
+        }
+        $head =  'Re Order Report &nbsp;|&nbsp; <span style="color:blue">Window :&nbsp;'.$this->dateLbl.'</span><span style="color:red">&nbsp;&nbsp;[&nbsp;'.$cnt.'&nbsp; Records Founds&nbsp]</span>';
         return contentBorder($html,$head);
     }
 

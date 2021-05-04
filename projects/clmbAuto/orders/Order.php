@@ -221,7 +221,6 @@ class Order{
                     }
             $html .= '</tr>';
             foreach( $orderLIne as $data){
-                
                 $rejetdOrderData = getRejectedOrdrIdByHeaderAndLineId($this->link,$this->details['ORDER_NUM'],$data['LINE_NUM']);
                 if( !empty($rejetdOrderData) && ($rejetdOrderData['REJECTED_QTY'] < $data['QUANTITY'] ) ){
                     $css = 'background-color: sandybrown;';
@@ -235,7 +234,7 @@ class Order{
                 }
                 
                 $html .= '<tr style="'.$css.'">';
-                    $html .= '<td>'.$data['LINE_NUM'].'</td>';
+                    $html .= '<td><a href="'.makeLocalUrl('cat/category_script.php','catId='.$data['CAT_ID'].'&sec=CAT').'">'.$data['LINE_NUM'].'</a></td>';
                     $html .= '<td>'.$data['BRAND'].'</td>';
                     $html .= '<td>'.$data['MODEL'].'</td>';
                     $html .= '<td>'.$data['BRISK'].'</td>';
@@ -438,7 +437,7 @@ class Order{
         if( $this->details['STATUS'] != 'CANCELD'){
             $btn .='<span id="actionPanel">';
             if( $this->details['STATUS'] == 'SUBMITTED'){
-                $btn .= HTML::submitButtonFeild('re_open','Re Open',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:brown"));
+                $btn .= HTML::submitButtonFeild('re_order','Re Order',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:brown",'onclick'=>'reOrder('.$this->id.');'));
                 $btn .= '<span data-toggle="modal" data-target="#ADD_INV_POPUP">'.HTML::submitButtonFeild('create_invoce','Create Invoice',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px; background-color:orange")).'</span>';
             }elseif($this->details['STATUS'] == 'VERIFIED'){
                 $btn .= HTML::submitButtonFeild('order_submit','Submit',array('style'=>"width: 100px;height: 30px; padding-left: 5px; margin:5px;",'onclick'=>'submitOrder('.$this->id.');'));

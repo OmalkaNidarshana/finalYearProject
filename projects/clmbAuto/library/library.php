@@ -290,6 +290,7 @@ function OrdersStatusColorBox($status){
         case 'submitted':
         case 'verified':
         case 'outstanding':
+        case 're_order':
             $icon = 'orangeIcon';
         break;
         default:
