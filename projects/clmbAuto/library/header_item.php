@@ -18,18 +18,18 @@ function getMainMenueArray(){
 function getSubMenueArray(){
     $subMenueArr['HOME'] = makeLocalUrl('main/home_script.php','sec=HOME') ;
     $subMenueArr['PROFILE'] = makeLocalUrl('account/profile_script.php','sec=PROFILE');
-    $subMenueArr['ACC']['Sales'] = makeLocalUrl('main/restricted.php','') ;
-    $subMenueArr['ACC']['Incomes'] = makeLocalUrl('main/restricted.php','') ;
-    $subMenueArr['ACC']['Expenses'] = makeLocalUrl('main/restricted.php','') ;
-    $subMenueArr['ACC']['Out Standing'] = makeLocalUrl('main/restricted.php','') ;
+    $subMenueArr['ACC']['Sales'] = makeLocalUrl('orders/sales_orders_script.php','sec=SALES') ;
+    $subMenueArr['ACC']['Incomes'] = makeLocalUrl('orders/income_script.php','') ;
+    //$subMenueArr['ACC']['Expenses'] = makeLocalUrl('main/restricted.php','') ;
+    $subMenueArr['ACC']['Out Standing'] = makeLocalUrl('outstanding/outstanding_script.php','sec=OUTSTAND') ;
     $subMenueArr['CUSTOMER'] = makeLocalUrl('account/customer_script.php','sec=CUSTOMER') ;
     $subMenueArr['ORDERS']['Orders'] = makeLocalUrl('orders/order_script.php','sec=ORDER');
     $subMenueArr['ORDERS']['Re-Orders'] = makeLocalUrl('orders/order_script.php','sec=ORDER') ;
     $subMenueArr['ORDERS']['Rejected Orders'] = makeLocalUrl('orders/rejected_orders_script.php','sec=RECTED_ORDER') ;
-    $subMenueArr['COMMISSION'] = makeLocalUrl('main/restricted.php','') ;
+    $subMenueArr['COMMISSION'] = makeLocalUrl('commission/commission_script.php','') ;
     $subMenueArr['CATEGORY'] =  makeLocalUrl('cat/category_script.php','sec=CAT') ;
     $subMenueArr['PERIOD'] = makeLocalUrl('main/restricted.php','') ;
-    $subMenueArr['RECEIPT'] = makeLocalUrl('main/restricted.php','') ;
+    //$subMenueArr['RECEIPT'] = makeLocalUrl('main/restricted.php','') ;
     $subMenueArr['INVOICE'] = makeLocalUrl('invoice/invoice_script.php','sec=INV') ;
     $subMenueArr['REPORT']['Orders'] = makeLocalUrl('report/order_report_script.php','sec=REP_ORDER') ;
     $subMenueArr['REPORT']['Re-Orders'] = makeLocalUrl('report/re_order_report_script.php','sec=REP_RE_ORDER') ;

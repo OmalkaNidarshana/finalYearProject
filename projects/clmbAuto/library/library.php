@@ -100,6 +100,11 @@ function contentBox($table){
     
  }
 
+ function dateDiffInDays($from, $to) {
+      $diff = strtotime($to) - strtotime($from);
+      return abs(round($diff / 86400));
+ }
+
  function dateTimeValue($date){
     //$date = strtotime($date);
     $mysqltime = "'".date ($date)."'";
@@ -190,6 +195,10 @@ function getRawActionsIcon($type,$titile,$isanimated=true,$isDisable=false){
             $icon = 'fa fa-plug';
             $class = 'addUser';
         break;
+        case "view":
+            $icon = 'fa fa-eye';
+            $class = 'viewIcon';
+        break;
     }
 
     if($isanimated){
@@ -266,19 +275,21 @@ function OrdersStatusColorBox($status){
     $status = strtolower($status);
     switch($status){
         case 'new':
+        case 'open':
             $icon = 'blueIcon';
         break;
         case 'pending':
             $icon = 'greenIcon';
         break;
+        case 'paid':
         case 'canceld':
         case 'rejected':
         case 'faild':
             $icon = 'redIcon';
         break;
         case 'submitted':
-        case 'paid':
         case 'verified':
+        case 'outstanding':
             $icon = 'orangeIcon';
         break;
         default:
@@ -301,8 +312,8 @@ function getIconButton($faIcon,$title,$style='',$count=''){
     return $btn;
 }
 
-function getWidgetsBox($color,$icon,$text,$amount){
-    $html ='<div class="col-md-4 col-sm-6 col-xs-12" >
+function getWidgetsBox($color,$icon,$text,$amount,$md=4){
+    $html ='<div class="col-md-'.$md.' col-sm-6 col-xs-12" >
                 <div class="info-box">
                 <span class="info-box-icon '.$color.'" style="color: white;"><i class="'.$icon.'"></i></span>
                 <div class="info-box-content">
@@ -314,5 +325,6 @@ function getWidgetsBox($color,$icon,$text,$amount){
             </div>';
     return $html;
 }
+
 
 ?>

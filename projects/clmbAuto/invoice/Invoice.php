@@ -22,7 +22,8 @@ class Invoice{
     var $orderLineData;
     var $customerData;
     var $total;
-    var $summaryFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','ADDITIONAL_DISSCOUNT','AMMOUNT','NET_AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','INVOICE_CLOSE_DATE','ISSUED_BY','DESCRIPTION');
+    var $summaryFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','ADDITIONAL_DISSCOUNT','AMMOUNT','NET_AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','INVOICE_CLOSE_DATE','ISSUED_BY','DESCRIPTION','ACTION');
+    var $salesSummaryFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','ADDITIONAL_DISSCOUNT','AMMOUNT','NET_AMMOUNT','ISSUED_BY');
 
     var $searchFlds = array('INV_NUM','ORDER_NUM','CUSTOMER_ID','AMMOUNT','PAYMENT_METHOD','STATUS','INVOICE_DATE','ISSUED_BY','DESCRIPTION','CUSTOMER_ID');
 
@@ -42,8 +43,6 @@ class Invoice{
             
         }
             
-        
-       
         $this->initiate();
 
     }
@@ -126,6 +125,31 @@ class Invoice{
 
         $html = $dataTable->htmlTable();
         $head = 'Invoices';
+        return htmlTableBox($html,$head);
+
+    }
+
+    function getSalesSummaryTable(){
+        $dataTable = $this->dataTable;
+        $dataTable->setTable($this->table);
+        $dataTable->setFormatter($this->formatter);
+        $dataTable->setPriKey($this->primaryKey);
+        $dataTable->setColumList($this->colList);
+        $dataTable->setFilters($this->fltr);
+        $dataTable->loadPageData();
+        //$data = $this->getHeaderLevelData();
+        //$dataTable->setHeaderLevelData($data);
+        foreach( $this->salesSummaryFlds as $flds){
+            if( $flds == 'ACTION'){
+                $dataTable->addColumn($flds,'Actions');
+            }else{
+                $fldsDef = $this->fldDefinition[$flds];
+                $dataTable->addColumn($flds,$fldsDef->lbl);
+            }
+        }
+
+        $html = $dataTable->htmlTable();
+        $head = 'Sales';
         return htmlTableBox($html,$head);
 
     }
@@ -257,10 +281,12 @@ class Invoice{
                 $html .='</address>';
             $html .='</div>';
                 $html .='<div class="col-sm-4 invoice-col">';
-                $html .='<b>Invoice '.$this->details['INV_NUM'].'</b><br>';
+                $html .='Details:';
+                $html .='<address>';
+                $html .='<b>Invoice Number: </b>'.$this->details['INV_NUM'].'</b>';
                 $html .='<br>';
                 $html .='<b>Order ID:</b> '.$this->details['ORDER_NUM'].'<br>';
-                $html .='<b>Payment Due:</b> '.formatDate($this->details['INVOICE_DATE']).'<br>';
+                $html .='<b>Invoice Date:</b> '.formatDate($this->details['INVOICE_DATE']).'<br>';
                 //$html .='<b>Account:</b> 968-34567';
             $html .='</div>';
         $html .='</div>';
@@ -273,9 +299,11 @@ class Invoice{
             $html .='<table class="table table-striped"><thead>';
                 $html .='<tr>';
                     
-                    $html .='<th>Product</th>';
+                    $html .='<th>Brand</th>';
+                    $html .='<th>Model</th>';
+                    $html .='<th>Brisk</th>';
+                    $html .='<th>Category</th>';
                     $html .='<th>Qty</th>';
-                    $html .='<th>Description</th>';
                     $html .='<th>Unit Price</th>';
                     $html .='<th>Total</th>';
                     $html .='<th>Discount(%)</th>';
@@ -284,11 +312,14 @@ class Invoice{
                 $html .='</tr>';
                 $html .='</thead>';
                 $html .='<tbody>';
+               // print_rr($this->orderLineData);
                 foreach($this->orderLineData as $data){
                     $html .='<tr>';
+                        $html .='<td>'.$data['BRAND'].'</td>';
+                        $html .='<td>'.$data['MODEL'].'</td>';
+                        $html .='<td>'.$data['BRISK'].'</td>';
                         $html .='<td>'.$data['CATEGORY'].'</td>';
                         $html .='<td>'.$data['QUANTITY'].'</td>';
-                        $html .='<td>'.$data['DESCRIPTION'].'</td>';
                         $html .='<td>'.$this->formatter->formatters('SELL_PRICE',$data['SELL_PRICE'],'').'</td>';
                         $html .='<td>'.$this->formatter->formatters('TOTAL',$data['TOTAL'],'').'</td>';
                         $html .='<td>'.$data['DISCOUNT_RATE'].'</td>';
@@ -322,7 +353,7 @@ class Invoice{
 
         $html ='<div class="row">';
             $html .='<div class="col-xs-6">';
-                $html .='<p class="lead">Amount Due '.formatDate($this->details['INVOICE_CLOSE_DATE']).'</p>';
+                $html .='<p class="lead">Payment Due '.formatDate($this->details['INVOICE_CLOSE_DATE']).'</p>';
                 $html .='<div class="table-responsive">';
                     $html .='<table class="table">';
                     $html .='<tbody>';
@@ -359,10 +390,7 @@ class Invoice{
             $html='<div class="row no-print">';
                 $html .='<div class="col-xs-12">';
                     $html .='<a href="'.makeLocalUrl('invoice/invoice_print.php','sec=INVOICE&id='.$this->id).'" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print</a>';
-                    $html .='<button type="button" class="btn btn-primary pull-right" style="margin-right: 5px;">';
-                    $html .='<i class="fa fa-download"></i> Generate PDF';
-                    $html .='</button>';
-                $html .='</div>';
+                    $html .='</div>';
             $html .='</div>';
         $html .='</section>';
         return $html;
@@ -377,6 +405,90 @@ class Invoice{
         if(!$isprint)
             $html .= $this->getInvoiceActionSection();
         return $html;
+    }
+
+    function getOutstandingOrderForm($invId){
+        $html = '';
+        $invData = getInvoiceDetailsById($this->link,$invId);
+        
+        $html .= HTML::formStart('','POST','OUTSTANDING_DATA');
+        $html .= '<table>';
+        $html .= HTML::hiddenFeild('invId',$invData['INV_ID'],array('id'=>'INV_ID'));
+        $html .= HTML::hiddenFeild('INV_NUM',$invData['INV_NUM'],array('id'=>'INV_NUM'));
+        $html .= HTML::hiddenFeild('ORDER_NUM',$invData['ORDER_NUM'],array('id'=>'ORDER_NUM'));
+        $html .= HTML::hiddenFeild('TOTAL_AMMOUNT',$invData['NET_AMMOUNT'],array('id'=>'NET_AMMOUNT'));
+        $html .= HTML::hiddenFeild('CUSTOMER_ID',$invData['CUSTOMER_ID'],array('id'=>'CUSTOMER_ID'));
+        $html .= '<tbody>';
+        $html .= '<tr>';
+            $html .= '<td align="right">'.HTML::lblFeild('Invoice# : ').'</td><td>&nbsp;&nbsp;'.$invData['INV_NUM'].'</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+            $html .= '<td align="right">'.HTML::lblFeild('Order Number : ').'</td><td>&nbsp;&nbsp;'.$invData['ORDER_NUM'].'</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td align="right">'.HTML::lblFeild('Total Amount : ').'</td><td>&nbsp;&nbsp;'.formatCurrency($invData['NET_AMMOUNT']).'</td>';
+            $html .= '</tr>';
+        $html .= '<tr>';
+            $html .= '<td align="right">'.HTML::lblFeild('Ammount : ').'</td><td>&nbsp;&nbsp;'.HTML::textFeild('OUTSATNDING_AMOUNT','',$attr=array()).'</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+            $html .= '<td align="right">'.HTML::lblFeild('Outstanding Date &nbsp;&nbsp;: ').'</td><td>&nbsp;&nbsp;'.HTML::dateFeild('OUT_STANDING_DATE','').'</td>';
+        $html .= '</tr>';
+        $html .= '</table>';
+        $html .= HTML::formEnd();
+        return $html;
+    }
+
+    function loadOutsatandingForPopup(){
+        $html = '<div id="outstandingPopUp"></div>';
+        $btn = HTML::buttonFeild('reject_item','Save',$attr=array('onclick'=>'saveOutstanding();'));
+        $popUp = modalPopupBox('Outstanding Order','OUTSTANDING_ORDER_POPUP',$html,$btn);
+        return $popUp;
+    }
+
+    function getincomeSummaryTable(){
+        $competedInvoiceData = getCompletedInvoiceData($this->link);
+        $currentOutstandigData = getOutstandingData($this->link);
+        
+        foreach($competedInvoiceData as $k=>$invData){
+            $dataInv[$k]['INV_NUM'] = $invData['INV_NUM'];
+            $dataInv[$k]['ORDER_NUM'] = $invData['ORDER_NUM'];
+            $dataInv[$k]['PAID_AMOUNT'] = $invData['NET_AMMOUNT'];
+            $dataInv[$k]['SOURCE'] = 'PAID';
+            $dataInv[$k]['PAID_DATE'] = $invData['MODIFIED_DATE'];
+        }
+
+        foreach($currentOutstandigData as $k=>$outstandData){
+            $outInv[$k]['INV_NUM'] = $outstandData['INV_NUM'];
+            $outInv[$k]['ORDER_NUM'] = $outstandData['ORDER_NUM'];
+            $outInv[$k]['PAID_AMOUNT'] = $outstandData['PAID_AMOUNT'];
+            $outInv[$k]['SOURCE'] = 'OUTSTANDING';
+            $outInv[$k]['PAID_DATE'] = $outstandData['PAID_DATE'];
+        }
+
+        $salesOrderData = array_merge($dataInv,$outInv);
+            $html = '';
+            $html .= '<div class="box-body table-responsive no-padding">';
+            $html .= '<table class="table table-hover summarytable" id="sortableTable">';
+            $html .= '<thead><tr>';
+                $html .= '<th>Inv Num</th><th>Order Num</th><th>Amount</th><th>Source</th><th>Received Date</th>';                            ;
+            $html .= '</tr></thead>';
+            $html .= '<tbody>';
+            foreach( $salesOrderData as $OrderData){
+                $html .= '<tr>';
+                    $html .= '<td>'.$OrderData['INV_NUM'].'</td>';
+                    $html .= '<td>'.$OrderData['ORDER_NUM'].'</td>';
+                    $html .= '<td>'.$this->formatter->formatters('PAID_AMOUNT',$OrderData['PAID_AMOUNT'],'').'</td>';
+                    $html .= '<td>'.$this->formatter->formatters('STATUS',$OrderData['SOURCE'],'').'</td>';
+                    $html .= '<td>'.$OrderData['PAID_DATE'].'</td>';
+                    ;
+                  $html .= '</tr>';
+            }
+            $html .= '</tbody>';
+            $html .= '</table>';
+        $html .= '<div>';
+        $head =  'Income';
+        return contentBorder($html,$head);
     }
 }
 ?>

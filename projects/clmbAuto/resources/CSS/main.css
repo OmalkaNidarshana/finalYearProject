@@ -117,6 +117,13 @@
     color: green;
 }
 
+.viewIcon{
+    cursor: pointer;
+    font-size: 17px;
+    /*padding: 10px;*/
+    color: maroon;
+}
+
 .disable{
     cursor: pointer;
     font-size: 17px;

@@ -39,13 +39,16 @@
                 case 'SELL_PRICE':
                 case 'TOTAL':
                 case 'DISCOUNT':
+                case 'PAID_AMOUNT':   
                     $formatter = formatCurrency($value);
                 break;
                 case 'ACTION':
-                    if( in_array($data['RECORD_ID'],$this->categoryIds) ){
-                        $formatter = '<span>'.getRawActionsIcon('cart','Alredy added to Order',false,true).'</span>';
-                    }else{
-                        $formatter = '<span onclick="addToCart(\''.$data['RECORD_ID'].'\',\''.$this->userInfo->cmpId.'\');">'.getRawActionsIcon('cart','Add To Cart').'</span>';
+                    $formatter ='';
+                    if($data['STATUS'] == 'PENDING' ){
+                        $formatter = '<span>'.HTML::submitButtonFeild('invoice_paid','Paid',array('style'=>'margin-bottom:5px; width: 72px;','onclick'=>'paidInv('.$data['INV_ID'].');')).'</span>';
+                        if($data['PAYMENT_METHOD'] == 'CASH'){
+                            $formatter .= '<span>'.HTML::submitButtonFeild('invoice_outstanding','Outstanding',array('style'=>'width: 72px; background-color: maroon;','onclick'=>'loadOutstandingPopUp('.$data['INV_ID'].');')).'</span>';
+                        }
                     }
                     break;
                 

@@ -51,6 +51,7 @@ $inv->setFltrs($whereClause);
 $page[] = $inv->getInvSummaryTable();
 $page[] = $inv->getRegulerSearchHtml();
 $page[] = $inv->getInvoiceAddingForm();
+$page[] = $inv->loadOutsatandingForPopup();
 
 include_once $sysPath."/library/header.php";
     getPageContentArea($page);

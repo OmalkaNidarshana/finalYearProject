@@ -12,4 +12,15 @@ function getInvoiceDetailsById($link,$id){
     return $data;
 }
 
+function getCompletedInvoiceData($link){
+    $sql = 'select * from invoice where STATUS ='.getTextValue('PAID');
+    $data = $link->getRecordSetFromQuery($sql);
+    return $data;
+}
+
+function getOutstandingData($link){
+    $sql = 'select * from outstanding_line';
+    $data = $link->getRecordSetFromQuery($sql);
+    return $data;
+}
 ?>

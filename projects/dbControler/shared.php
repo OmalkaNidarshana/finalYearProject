@@ -165,4 +165,12 @@ function getUserPrivielegesByUserId($link,$userId){
     return $data;
 
 }
+
+function getFullNameByUserIntId($link,$userIntId){
+    $sql = 'select * from user_info where USER_INTID = '.$userIntId;
+    $data =  $link->getRowDataFromQuery($sql);
+    $FullName = $data['FIRST_NAME'].' '.$data['LAST_NAME'];
+    return $FullName;
+}
+
 ?>
